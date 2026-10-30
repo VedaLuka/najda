@@ -1,0 +1,8 @@
+outcome_correct: 0.9286 (najda_v1) -> 0.9762 (najda_v3)  delta=+0.0476
+shared: 42 | fixed 2 | broken 0
+[FIXED] dev-025 (combo_schema_rate)
+  old: recovered=False escalated=True causes=rate_limiting,stale_data changed=['retry.backoff_s', 'retry.max_retries']
+  new: recovered=True escalated=False causes=schema_change,rate_limiting changed=['field_mappings.order_id', 'retry.backoff_s', 'retry.max_retries']
+[FIXED] dev-028 (combo_prompt_auth)
+  old: recovered=False escalated=True causes=auth_failure,bad_prompt_deploy changed=['auth.key_slot']
+  new: recovered=True escalated=False causes=bad_prompt_deploy,auth_failure changed=['auth.key_slot', 'prompt_version']

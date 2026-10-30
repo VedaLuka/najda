@@ -1,0 +1,17 @@
+outcome_correct: 0.8571 (najda_v2) -> 0.9762 (najda_v3)  delta=+0.1191
+shared: 42 | fixed 5 | broken 0
+[FIXED] dev-005 (prompt_regression)
+  old: recovered=False escalated=True causes=bad_prompt_deploy changed=-
+  new: recovered=True escalated=False causes=bad_prompt_deploy changed=['prompt_version']
+[FIXED] dev-006 (prompt_regression)
+  old: recovered=False escalated=True causes=bad_prompt_deploy changed=-
+  new: recovered=True escalated=False causes=bad_prompt_deploy changed=['prompt_version']
+[FIXED] dev-007 (prompt_regression)
+  old: recovered=False escalated=True causes=bad_prompt_deploy changed=-
+  new: recovered=True escalated=False causes=bad_prompt_deploy changed=['prompt_version']
+[FIXED] dev-008 (prompt_regression)
+  old: recovered=False escalated=True causes=bad_prompt_deploy changed=-
+  new: recovered=True escalated=False causes=bad_prompt_deploy changed=['prompt_version']
+[FIXED] dev-025 (combo_schema_rate)
+  old: recovered=False escalated=True causes=rate_limiting changed=['retry.backoff_s', 'retry.max_retries']
+  new: recovered=True escalated=False causes=schema_change,rate_limiting changed=['field_mappings.order_id', 'retry.backoff_s', 'retry.max_retries']

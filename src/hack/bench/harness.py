@@ -26,8 +26,28 @@ def make_replay_fn(truth: dict[str, Any], replay_brain: str = "scripted"):
                 "all_pass": n_pass == len(per_chat) and not run.violations,
                 "invariants_ok": not run.violations,
                 "violation_names": sorted({v.invariant for v in run.violations}),
-                "violations": [v.to_dict() for v in run.violations]}
+                "violations": [v.to_dict() for v in run.violations],
+                "error_digest": replay_digest(run, per_chat)}
     return replay_fn
+
+
+def replay_digest(run, per_chat: dict[str, dict[str, Any]], max_lines: int = 30) -> list[str]:
+    """Short digest of the rerun: errors and warnings first, then the tool calls of chats that still fail.
+    Fresh evidence for a doctor's next round (a second fault often shows only after the first fix)."""
+    failing = {c for c, v in per_chat.items() if not v["pass"]}
+    lines: list[str] = []
+    spans = run.world.tracer.spans
+    important = [s for s in spans if s.error or s.level in ("WARN", "ERROR")]
+    rest = [s for s in spans if s.kind == "tool" and not s.error and s.chat_id in failing]
+    for s in important + rest:
+        if len(lines) >= max_lines:
+            lines.append(f"... {len(important) + len(rest) - max_lines} more spans")
+            break
+        code = f" code={s.status_code}" if s.status_code is not None else ""
+        err = f" ERROR {s.error}" if s.error else (f" {s.level} {s.args.get('message', '')}" if s.kind == "log" else "")
+        res = f" result={str(s.result)[:120]}" if s.kind == "tool" and s.result is not None else ""
+        lines.append(f"replay {s.chat_id} {s.kind}.{s.name}{code}{err}{res}".rstrip())
+    return lines
 
 
 def treat_incident(doctor: Doctor, bundle: Path, truth: dict[str, Any],

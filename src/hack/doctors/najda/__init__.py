@@ -15,3 +15,10 @@ class NajdaV1(Najda):
 class NajdaV2(Najda):
     """+ differential diagnosis (grounded hypotheses) + guardrails + canary + config bisection."""
     flags = {"diff_diagnosis": True, "guardrails": True, "canary": True, "bisect": True}
+
+
+@register("najda_v3")
+class NajdaV3(Najda):
+    """v2 + structured money-at-risk (invariant types + payment ledger; prompt rollback is approval-gated, never
+    refused for money) + replay error digest fed into the next investigation round."""
+    flags = {**NajdaV2.flags, "structured_money": True, "replay_digest": True}

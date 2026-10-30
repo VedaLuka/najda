@@ -54,10 +54,11 @@ def failing_span(incident):
     """A tool span id from a failing chat (so hypotheses can be grounded)."""
     from hack.doctors.environment import Environment
 
+    from hack.doctors.najda.diffdiag import differential
+
     env = Environment(DEV / incident, lambda panel, chats="failed": None)
-    failing = set(env.failed_chat_ids())
-    spans = env.read_traces(kind="tool", errors_only=True, limit=None) or env.read_traces(kind="tool", limit=None)
-    return next(s["span_id"] for s in spans if s["attributes"]["chat.id"] in failing)
+    diff = differential(env)
+    return next(r["examples"][0] for r in diff.rows if r["n_pass"] == 0 and r["examples"])
 
 
 def test_wrong_patch_is_rolled_back_then_right_patch_verified():
@@ -154,3 +155,47 @@ def test_bisection_finds_the_breaking_version():
     assert result["applicable"] and result["culprit_version"] is not None
     assert "prompt_version" in result["changed"]
     assert not any(s["action"] == "replay" for s in env.steps)  # bisect replays never count as a retry
+
+
+def test_v3_money_at_risk_ignores_confirmed_without_payment():
+    """The dev-005..008 false positive: 'confirmed with no paid payment' is not money at risk."""
+    from hack.doctors.environment import Environment
+    from hack.doctors.najda import guardrails
+
+    env = Environment(DEV / "dev-005", lambda panel, chats="failed": None)
+    assert any(v["invariant"] == "confirmed_has_payment" for v in env.read_invariants())
+    assert guardrails.money_at_risk(env), "v2 detector fired here (the bug being fixed)"
+    assert guardrails.money_at_risk_ledger(env) == []
+    verdict = guardrails.check_patch_v3(env, {"prompt_version": "v1"}, 3, [])
+    assert verdict.allowed and verdict.rule == "approval_gated"
+
+
+def test_v3_prompt_rollback_gated_but_payment_knobs_refused_when_money_at_risk():
+    from hack.doctors.environment import Environment
+    from hack.doctors.najda import guardrails
+
+    env = Environment(DEV / PAYMENT_DOWN, lambda panel, chats="failed": None)
+    money = guardrails.money_at_risk_ledger(env)
+    assert money and "charge" in money[0]
+    assert guardrails.check_patch_v3(env, {"prompt_version": "v1"}, 3, money).allowed
+    for patch in ({"payment_verify": "query"}, {"auth.key_slot": "backup"}):
+        v = guardrails.check_patch_v3(env, patch, 3, money)
+        assert not v.allowed and v.rule == "protected_knob_money_at_risk"
+
+
+def test_v3_fixes_prompt_regression_with_fake_llm():
+    span = failing_span("dev-005")
+    llm = FakeLLM([[propose(("bad_prompt_deploy", 0.9, [span], {"prompt_version": "v1"}))]])
+    res, initial, truth = run("najda_v3", "dev-005", llm)
+    assert not res.escalated and res.final_config["prompt_version"] == "v1"
+    assert score_incident(truth, res.to_dict(), initial)["outcome_correct"]
+
+
+def test_replay_returns_error_digest():
+    from hack.bench.harness import make_replay_fn
+    from hack.doctors.environment import Environment
+
+    truth = read_truth(DEV / SCHEMA)
+    env = Environment(DEV / SCHEMA, make_replay_fn(truth))
+    r = env.replay("failed")
+    assert r["error_digest"] and all(line.startswith("replay ") for line in r["error_digest"])

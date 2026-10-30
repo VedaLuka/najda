@@ -23,6 +23,7 @@ from hack.patient.config import validate_patch
 
 DEFAULTS: dict[str, Any] = {
     "diff_diagnosis": False, "guardrails": False, "canary": False, "bisect": False,
+    "structured_money": False, "replay_digest": False,
     "max_rounds": 3, "max_hypotheses": 4, "max_llm_calls": 14, "max_tool_calls_per_round": 10,
     "max_tokens_total": 150_000, "max_cost_usd": 0.40, "max_knobs_per_patch": 3,
     "min_confidence": 0.2, "canary_fraction": 0.25, "effort": "medium", "max_tokens_per_call": 8000,
@@ -52,10 +53,12 @@ class Replay:
     invariants_ok: bool
     progress: int
     per_chat: dict[str, dict[str, Any]] = field(default_factory=dict)
+    digest: list[str] = field(default_factory=list)
 
     @classmethod
     def of(cls, r: dict[str, Any]) -> "Replay":
-        return cls(r["n_pass"], r["invariants_ok"], sum(v.get("progress", 0) for v in r["per_chat"].values()), r["per_chat"])
+        return cls(r["n_pass"], r["invariants_ok"], sum(v.get("progress", 0) for v in r["per_chat"].values()),
+                   r["per_chat"], list(r.get("error_digest") or []))
 
     def better_than(self, other: "Replay") -> bool:
         """Damage reduced: more chats pass, or invariants fixed, or chats get further through the flow,
@@ -100,6 +103,7 @@ class _Run:
         self.verified: Hypothesis | None = None
         self.budget_hit: str | None = None
         self.n_calls = 0
+        self.last_digest: list[str] = []
 
     # ------------------------------ main --------------------------------------
     def treat(self) -> Diagnosis:
@@ -115,7 +119,7 @@ class _Run:
         env.record("baseline_replay", {"n_pass": baseline.n_pass, "n_total": len(baseline.per_chat),
                                         "transient": transient})
         if cfg["guardrails"]:
-            self.money = guardrails.money_at_risk(env)
+            self.money = guardrails.money_at_risk_ledger(env) if cfg["structured_money"] else guardrails.money_at_risk(env)
             env.record("money_at_risk", {"evidence": self.money[:5]})
         if cfg["diff_diagnosis"]:
             self.diff = differential(env)
@@ -137,9 +141,12 @@ class _Run:
                 return self.finish("recovered", top=self.verified)
             if improved:
                 h = next(h for h in reversed(self.hypotheses) if h.status == "kept_improvement")
-                self.messages.append({"role": "user", "content": prompts.NEXT_ROUND.format(
+                msg = prompts.NEXT_ROUND.format(
                     patch=json.dumps(h.patch), label=h.label, n_pass=self.best.n_pass, n_total=len(self.best.per_chat),
-                    remaining=", ".join(self.remaining), tried=[x["patch"] for x in self.tried])})
+                    remaining=", ".join(self.remaining), tried=[x["patch"] for x in self.tried])
+                if cfg["replay_digest"] and self.last_digest:
+                    msg += "\n\nFresh evidence from the replay under the kept patch:\n" + "\n".join(self.last_digest)
+                self.messages.append({"role": "user", "content": msg})
                 continue
             if proposal.get("escalate_recommended") and not any(h.patch for h in hyps):
                 break  # the model says a human is needed and has nothing to try
@@ -200,7 +207,7 @@ class _Run:
             if not isinstance(patch, dict) or not patch:
                 return "error: patch must be a non-empty object"
             if self.cfg["guardrails"]:
-                verdict = guardrails.check_patch(env, patch, int(self.cfg["max_knobs_per_patch"]), self.money)
+                verdict = self.check_patch(patch)
                 env.record("guardrail", {"source": "model", "patch": patch, **verdict.to_dict()})
                 if not verdict.allowed:
                     return f"refused by guardrail {verdict.rule}: {verdict.reason}"
@@ -216,12 +223,19 @@ class _Run:
                 self.verified = Hypothesis("unknown", 0.5, [], "model-initiated patch verified by replay",
                                            env.panel.history[-1].patch, "verified")
                 self.hypotheses.append(self.verified)
-            return json.dumps({"n_pass": r.n_pass, "n_total": len(r.per_chat), "invariants_ok": r.invariants_ok,
-                               "failing": sorted(c for c, v in r.per_chat.items() if not v["pass"])})
+            out = {"n_pass": r.n_pass, "n_total": len(r.per_chat), "invariants_ok": r.invariants_ok,
+                   "failing": sorted(c for c, v in r.per_chat.items() if not v["pass"])}
+            if self.cfg["replay_digest"]:
+                out["error_digest"] = r.digest
+            return json.dumps(out, ensure_ascii=False)
         if name == "escalate":
             self.escalate_requested = str(args.get("reason", ""))
             return "escalation recorded; finish with propose_hypotheses so the report has your diagnosis"
         return run_read_tool(env, name, args)
+
+    def check_patch(self, patch: dict[str, Any]) -> guardrails.Verdict:
+        fn = guardrails.check_patch_v3 if self.cfg["structured_money"] else guardrails.check_patch
+        return fn(self.env, patch, int(self.cfg["max_knobs_per_patch"]), self.money)
 
     def budget_exceeded(self) -> str | None:
         u = self.env.llm_usage
@@ -251,7 +265,7 @@ class _Run:
                 problem = validate_patch(self.env.panel.current, patch)
                 if problem:
                     h.status, h.note = "invalid", problem
-                elif self.diff is not None and not self.diff.is_grounded(evidence):
+                elif self.diff is not None and not (self.diff.is_grounded(evidence) or self.bisect_grounds(patch)):
                     h.status, h.note = "ungrounded", "no cited span is specific to the failing chats"
             out.append(h)
         out.sort(key=lambda h: -h.confidence)
@@ -259,6 +273,12 @@ class _Run:
         self.env.record("hypotheses", {"ranked": [h.to_dict() for h in out],
                                        "escalate_recommended": bool(proposal.get("escalate_recommended"))})
         return out
+
+    def bisect_grounds(self, patch: dict[str, Any]) -> bool:
+        """A patch that reverts knobs the bisection blamed is grounded by that deterministic replay evidence."""
+        if not self.bisect or not self.bisect.get("culprit_version"):
+            return False
+        return bool(patch) and set(patch) <= set(self.bisect.get("changed", {}))
 
     # ------------------------------ fix + verify -----------------------------
     def try_hypotheses(self, hyps: list[Hypothesis]) -> bool:
@@ -281,7 +301,7 @@ class _Run:
     def try_fix(self, h: Hypothesis) -> None:
         env, cfg = self.env, self.cfg
         if cfg["guardrails"]:
-            verdict = guardrails.check_patch(env, h.patch, int(cfg["max_knobs_per_patch"]), self.money)
+            verdict = self.check_patch(h.patch)
             env.record("guardrail", {"source": "controller", "patch": h.patch, **verdict.to_dict()})
             if not verdict.allowed:
                 h.status, h.note = "blocked", f"{verdict.rule}: {verdict.reason}"
@@ -318,6 +338,7 @@ class _Run:
                 self.rollback(h, before, f"broke previously passing chats {reg['broke']}")
                 return
         self.best, self.kept_version = full, env.panel.version
+        self.last_digest = full.digest
         self.remaining = sorted(c for c, v in full.per_chat.items() if not v["pass"])
         h.status = "verified" if all_pass else "kept_improvement"
         h.note = f"replay {full.n_pass}/{len(full.per_chat)}"
