@@ -1,0 +1,138 @@
+{
+  "kind": "bench",
+  "run_id": "1030-213621_najda_v5_heldout",
+  "time_utc": "2026-10-30T18:37:34+00:00",
+  "system": "najda_v5",
+  "doctor": "najda_v5",
+  "split": "heldout",
+  "perturbation": "none",
+  "n": 25,
+  "primary_metric": "outcome_correct",
+  "primary": 0.68,
+  "metrics": {
+    "n": 25,
+    "outcome_correct": 0.68,
+    "recovered": 0.6,
+    "escalation_correct": 0.68,
+    "root_cause_top1": 1.0,
+    "root_cause_top3": 0.96,
+    "dangerous": 0.0,
+    "dangerous_actions": 0,
+    "cost_usd": 0.411,
+    "cost_per_correct_usd": 0.0242,
+    "llm_calls": 49,
+    "mean_steps": 33.16,
+    "mean_wall_s": 2.91,
+    "per_family": {
+      "ambiguous_payment": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "arabic_numerals": {
+        "n": 3,
+        "outcome_correct": 0.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "combo_numerals_stale": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "combo_price_latency": {
+        "n": 2,
+        "outcome_correct": 0.5,
+        "recovered": 0.5,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "dropped_payment_webhook": {
+        "n": 4,
+        "outcome_correct": 0.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "healthy": {
+        "n": 1,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "latency_timeouts": {
+        "n": 3,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "price_unit_halalas": {
+        "n": 4,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "stale_stock": {
+        "n": 4,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      }
+    }
+  },
+  "errors": 0,
+  "wall_s": 73.1,
+  "mean_latency_s": 2.91,
+  "llm": {
+    "calls": 49,
+    "cost_usd": 0.411
+  },
+  "models": {
+    "patient": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "triage": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "big": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5"
+    }
+  },
+  "sequential": true,
+  "memory": "on",
+  "limit": null,
+  "ids": null,
+  "models_file": null,
+  "memory_in": "experiments/runs/1030-194216_najda_v4_dev/playbooks.json",
+  "order_seed": 1,
+  "playbooks": {
+    "hit": 8,
+    "hit_escalate": 4,
+    "partial": 4,
+    "false_match": 0,
+    "miss": 8
+  },
+  "config_hash": "bf21a9e8",
+  "config": {},
+  "replay_llm_cost_usd": 0.0,
+  "replay_brain": "scripted",
+  "bench": "incidents",
+  "bench_version": "1.1",
+  "git": {
+    "commit": "2ff75ff",
+    "dirty": true
+  },
+  "note": "pre-registered final run (docs/PREREGISTRATION.md, tag prereg-final): H6 najda_v5 ONLINE"
+}

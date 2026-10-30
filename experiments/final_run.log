@@ -1,0 +1,78 @@
+spent since 2026-10-30 20:59: $0.250 over 16 API calls claude-haiku-5-5=$0.001 claude-sonnet-5-5=$0.248
+projected (spent + planned $5.76): $6.01 of budget $8.00
+=== H1 do_nothing
+!! HELDOUT run: milestones only. Never tune on these results. !!
+1030-213141_do_nothing_heldout: outcome=0.040 recovered=0.040 rc@1=0.040 esc_ok=0.920 dangerous=0.000 n=25 cost=$0.0000 llm_calls=0 errors=0 wall=0.1s
+spent since 2026-10-30 20:59: $0.250 over 16 API calls claude-haiku-5-5=$0.001 claude-sonnet-5-5=$0.248
+projected (spent + planned $5.76): $6.01 of budget $8.00
+=== H2 restart
+!! HELDOUT run: milestones only. Never tune on these results. !!
+1030-213141_restart_heldout: outcome=0.040 recovered=0.040 rc@1=0.040 esc_ok=0.920 dangerous=0.000 n=25 cost=$0.0000 llm_calls=0 errors=0 wall=0.2s
+spent since 2026-10-30 20:59: $0.250 over 16 API calls claude-haiku-5-5=$0.001 claude-sonnet-5-5=$0.248
+projected (spent + planned $5.76): $6.01 of budget $8.00
+=== H3 runbook
+!! HELDOUT run: milestones only. Never tune on these results. !!
+1030-213142_runbook_heldout: outcome=0.120 recovered=0.040 rc@1=0.040 esc_ok=0.120 dangerous=0.000 n=25 cost=$0.0000 llm_calls=0 errors=0 wall=0.1s
+spent since 2026-10-30 20:59: $0.250 over 16 API calls claude-haiku-5-5=$0.001 claude-sonnet-5-5=$0.248
+projected (spent + planned $5.76): $6.01 of budget $8.00
+=== H4 single_llm
+!! HELDOUT run: milestones only. Never tune on these results. !!
+1030-213142_single_llm_heldout: outcome=0.640 recovered=0.840 rc@1=1.000 esc_ok=0.720 dangerous=0.000 n=25 cost=$0.4567 llm_calls=25 errors=0 wall=99.1s
+spent since 2026-10-30 20:59: $0.706 over 41 API calls claude-haiku-5-5=$0.001 claude-sonnet-5-5=$0.705
+projected (spent + planned $5.05): $5.76 of budget $8.00
+=== H5 najda_v5 COLD
+!! HELDOUT run: milestones only. Never tune on these results. !!
+1030-213322_najda_v5_heldout: outcome=0.720 recovered=0.640 rc@1=1.000 esc_ok=0.720 dangerous=0.000 n=25 cost=$0.7441 llm_calls=91 errors=0 wall=179.1s
+spent since 2026-10-30 20:59: $1.450 over 132 API calls claude-haiku-5-5=$0.015 claude-sonnet-5-5=$1.436
+projected (spent + planned $4.16): $5.61 of budget $8.00
+=== H6 najda_v5 ONLINE
+!! HELDOUT run: milestones only. Never tune on these results. !!
+1030-213621_najda_v5_heldout: outcome=0.680 recovered=0.600 rc@1=1.000 esc_ok=0.680 dangerous=0.000 n=25 cost=$0.4110 llm_calls=49 errors=0 wall=73.1s
+spent since 2026-10-30 20:59: $1.587 over 146 API calls claude-haiku-5-5=$0.017 claude-sonnet-5-5=$1.570
+projected (spent + planned $3.60): $5.19 of budget $8.00
+=== H7 v5 no_diffdiag
+!! HELDOUT run: milestones only. Never tune on these results. !!
+1030-213735_najda_v5_no_diffdiag_heldout: outcome=0.840 recovered=0.760 rc@1=1.000 esc_ok=0.840 dangerous=0.000 n=25 cost=$0.6354 llm_calls=76 errors=0 wall=153.6s
+spent since 2026-10-30 20:59: $2.222 over 222 API calls claude-haiku-5-5=$0.029 claude-sonnet-5-5=$2.193
+projected (spent + planned $2.71): $4.93 of budget $8.00
+=== H8 v5 no_bisect
+!! HELDOUT run: milestones only. Never tune on these results. !!
+1030-214009_najda_v5_no_bisect_heldout: outcome=0.720 recovered=0.640 rc@1=1.000 esc_ok=0.720 dangerous=0.000 n=25 cost=$0.7169 llm_calls=85 errors=0 wall=121.8s
+spent since 2026-10-30 20:59: $2.926 over 283 API calls claude-haiku-5-5=$0.029 claude-sonnet-5-5=$2.896
+projected (spent + planned $1.83): $4.76 of budget $8.00
+=== H9 v5 haiku big
+!! HELDOUT run: milestones only. Never tune on these results. !!
+1030-214211_najda_v5_heldout: outcome=0.600 recovered=0.520 rc@1=0.960 esc_ok=0.600 dangerous=0.000 n=25 cost=$0.0803 llm_calls=115 errors=0 wall=212.1s
+spent since 2026-10-30 20:59: $2.992 over 374 API calls claude-haiku-5-5=$0.096 claude-sonnet-5-5=$2.896
+projected (spent + planned $1.73): $4.72 of budget $8.00
+=== T10 do_nothing
+1030-214544_do_nothing_transfer: outcome=0.045 recovered=0.045 rc@1=0.045 esc_ok=0.864 dangerous=0.000 n=22 cost=$0.0000 llm_calls=0 errors=0 wall=0.1s
+details -> experiments/runs/1030-214544_do_nothing_transfer
+spent since 2026-10-30 20:59: $2.992 over 374 API calls claude-haiku-5-5=$0.096 claude-sonnet-5-5=$2.896
+projected (spent + planned $1.73): $4.72 of budget $8.00
+=== T11 restart
+1030-214544_restart_transfer: outcome=0.045 recovered=0.045 rc@1=0.045 esc_ok=0.864 dangerous=0.000 n=22 cost=$0.0000 llm_calls=0 errors=0 wall=0.1s
+details -> experiments/runs/1030-214544_restart_transfer
+spent since 2026-10-30 20:59: $2.992 over 374 API calls claude-haiku-5-5=$0.096 claude-sonnet-5-5=$2.896
+projected (spent + planned $1.73): $4.72 of budget $8.00
+=== T12 runbook
+1030-214544_runbook_transfer: outcome=0.455 recovered=0.318 rc@1=0.455 esc_ok=0.455 dangerous=0.000 n=22 cost=$0.0000 llm_calls=0 errors=0 wall=0.1s
+details -> experiments/runs/1030-214544_runbook_transfer
+spent since 2026-10-30 20:59: $2.992 over 374 API calls claude-haiku-5-5=$0.096 claude-sonnet-5-5=$2.896
+projected (spent + planned $1.73): $4.72 of budget $8.00
+=== T13 single_llm
+1030-214545_single_llm_transfer: outcome=0.909 recovered=0.864 rc@1=0.955 esc_ok=0.909 dangerous=0.000 n=22 cost=$0.4663 llm_calls=22 errors=0 wall=115.6s
+details -> experiments/runs/1030-214545_single_llm_transfer
+spent since 2026-10-30 20:59: $3.459 over 396 API calls claude-haiku-5-5=$0.096 claude-sonnet-5-5=$3.363
+projected (spent + planned $1.10): $4.56 of budget $8.00
+=== T14 najda_v5 COLD
+1030-214741_najda_v5_transfer: outcome=0.909 recovered=0.773 rc@1=0.864 esc_ok=0.909 dangerous=0.000 n=22 cost=$0.5957 llm_calls=63 errors=0 wall=143.6s
+details -> experiments/runs/1030-214741_najda_v5_transfer
+spent since 2026-10-30 20:59: $4.054 over 459 API calls claude-haiku-5-5=$0.108 claude-sonnet-5-5=$3.947
+projected (spent + planned $0.32): $4.37 of budget $8.00
+=== T15 v5 haiku big
+1030-215005_najda_v5_transfer: outcome=0.818 recovered=0.682 rc@1=1.000 esc_ok=0.818 dangerous=0.000 n=22 cost=$0.0654 llm_calls=84 errors=0 wall=160.3s
+details -> experiments/runs/1030-215005_najda_v5_transfer
+spent since 2026-10-30 20:59: $4.108 over 522 API calls claude-haiku-5-5=$0.161 claude-sonnet-5-5=$3.947
+projected (spent + planned $0.00): $4.11 of budget $8.00
+EXIT 0

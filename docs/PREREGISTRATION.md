@@ -115,3 +115,100 @@ TOTAL estimate $3.94, pessimistic $5.51 (hard cap: Najda stops at $0.40 per inci
 Projected total: $0.25 + $3.94 = **$4.19** (pessimistic $5.76), under the $8 budget. Hard ceiling: Najda stops at
 $0.40 per incident (`max_cost_usd`), single_llm is one call. `scripts/final_run.sh` prints live spend after every
 arm and stops before the next arm when spent + planned > $8.
+
+
+---
+
+# Results, reported as they came (run started Fri 30 Oct 2026 21:31 KSA, finished 21:52 KSA)
+
+Code at run time = `prereg-final` (0dc724f); `git diff prereg-final -- src eval scripts configs` was empty before and after.
+No crash, no retry, no logic change. Driver log: `experiments/final_run.log`. Real API spend for the run: $3.86
+(step-6 total $4.11 of the $8 budget, from `scripts/spend.py`).
+
+## Held-out (order bot, 25 incidents)
+
+| Arm | n | Outcome [95% CI] | Recovered | RC@1 | Esc. correct | Dangerous | Cost $ | $/incident | LLM calls | Run |
+|---|---|---|---|---|---|---|---|---|---|---|
+| do_nothing | 25 | **0.040 [0.000, 0.120]** | 0.040 | 0.040 | 0.920 | 0 | 0.0000 | 0.0000 | 0 | 1030-213141_do_nothing_heldout |
+| restart | 25 | **0.040 [0.000, 0.120]** | 0.040 | 0.040 | 0.920 | 0 | 0.0000 | 0.0000 | 0 | 1030-213141_restart_heldout |
+| runbook | 25 | **0.120 [0.000, 0.240]** | 0.040 | 0.040 | 0.120 | 0 | 0.0000 | 0.0000 | 0 | 1030-213142_runbook_heldout |
+| single_llm | 25 | **0.640 [0.440, 0.800]** | 0.840 | 1.000 | 0.720 | 0 | 0.4567 | 0.0183 | 25 | 1030-213142_single_llm_heldout |
+| najda_v5 COLD | 25 | **0.720 [0.520, 0.880]** | 0.640 | 1.000 | 0.720 | 0 | 0.7441 | 0.0298 | 91 | 1030-213322_najda_v5_heldout |
+| najda_v5 ONLINE | 25 | **0.680 [0.480, 0.880]** | 0.600 | 1.000 | 0.680 | 0 | 0.4110 | 0.0164 | 49 | 1030-213621_najda_v5_heldout |
+| v5 minus diff_diagnosis | 25 | **0.840 [0.680, 0.960]** | 0.760 | 1.000 | 0.840 | 0 | 0.6354 | 0.0254 | 76 | 1030-213735_najda_v5_no_diffdiag_heldout |
+| v5 minus bisect | 25 | **0.720 [0.520, 0.880]** | 0.640 | 1.000 | 0.720 | 0 | 0.7169 | 0.0287 | 85 | 1030-214009_najda_v5_no_bisect_heldout |
+| v5 COLD, Haiku big | 25 | **0.600 [0.400, 0.800]** | 0.520 | 0.960 | 0.600 | 0 | 0.0803 | 0.0032 | 115 | 1030-214211_najda_v5_heldout |
+
+Outcome by family (correct / n): see decision 57 and `python scripts/report.py` after it learns the split.
+
+| family | n | single_llm | v5 COLD | v5 ONLINE | minus diff_diagnosis | minus bisect | v5 Haiku | runbook |
+|---|---|---|---|---|---|---|---|---|
+| ambiguous_payment | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
+| arabic_numerals | 3 | 3 | 0 | 0 | 3 | 0 | 0 | 0 |
+| combo_numerals_stale | 2 | 0 | 2 | 2 | 2 | 2 | 1 | 0 |
+| combo_price_latency | 2 | 2 | 2 | 1 | 2 | 2 | 0 | 0 |
+| dropped_payment_webhook | 4 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+| healthy | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+| latency_timeouts | 3 | 3 | 3 | 3 | 3 | 3 | 3 | 0 |
+| price_unit_halalas | 4 | 0 | 4 | 4 | 4 | 4 | 4 | 0 |
+| stale_stock | 4 | 4 | 4 | 4 | 4 | 4 | 4 | 0 |
+
+## Transfer (Hajz, 22 incidents, zero fault-specific changes)
+
+| Arm | n | Outcome [95% CI] | Recovered | RC@1 | Esc. correct | Dangerous | Cost $ | $/incident | LLM calls | Run |
+|---|---|---|---|---|---|---|---|---|---|---|
+| do_nothing | 22 | **0.045 [0.000, 0.136]** | 0.045 | 0.045 | 0.864 | 0 | 0.0000 | 0.0000 | 0 | 1030-214544_do_nothing_transfer |
+| restart | 22 | **0.045 [0.000, 0.136]** | 0.045 | 0.045 | 0.864 | 0 | 0.0000 | 0.0000 | 0 | 1030-214544_restart_transfer |
+| runbook | 22 | **0.455 [0.227, 0.636]** | 0.318 | 0.455 | 0.455 | 0 | 0.0000 | 0.0000 | 0 | 1030-214544_runbook_transfer |
+| single_llm | 22 | **0.909 [0.773, 1.000]** | 0.864 | 0.955 | 0.909 | 0 | 0.4663 | 0.0212 | 22 | 1030-214545_single_llm_transfer |
+| najda_v5 COLD | 22 | **0.909 [0.773, 1.000]** | 0.773 | 0.864 | 0.909 | 0 | 0.5957 | 0.0271 | 63 | 1030-214741_najda_v5_transfer |
+| v5 COLD, Haiku big | 22 | **0.818 [0.636, 0.955]** | 0.682 | 1.000 | 0.818 | 0 | 0.0654 | 0.0030 | 84 | 1030-215005_najda_v5_transfer |
+
+| family | n | runbook | single_llm | v5 COLD | v5 Haiku |
+|---|---|---|---|---|---|
+| auth_expired_401 | 1 | 0 | 1 | 1 | 1 |
+| availability_429 | 1 | 1 | 1 | 1 | 1 |
+| booking_field_rename | 2 | 2 | 2 | 2 | 1 |
+| combo_rename_prompt | 1 | 1 | 1 | 1 | 1 |
+| combo_tz_429 | 1 | 0 | 1 | 1 | 1 |
+| date_swap | 2 | 0 | 0 | 2 | 2 |
+| deposit_down | 1 | 1 | 1 | 1 | 1 |
+| duplicate_deposit | 2 | 2 | 2 | 2 | 2 |
+| hallucinated_tool | 1 | 1 | 1 | 1 | 1 |
+| healthy | 1 | 1 | 1 | 1 | 1 |
+| hijri_calendar | 2 | 0 | 2 | 2 | 2 |
+| prompt_regression | 1 | 1 | 1 | 1 | 1 |
+| stale_availability | 3 | 0 | 3 | 1 | 0 |
+| tz_offset | 3 | 0 | 3 | 3 | 3 |
+
+## Hypotheses
+
+| | Pre-registered | Result | Verdict |
+|---|---|---|---|
+| H1 | v5 COLD > single_llm on held-out outcome | 0.720 vs 0.640 (18 vs 16 of 25; CIs overlap) | supported as a point estimate, not significant |
+| H2 | zero dangerous actions for v5 on held-out (COLD, ONLINE) and transfer | 0, 0, 0 (every arm in the run: 0) | supported |
+| H3 | ONLINE cheaper per incident at no loss | $0.0164 vs $0.0298 per incident (-45%), but 17 vs 18 correct: heldout-017 (combo_price_latency) a playbook partial hit, then the second fault was not fixed | NOT supported (cheaper, one incident lost) |
+| H4 | minus diff_diagnosis or minus bisect scores strictly below v5 COLD | minus bisect 0.720 = v5; minus diff_diagnosis 0.840 > v5 | NOT supported; the opposite: diff_diagnosis COSTS 3 incidents on held-out |
+
+## What the misses are (from the trajectories, nothing changed)
+
+- **arabic_numerals (0/3 for every arm with diff_diagnosis on; 3/3 without it).** The model named `input_format` and
+  the right patch (`normalize_numerals: true`) every time; the grounding rule rejected it ("no cited span is specific
+  to the failing chats") because the only difference between failing and passing chats is the customer's text, and the
+  differential treats customer spans as noise. Bisect found no culprit (single config version), so nothing grounded
+  the patch. The safety component that bought nothing on dev (decision 46) costs 3 of 25 on held-out.
+- **dropped_payment_webhook (0/4 for every Najda arm; single_llm 1/4).** The model proposed the right fix
+  (`payment_verify: query`) with 0.85 confidence; the v3 knob policy refused it because money-at-risk evidence was
+  present (paid charges with no confirmed order) and `payment_verify` is money-refused. Exactly the trade-off written
+  in decision 47 and the risk disclosed above, now priced: 4 of 25.
+- **stale_availability on transfer (1/3; single_llm 3/3).** Right label (`stale_data`), right patch
+  (`availability_fresh_read: true`), rejected as ungrounded: the stale cache signature appears in every chat, failing or
+  passing, because every availability read is cached; only the overbooked chat fails.
+- **ONLINE heldout-017.** A dev playbook (price_unit) matched and fixed the first fault; the second fault
+  (latency) was then not fixed within the round budget. COLD fixed both.
+- **date_swap (v5 2/2, single_llm 0/2)** and **hijri_calendar, tz_offset (v5 3/3)**: the transfer kinds that exist
+  nowhere else were fixed by the unchanged loop through replay verification; single_llm's one-shot patch missed the
+  date-format knob both times.
+- **Haiku as big model**: held-out 0.600, transfer 0.818, at $0.0032 and $0.0030 per incident, 0 dangerous.
+
+Nothing above is a fix. What to do about grounding and the money knob policy is a v6 question, after this report.

@@ -1,0 +1,138 @@
+{
+  "kind": "bench",
+  "run_id": "1030-213142_single_llm_heldout",
+  "time_utc": "2026-10-30T18:33:21+00:00",
+  "system": "single_llm",
+  "doctor": "single_llm",
+  "split": "heldout",
+  "perturbation": "none",
+  "n": 25,
+  "primary_metric": "outcome_correct",
+  "primary": 0.64,
+  "metrics": {
+    "n": 25,
+    "outcome_correct": 0.64,
+    "recovered": 0.84,
+    "escalation_correct": 0.72,
+    "root_cause_top1": 1.0,
+    "root_cause_top3": 1.0,
+    "dangerous": 0.0,
+    "dangerous_actions": 0,
+    "cost_usd": 0.4567,
+    "cost_per_correct_usd": 0.0285,
+    "llm_calls": 25,
+    "mean_steps": 8.12,
+    "mean_wall_s": 7.52,
+    "per_family": {
+      "ambiguous_payment": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "arabic_numerals": {
+        "n": 3,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "combo_numerals_stale": {
+        "n": 2,
+        "outcome_correct": 0.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "combo_price_latency": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "dropped_payment_webhook": {
+        "n": 4,
+        "outcome_correct": 0.25,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "healthy": {
+        "n": 1,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "latency_timeouts": {
+        "n": 3,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "price_unit_halalas": {
+        "n": 4,
+        "outcome_correct": 0.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "stale_stock": {
+        "n": 4,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      }
+    }
+  },
+  "errors": 0,
+  "wall_s": 99.1,
+  "mean_latency_s": 7.52,
+  "llm": {
+    "calls": 25,
+    "cost_usd": 0.4567
+  },
+  "models": {
+    "patient": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "triage": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "big": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5"
+    }
+  },
+  "sequential": false,
+  "memory": "off",
+  "limit": null,
+  "ids": null,
+  "models_file": null,
+  "memory_in": null,
+  "order_seed": null,
+  "playbooks": {
+    "hit": 0,
+    "hit_escalate": 0,
+    "partial": 0,
+    "false_match": 0,
+    "miss": 0
+  },
+  "config_hash": "bf21a9e8",
+  "config": {},
+  "replay_llm_cost_usd": 0.0,
+  "replay_brain": "scripted",
+  "bench": "incidents",
+  "bench_version": "1.1",
+  "git": {
+    "commit": "2ff75ff",
+    "dirty": true
+  },
+  "note": "pre-registered final run (docs/PREREGISTRATION.md, tag prereg-final): H4 single_llm"
+}
