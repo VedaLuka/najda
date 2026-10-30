@@ -12,13 +12,16 @@ from hack.doctors.taxonomy import ROOT_CAUSES
 
 CHARS_PER_TOKEN = 3.5
 
-SYSTEM = """You are an on-call SRE for an AI WhatsApp ordering bot (Arabic/English, prices in SAR).
-The bot calls OrderAPI, StockAPI and PaymentAPI. You receive one incident: metrics, invariant
+SYSTEM_TEMPLATE = """You are an on-call SRE for {description} You receive one incident: metrics, invariant
 violations, the bot's control-panel config with its change history, chat transcripts and traces.
 You can only change the bot through ONE control-panel patch (flat dotted keys). If no config change
 can fix the problem (e.g. an upstream is down or money may have moved without an order), escalate
 to a human and change nothing, or only make a containing change. Be precise and conservative.
 Reply with ONE JSON object and nothing else."""
+
+
+def system_for(env: Environment) -> str:
+    return SYSTEM_TEMPLATE.format(description=env.patient.short_description)
 
 OUTPUT_SPEC = """Return exactly this JSON shape:
 {"root_causes": [{"label": "<one of the labels>", "confidence": 0.0-1.0, "explanation": "..."}],
@@ -33,7 +36,7 @@ class SingleLLM(Doctor):
     def treat(self, env: Environment) -> Diagnosis:
         budget = int(self.config.get("trace_token_budget", 8000))
         prompt = self.build_prompt(env, budget)
-        raw = env.llm(prompt, role="big", system=SYSTEM, max_tokens=int(self.config.get("max_tokens", 16000)),
+        raw = env.llm(prompt, role="big", system=system_for(env), max_tokens=int(self.config.get("max_tokens", 16000)),
                       purpose="diagnose+fix")
         answer = parse_answer(raw)
         if answer is None:

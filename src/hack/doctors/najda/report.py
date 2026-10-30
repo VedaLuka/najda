@@ -11,19 +11,20 @@ def impact(env: Environment) -> dict[str, Any]:
     failed = env.failed_chat_ids()
     metrics = env.read_metrics()
     sar = 0.0
-    orders = 0
-    for s in env.read_traces(kind="tool", name="create_order", limit=None):
+    records = 0
+    for s in env.read_traces(kind="tool", limit=None):
         if s["attributes"]["chat.id"] not in failed or s["status"]["code"] == "ERROR":
             continue
         try:
             result = json.loads(s["attributes"]["tool.result"])
         except (TypeError, ValueError):
             continue
-        if isinstance(result, dict):
-            orders += 1
-            sar += float(result.get("total_sar") or 0.0)
+        amount = env.patient.committed_amount(s["attributes"]["tool.name"], result) if isinstance(result, dict) else None
+        if amount is not None:
+            records += 1
+            sar += amount
     return {"chats_affected": len(failed), "chats_total": metrics.get("chats", 0),
-            "orders_created_unconfirmed": orders, "sar_at_stake": round(sar, 2)}
+            "records_created_unconfirmed": records, "sar_at_stake": round(sar, 2)}
 
 
 def bilingual_summary(status: str, label: str, imp: dict[str, Any]) -> str:
@@ -42,8 +43,8 @@ def build_report(env: Environment, status: str, label: str, summary: str, eviden
     imp = impact(env)
     lines = [bilingual_summary(status, label, imp), "",
              f"Summary: {summary}",
-             f"Impact: {imp['chats_affected']}/{imp['chats_total']} chats failed, {imp['orders_created_unconfirmed']} "
-             f"orders created but not completed, ~{imp['sar_at_stake']} SAR at stake.",
+             f"Impact: {imp['chats_affected']}/{imp['chats_total']} chats failed, {imp['records_created_unconfirmed']} "
+             f"{env.patient.record_noun} created but not completed, ~{imp['sar_at_stake']} SAR at stake.",
              "Evidence:"] + [f"  - {e}" for e in evidence[:8]]
     lines.append("Actions:")
     for t in tried:

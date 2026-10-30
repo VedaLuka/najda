@@ -3,11 +3,9 @@ taxonomy and the control-panel knobs, never a specific benchmark fault family.""
 from __future__ import annotations
 
 from hack.doctors.taxonomy import ROOT_CAUSES
-from hack.patient.config import KNOB_DOCS
+from hack.patients import Patient
 
-SYSTEM = """You are Najda, an on-call SRE agent for an AI WhatsApp ordering bot (Arabic/English, prices in SAR).
-The bot calls OrderAPI, StockAPI and PaymentAPI through a tool loop: parse order -> check stock -> create order
--> charge -> confirm -> reply. You are handed one incident: metrics, invariant violations, the control-panel
+SYSTEM_TEMPLATE = """You are Najda, an on-call SRE agent for {description} You are handed one incident: metrics, invariant violations, the control-panel
 config with its change history, chat transcripts and OpenTelemetry-shaped traces.
 
 Your job is to INVESTIGATE with the tools, then call `propose_hypotheses` with a ranked list of root-cause
@@ -29,8 +27,14 @@ Method:
 Root-cause labels (use exactly one per hypothesis):
 """ + "\n".join(f"- {k}: {v}" for k, v in ROOT_CAUSES.items()) + """
 
-Control-panel knobs (patch keys are flat dotted keys, e.g. {"retry.max_retries": 3}):
-""" + "\n".join(f"- {k}: {v}" for k, v in KNOB_DOCS.items())
+Control-panel knobs (patch keys are flat dotted keys, e.g. {{"retry.max_retries": 3}}):
+{knobs}"""
+
+
+def system_for(patient: Patient) -> str:
+    """The investigator prompt for one patient: generic SRE method + the patient's own description and knob docs."""
+    return SYSTEM_TEMPLATE.format(description=patient.description,
+                                  knobs="\n".join(f"- {k}: {v}" for k, v in patient.knob_docs.items()))
 
 NUDGE = ("Finish the investigation now: call `propose_hypotheses` with your ranked hypotheses "
          "(use an empty patch and escalate_recommended=true if nothing in the config can fix this).")

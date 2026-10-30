@@ -8,18 +8,15 @@ from typing import Any
 from hack.bench.incidents import rerun
 from hack.doctors.base import Doctor, Resolution
 from hack.doctors.environment import Environment
-from hack.patient.brains import Brain, LLMBrain, ScriptedBrain
 from hack.patient.config import ControlPanel
-
-
-def make_brain(replay_brain: str) -> Brain:
-    """'scripted' (deterministic, free) or 'llm' (the real LLM patient; milestone validation only)."""
-    return LLMBrain() if replay_brain == "llm" else ScriptedBrain()
+from hack.patients import DEFAULT_PATIENT, get_patient
 
 
 def make_replay_fn(truth: dict[str, Any], replay_brain: str = "scripted"):
+    """Replay closure over an in-memory truth record. `replay_brain` = 'scripted' (deterministic, free) or
+    'llm' (the patient's real LLM brain; milestone validation only)."""
     def replay_fn(panel: ControlPanel, chats: str | list[str] = "failed") -> dict[str, Any]:
-        run = rerun(truth, panel, chats=chats, brain=make_brain(replay_brain))
+        run = rerun(truth, panel, chats=chats, replay_brain=replay_brain)
         per_chat = run.chat_verdicts()
         n_pass = sum(v["pass"] for v in per_chat.values())
         return {"per_chat": per_chat, "n_pass": n_pass, "n_total": len(per_chat),
@@ -52,8 +49,9 @@ def replay_digest(run, per_chat: dict[str, dict[str, Any]], max_lines: int = 30)
 
 def treat_incident(doctor: Doctor, bundle: Path, truth: dict[str, Any],
                    replay_brain: str = "scripted") -> tuple[Resolution, dict[str, Any]]:
-    """Returns the Resolution and the incident's starting config (for scoring)."""
-    env = Environment(bundle, make_replay_fn(truth, replay_brain))
+    """Returns the Resolution and the incident's starting config (for scoring). The Environment is built for
+    the patient the incident belongs to (plumbing only: the doctor never sees the truth record)."""
+    env = Environment(bundle, make_replay_fn(truth, replay_brain), patient=get_patient(truth.get("patient", DEFAULT_PATIENT)))
     if doctor.needs_truth:
         doctor.give_truth(truth)
     error = None

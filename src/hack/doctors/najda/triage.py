@@ -11,13 +11,16 @@ from hack.doctors.environment import Environment
 
 CLASSES = ("money-at-risk", "config-regression", "upstream-failure", "novel")
 
-SYSTEM = """You are the triage nurse for an on-call SRE agent that fixes an AI ordering bot (OrderAPI, StockAPI,
-PaymentAPI; Arabic/English chats; SAR prices). You get a compact incident digest. Reply with JSON only:
+SYSTEM_TEMPLATE = """You are the triage nurse for an on-call SRE agent that fixes %s. You get a compact incident digest. Reply with JSON only:
 {"class": one of %s,
  "brief": "<= 120 words: what the failing chats do that passing chats do not, which tool/status/field is involved,
            whether a recent config change lines up with the failures, what to inspect first",
  "suspect_knobs": ["<control-panel knob>", ...]}
-Do not invent evidence. Cite span ids from the digest where you can.""" % json.dumps(CLASSES)
+Do not invent evidence. Cite span ids from the digest where you can."""
+
+
+def system_for(env: Environment) -> str:
+    return SYSTEM_TEMPLATE % (env.patient.triage_description, json.dumps(CLASSES))
 
 
 def run_triage(env: Environment, differential_digest: str, money: list[str], history: list[dict[str, Any]],
@@ -34,7 +37,7 @@ def run_triage(env: Environment, differential_digest: str, money: list[str], his
         "## Transcript sample\n" + transcripts,
         "## Trace digest\n" + trace_digest,
     ])
-    text = env.llm(prompt, role="triage", system=SYSTEM, max_tokens=max_tokens, purpose="triage")
+    text = env.llm(prompt, role="triage", system=system_for(env), max_tokens=max_tokens, purpose="triage")
     out = _parse(text)
     env.record("triage", out)
     return out

@@ -76,8 +76,13 @@ def read_spans(path: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
-def metrics_from_spans(spans: list[dict[str, Any]], chat_outcomes: dict[str, str]) -> dict[str, Any]:
-    """Simple incident metrics computed only from traces and the bot's declared chat outcomes."""
+ORDER_COUNTERS = {"orders_created": "create_order", "orders_paid": "charge", "orders_confirmed": "confirm_order"}
+
+
+def metrics_from_spans(spans: list[dict[str, Any]], chat_outcomes: dict[str, str],
+                       counters: dict[str, str] | None = None) -> dict[str, Any]:
+    """Simple incident metrics computed only from traces and the bot's declared chat outcomes.
+    `counters` maps a metric name to the tool whose successful calls it counts (default: the order bot's)."""
     chats = sorted({s["chat_id"] for s in spans})
     tool_spans = [s for s in spans if s["kind"] == "tool"]
     per_chat: dict[str, dict[str, Any]] = {}
@@ -100,9 +105,8 @@ def metrics_from_spans(spans: list[dict[str, Any]], chat_outcomes: dict[str, str
         "error_rate": round(sum(1 for s in tool_spans if s["error"]) / n_tools, 3) if n_tools else 0.0,
         "mean_tool_latency_ms": round(sum(latencies) / n_tools, 1) if n_tools else 0.0,
         "p95_tool_latency_ms": latencies[int(0.95 * (n_tools - 1))] if n_tools else 0.0,
-        "orders_created": sum(1 for s in tool_spans if s["name"] == "create_order" and not s["error"]),
-        "orders_paid": sum(1 for s in tool_spans if s["name"] == "charge" and not s["error"]),
-        "orders_confirmed": sum(1 for s in tool_spans if s["name"] == "confirm_order" and not s["error"]),
+        **{metric: sum(1 for s in tool_spans if s["name"] == tool and not s["error"])
+           for metric, tool in (counters or ORDER_COUNTERS).items()},
         "chats_confirmed": sum(1 for o in chat_outcomes.values() if o == "confirmed"),
         "chats_failed": sum(1 for o in chat_outcomes.values() if o == "failed"),
         "mean_turns": round(sum(p["turns"] for p in per_chat.values()) / len(chats), 2) if chats else 0.0,

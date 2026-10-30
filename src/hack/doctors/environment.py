@@ -16,11 +16,11 @@ from typing import Any, Callable
 
 from hack.bench.incidents import load_bundle
 from hack.llm import ToolLLMResult, call_llm_ex, call_llm_tools_ex
-from hack.patient.config import KNOB_DOCS, ControlPanel, diff_configs, validate_patch
+from hack.patient.config import ControlPanel, diff_configs
 from hack.patient.otel import to_otel
+from hack.patients import Patient, get_patient
 
 ReplayFn = Callable[..., dict[str, Any]]  # (panel, chats="failed" | "all" | [chat ids]) -> result
-RISKY_KEYS = ("prompt_version", "payment_verify", "auth.key_slot")
 
 
 class EscalatedError(RuntimeError):
@@ -28,12 +28,12 @@ class EscalatedError(RuntimeError):
 
 
 class ApprovalGate:
-    def __init__(self, auto_approve: bool = True) -> None:
+    def __init__(self, auto_approve: bool = True, patient: Patient | None = None) -> None:
         self.auto_approve = auto_approve
+        self.patient = patient or get_patient()
 
-    @staticmethod
-    def is_risky(changed_keys: list[str]) -> bool:
-        return any(k in RISKY_KEYS or "payment" in k for k in changed_keys)
+    def is_risky(self, changed_keys: list[str]) -> bool:
+        return any(self.patient.is_approval_gated(k) for k in changed_keys)
 
     def request(self, action: str, changed_keys: list[str]) -> dict[str, Any]:
         if not self.is_risky(changed_keys):
@@ -43,12 +43,14 @@ class ApprovalGate:
 
 
 class Environment:
-    def __init__(self, bundle_dir: Path, replay_fn: ReplayFn, gate: ApprovalGate | None = None) -> None:
+    def __init__(self, bundle_dir: Path, replay_fn: ReplayFn, gate: ApprovalGate | None = None,
+                 patient: Patient | str | None = None) -> None:
         self._bundle = load_bundle(Path(bundle_dir))
         self._replay_fn = replay_fn
-        self.gate = gate or ApprovalGate()
+        self.patient = patient if isinstance(patient, Patient) else get_patient(patient)
+        self.gate = gate or ApprovalGate(patient=self.patient)
         self.incident_id = self._bundle["incident_id"]
-        self.panel = ControlPanel.from_snapshot(self._bundle["config"])
+        self.panel = ControlPanel.from_snapshot(self._bundle["config"], self.patient.config_cls)
         self.initial_config = self.panel.current.to_dict()
         self._otel = [to_otel(s) for s in self._bundle["traces"]]
         self.steps: list[dict[str, Any]] = []
@@ -118,13 +120,21 @@ class Environment:
         return [c["chat_id"] for c in self._bundle["chats"] if c["chat_id"] not in failed]
 
     @staticmethod
-    def describe_knobs() -> dict[str, str]:
-        return dict(KNOB_DOCS)
+    def diff_configs(before: dict[str, Any], after: dict[str, Any]) -> dict[str, tuple[Any, Any]]:
+        """{dotted_key: (old, new)} for every knob that differs between two config dicts."""
+        return diff_configs(before, after)
+
+    def describe_knobs(self) -> dict[str, str]:
+        return dict(self.patient.knob_docs)
+
+    def validate_patch(self, patch: dict[str, Any]) -> str | None:
+        """None if the patch applies to the current config, else the reason it does not."""
+        return self.patient.validate_patch(self.panel.current, patch)
 
     # ------------------------------ act -------------------------------------
     def apply_patch(self, patch: dict[str, Any], reason: str = "") -> dict[str, Any]:
         self._check_open()
-        problem = validate_patch(self.panel.current, patch)
+        problem = self.validate_patch(patch)
         if problem:
             return self._log("apply_patch", {"patch": patch, "reason": reason}, {"ok": False, "error": problem})
         approval = self.gate.request("apply_patch", list(patch))
@@ -164,7 +174,7 @@ class Environment:
         target = next((v for v in self.panel.history if v.version == version), None)
         if target is None:
             raise ValueError(f"no config version {version}")
-        panel = ControlPanel.from_snapshot({"history": [asdict(target)]})
+        panel = ControlPanel.from_snapshot({"history": [asdict(target)]}, self.panel.config_cls)
         result = self._replay_fn(panel, chats)
         summary = {"n_pass": result["n_pass"], "n_total": result["n_total"], "all_pass": result["all_pass"]}
         self._log("bisect_replay", {"config_version": version, "chats": chats}, summary)

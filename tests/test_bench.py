@@ -247,3 +247,41 @@ def test_single_llm_prompt_respects_trace_budget():
     small, large = SingleLLM.build_prompt(env, 300), SingleLLM.build_prompt(env, 20000)
     assert len(small) < len(large) and "omitted (budget)" in small
     assert parse_answer("```json\n{\"patch\": {}}\n```") == {"patch": {}} and parse_answer("nope") is None
+
+
+# ------------------------------- patient registry (step 6) -------------------
+
+def test_order_patient_prompts_are_byte_identical_to_step5():
+    """The registry must not change a single byte of what the order-bot doctors send: the LLM cache stays
+    valid and every logged result stays reproducible. Hashes recorded before the refactor (step 6)."""
+    import hashlib
+
+    from hack.doctors.najda import prompts, tools, triage
+    from hack.doctors import single_llm
+    from hack.patients import get_patient
+
+    b = bundle_of("schema_drift")
+    env = Environment(b, make_replay_fn(read_truth(b)))
+    sha = lambda text: hashlib.sha256(text.encode()).hexdigest()  # noqa: E731
+    assert sha(prompts.system_for(get_patient())) == "2f6ecb7e5982d215f6f4e11c85e918936627248299cc138728991665fa0b7159"
+    assert sha(single_llm.system_for(env)) == "98c01078b23689c91cafcf3c6de2b362aa35fe60874f3ba2228fd7f3f3b7fd93"
+    assert sha(triage.system_for(env)) == "a3805dfa15889a50536c730bb91a43caf3c24eddf3c8b2267cb6886012f4ffec"
+    assert sha(json.dumps(tools.TOOLS, sort_keys=True)) == "99942a8897533a4463422ac53a15f81bffa27df9ca1857cc5156424b489ec0ee"
+
+
+def test_doctors_import_no_concrete_patient():
+    """Doctors see a patient only through Environment.patient (plumbing), never by importing one."""
+    import re
+
+    shared_infra = {"from hack.patient.config import ControlPanel, diff_configs", "from hack.patient.otel import to_otel"}
+    for path in (ROOT / "src" / "hack" / "doctors").rglob("*.py"):
+        text = path.read_text()
+        hits = set(re.findall(r"from hack\.(?:patient|hajz|faults)(?:\.\w+)* import [^\n]+", text))
+        assert hits <= (shared_infra if path.name == "environment.py" else set()), (path, hits)
+
+
+def test_environment_patient_half_holds_no_faults():
+    from hack.patients import get_patient
+
+    visible = json.dumps(vars(get_patient()), default=str)
+    assert "correct_fix" not in visible and "schema_drift" not in visible and "faults" not in visible

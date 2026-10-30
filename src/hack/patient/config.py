@@ -80,13 +80,17 @@ class ConfigVersion:
 
 
 class ControlPanel:
-    def __init__(self, config: BotConfig | None = None, time: float = 0.0) -> None:
-        cfg = config or BotConfig()
+    """Versioned config of any patient. `config_cls` is the patient's config dataclass (to_dict / from_dict /
+    patched); the order bot's BotConfig is the default so existing snapshots load unchanged."""
+
+    def __init__(self, config: Any | None = None, time: float = 0.0, config_cls: type | None = None) -> None:
+        self.config_cls = config_cls or (type(config) if config is not None else BotConfig)
+        cfg = config if config is not None else self.config_cls()
         self.history: list[ConfigVersion] = [ConfigVersion(1, {}, "initial", "system", time, cfg.to_dict())]
 
     @property
-    def current(self) -> BotConfig:
-        return BotConfig.from_dict(self.history[-1].config)
+    def current(self) -> Any:
+        return self.config_cls.from_dict(self.history[-1].config)
 
     @property
     def version(self) -> int:
@@ -108,8 +112,9 @@ class ControlPanel:
                 "history": [asdict(v) for v in self.history]}
 
     @classmethod
-    def from_snapshot(cls, snap: dict[str, Any]) -> "ControlPanel":
+    def from_snapshot(cls, snap: dict[str, Any], config_cls: type | None = None) -> "ControlPanel":
         panel = cls.__new__(cls)
+        panel.config_cls = config_cls or BotConfig
         panel.history = [ConfigVersion(**v) for v in snap["history"]]
         return panel
 
@@ -149,7 +154,7 @@ def diff_configs(before: dict[str, Any], after: dict[str, Any]) -> dict[str, tup
     return {k: (a.get(k), b.get(k)) for k in sorted(a.keys() | b.keys()) if a.get(k) != b.get(k)}
 
 
-def validate_patch(config: BotConfig, patch: dict[str, Any]) -> str | None:
+def validate_patch(config: Any, patch: dict[str, Any]) -> str | None:
     """None if the patch is applicable, else a reason. New field_mappings keys are allowed."""
     known = flatten(config.to_dict())
     for key in patch:

@@ -5,23 +5,19 @@ import json
 from dataclasses import dataclass
 from typing import Any
 
-from hack.doctors.environment import RISKY_KEYS, Environment
+from hack.doctors.environment import Environment
 
-PAYMENT_TOOLS = {"charge", "get_payment", "webhook_status"}
-MONEY_MOVED_INVARIANTS = {"payment_has_confirmed_order"}  # a payment exists with no confirmed order
-
-# v3 knob policy. APPROVAL_GATED: risky, pass the approval gate (prompt rollback, payments, credentials).
-# MONEY_REFUSED: refused outright while money is at risk (payments and credentials only, never the prompt).
-APPROVAL_GATED = tuple(RISKY_KEYS)
-MONEY_REFUSED = ("payment_verify", "auth.key_slot")
+# v3 knob policy, declared by the patient. Approval-gated: risky, pass the approval gate (prompt rollback,
+# payments, credentials). Money-refused: refused outright while money is at risk (payments and credentials
+# only, never the prompt).
 
 
-def is_approval_gated(key: str) -> bool:
-    return key in APPROVAL_GATED or "payment" in key
+def is_approval_gated(env: Environment, key: str) -> bool:
+    return env.patient.is_approval_gated(key)
 
 
-def is_money_refused(key: str) -> bool:
-    return key in MONEY_REFUSED or "payment" in key or key.startswith("auth.")
+def is_money_refused(env: Environment, key: str) -> bool:
+    return env.patient.is_money_refused(key)
 
 
 @dataclass
@@ -35,33 +31,35 @@ class Verdict:
         return {"allowed": self.allowed, "rule": self.rule, "reason": self.reason, "evidence": self.evidence}
 
 
-def is_protected(key: str) -> bool:
-    return key in RISKY_KEYS or "payment" in key
+def is_protected(env: Environment, key: str) -> bool:
+    return env.patient.is_approval_gated(key)
 
 
 def money_at_risk(env: Environment) -> list[str]:
     """Evidence that money may have moved or may move unverifiably: payment upstream failing with 5xx or
-    timeouts, or an invariant showing a payment without a confirmed order / an amount mismatch."""
+    timeouts, or an invariant showing a payment without its confirmed record / an amount mismatch."""
+    p = env.patient
     evidence = []
     for s in env.read_traces(kind="tool", errors_only=True, limit=None):
         a = s["attributes"]
         code = a.get("http.response.status_code")
-        if a["tool.name"] in PAYMENT_TOOLS and (code is None or code >= 500):
+        if a["tool.name"] in p.payment_tools and (code is None or code >= 500):
             evidence.append(f"{s['span_id']}: {a['tool.name']} {code or 'timeout'} {s['status']['message'] or ''}".strip())
     for v in env.read_invariants():
-        if v["invariant"] in MONEY_MOVED_INVARIANTS or "paid" in v["detail"]:
+        if v["invariant"] in p.money_invariants or p.money_detail_marker in v["detail"]:
             evidence.append(f"invariant {v['invariant']} ({v['chat_id']}): {v['detail']}")
     return evidence
 
 
 def money_at_risk_ledger(env: Environment) -> list[str]:
     """v3: structured facts only, no message matching.
-    (a) invariant TYPE payment_has_confirmed_order (money moved, no confirmed order);
-    (b) ledger mismatch: a successful charge whose amount differs from the order's total;
+    (a) an invariant TYPE the patient declares as money-moved (a payment with no confirmed record);
+    (b) ledger mismatch: a successful charge whose amount differs from the expected amount of its record;
     (c) payment upstream failing: payment tool span with HTTP 5xx, or an error with no status code (timeout)."""
+    p = env.patient
     evidence: list[str] = []
     for v in env.read_invariants():
-        if v["invariant"] in MONEY_MOVED_INVARIANTS:
+        if v["invariant"] in p.money_invariants:
             evidence.append(f"invariant {v['invariant']} ({v['chat_id']})")
     totals: dict[str, float] = {}
     charges: list[tuple[str, str, float]] = []
@@ -70,17 +68,33 @@ def money_at_risk_ledger(env: Environment) -> list[str]:
         code = a.get("http.response.status_code")
         name = a["tool.name"]
         if s["status"]["code"] == "ERROR":
-            if name in PAYMENT_TOOLS and (code is None or code >= 500):
+            if name in p.payment_tools and (code is None or code >= 500):
                 evidence.append(f"{s['span_id']}: {name} {'timeout' if code is None else code}")
             continue
-        result = _json_dict(a.get("tool.result"))
-        if name in ("create_order", "get_order") and "order_id" in result and "total_sar" in result:
-            totals[str(result["order_id"])] = float(result["total_sar"])
-        if name == "charge" and result.get("status") == "paid" and "amount_sar" in result:
-            charges.append((s["span_id"], str(result.get("order_id")), float(result["amount_sar"])))
-    for span_id, order_id, amount in charges:
-        if order_id in totals and abs(totals[order_id] - amount) > 0.005:
-            evidence.append(f"{span_id}: charge {amount} SAR != order {order_id} total {totals[order_id]} SAR")
+        entry = p.ledger_entry(name, _json_dict(a.get("tool.result")))
+        if entry is None:
+            continue
+        kind, ref, amount = entry
+        if kind == "expected":
+            totals[ref] = amount
+        elif kind == "charged":
+            charges.append((s["span_id"], ref, amount))
+    for span_id, ref, amount in charges:
+        if ref in totals and abs(totals[ref] - amount) > 0.005:
+            evidence.append(f"{span_id}: charge {amount} SAR != {ref} expected {totals[ref]} SAR")
+    return evidence
+
+
+def payment_upstream_failing(env: Environment) -> list[str]:
+    """Subset of (c) above: the payment upstream itself is failing (5xx or timeout on a payment tool).
+    Used by the change-freeze rule: while payments are failing, no config change is kept."""
+    p = env.patient
+    evidence: list[str] = []
+    for s in env.read_traces(kind="tool", errors_only=True, limit=None):
+        a = s["attributes"]
+        code = a.get("http.response.status_code")
+        if a["tool.name"] in p.payment_tools and (code is None or code >= 500):
+            evidence.append(f"{s['span_id']}: {a['tool.name']} {'timeout' if code is None else code}")
     return evidence
 
 
@@ -96,12 +110,12 @@ def check_patch_v3(env: Environment, patch: dict[str, Any], max_knobs: int, mone
     keys = list(patch)
     if len(keys) > max_knobs:
         return Verdict(False, "blast_radius", f"patch touches {len(keys)} knobs, max {max_knobs}", keys)
-    refused = [k for k in keys if is_money_refused(k)]
+    refused = [k for k in keys if is_money_refused(env, k)]
     if refused and money_evidence:
         return Verdict(False, "protected_knob_money_at_risk",
                        f"{refused} touch payments/credentials while money is at risk; escalate instead",
                        money_evidence[:5])
-    gated = [k for k in keys if is_approval_gated(k)]
+    gated = [k for k in keys if is_approval_gated(env, k)]
     if gated:
         return Verdict(True, "approval_gated", f"{gated} need approval (approval gate)", gated)
     return Verdict(True, "ok", "unprotected knobs within blast radius", keys)
@@ -111,7 +125,7 @@ def check_patch(env: Environment, patch: dict[str, Any], max_knobs: int, money_e
     keys = list(patch)
     if len(keys) > max_knobs:
         return Verdict(False, "blast_radius", f"patch touches {len(keys)} knobs, max {max_knobs}", keys)
-    protected = [k for k in keys if is_protected(k)]
+    protected = [k for k in keys if is_protected(env, k)]
     if protected and money_evidence:
         return Verdict(False, "protected_knob_money_at_risk",
                        f"{protected} are protected and money is at risk; escalate instead", money_evidence[:5])

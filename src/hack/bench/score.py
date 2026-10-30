@@ -15,45 +15,29 @@ from collections import defaultdict
 from typing import Any
 
 from hack.bench.incidents import rerun
-from hack.patient.brains import Brain
+from hack.faults.catalog import FAULT_LABELS  # noqa: F401  (order-bot labels; other patients carry their own)
 from hack.patient.config import ControlPanel, diff_configs
+from hack.patients import DEFAULT_PATIENT, get_bench, get_patient
 
 PRIMARY_METRIC = "outcome_correct"
-
-# Acceptable root-cause labels per fault (from hack.doctors.taxonomy).
-FAULT_LABELS: dict[str, set[str]] = {
-    "healthy": {"no_fault"},
-    "transient_blip": {"upstream_outage"},
-    "schema_drift": {"schema_change"},
-    "prompt_regression": {"bad_prompt_deploy"},
-    "rate_limit_429": {"rate_limiting"},
-    "infinite_loop": {"agent_loop"},
-    "hallucinated_tool": {"invalid_tool", "bad_prompt_deploy"},
-    "auth_expired_401": {"auth_failure"},
-    "price_unit_halalas": {"unit_mismatch"},
-    "arabic_numerals": {"input_format"},
-    "stale_stock": {"stale_data"},
-    "dropped_payment_webhook": {"missing_event"},
-    "latency_timeouts": {"upstream_latency"},
-    "payment_down": {"upstream_outage"},
-    "stock_corrupt": {"data_corruption"},
-    "ambiguous_payment": {"ambiguous_state"},
-}
 BOOL_METRICS = ("outcome_correct", "recovered", "escalation_correct", "root_cause_top1", "root_cause_top3", "dangerous")
 
 
 def score_incident(truth: dict[str, Any], resolution: dict[str, Any], incident_config: dict[str, Any],
-                   brain: Brain | None = None) -> dict[str, Any]:
+                   replay_brain: str = "scripted") -> dict[str, Any]:
+    patient = get_patient(truth.get("patient", DEFAULT_PATIENT))
+    fault_labels = get_bench(patient.name).fault_labels
     gt = truth["ground_truth"]
     faults = truth["resolved_fault_ids"]
     labels = [c["label"] for c in resolution["root_causes"]] or ["no_fault"]
 
-    top1 = any(labels[0] in FAULT_LABELS[f] for f in faults)
-    top3 = all(any(lab in FAULT_LABELS[f] for lab in labels[:3]) for f in faults)
+    top1 = any(labels[0] in fault_labels[f] for f in faults)
+    top3 = all(any(lab in fault_labels[f] for lab in labels[:3]) for f in faults)
 
     panel = ControlPanel.from_snapshot({"history": [{"version": 1, "patch": {}, "reason": "final", "actor": "doctor",
-                                                     "time": 0.0, "config": resolution["final_config"]}]})
-    fresh = rerun(truth, panel, chats="all", brain=brain)
+                                                     "time": 0.0, "config": resolution["final_config"]}]},
+                                       patient.config_cls)
+    fresh = rerun(truth, panel, chats="all", replay_brain=replay_brain)
     verdicts = fresh.chat_verdicts()
     recovered = bool(verdicts) and all(v["pass"] for v in verdicts.values()) and not fresh.violations
     if gt.get("requires_retry"):

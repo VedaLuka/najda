@@ -23,7 +23,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from hack.bench.harness import make_brain, treat_incident  # noqa: E402
+from hack.bench.harness import treat_incident  # noqa: E402
 from hack.bench.incidents import BENCH_VERSION_FILE  # noqa: E402
 from hack.bench.score import PRIMARY_METRIC, aggregate, score_incident  # noqa: E402
 from hack.bench.seal import truth_sealed  # noqa: E402
@@ -99,7 +99,7 @@ def run_bench(doctor_name: str, split: str, bench_dir: Path, limit: int | None =
         res = resolution.to_dict()
         rows.append({"incident_id": bundle.name, "family": truth["family"], "noisy": truth["noisy"], "position": position,
                      "conditions": truth.get("conditions", {}), "modifiers": truth.get("modifiers", []),
-                     "scores": score_incident(truth, res, incident_config, make_brain(replay_brain)),
+                     "scores": score_incident(truth, res, incident_config, replay_brain),
                      "memory": memory_events(res), "resolution": res})
     return rows
 

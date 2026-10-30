@@ -21,7 +21,6 @@ from hack.doctors.najda.tools import run_read_tool, tool_names
 from hack.doctors.single_llm import _span_line
 from hack.doctors.taxonomy import ROOT_CAUSES
 from hack.llm import ToolLLMResult
-from hack.patient.config import validate_patch
 
 DEFAULTS: dict[str, Any] = {
     "diff_diagnosis": False, "guardrails": False, "canary": False, "bisect": False,
@@ -221,8 +220,8 @@ class _Run:
     def call(self) -> ToolLLMResult:
         self.n_calls += 1
         if self.llm_fn is not None:
-            return self.llm_fn(self.messages, self.tools, prompts.SYSTEM)
-        return self.env.llm_tools(self.messages, self.tools, system=prompts.SYSTEM, effort=str(self.cfg["effort"]),
+            return self.llm_fn(self.messages, self.tools, prompts.system_for(self.env.patient))
+        return self.env.llm_tools(self.messages, self.tools, system=prompts.system_for(self.env.patient), effort=str(self.cfg["effort"]),
                                  max_tokens=int(self.cfg["max_tokens_per_call"]), purpose="investigate")
 
     def dispatch(self, name: str, args: dict[str, Any]) -> str:
@@ -296,7 +295,7 @@ class _Run:
                 conf = 0.5
             h = Hypothesis(label if label in ROOT_CAUSES else "unknown", conf, evidence, str(raw.get("rationale", ""))[:300], patch)
             if patch:
-                problem = validate_patch(self.env.panel.current, patch)
+                problem = self.env.validate_patch(patch)
                 if problem:
                     h.status, h.note = "invalid", problem
                 elif self.diff is not None and not (self.diff.is_grounded(evidence) or self.bisect_grounds(patch)):

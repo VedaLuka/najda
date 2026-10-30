@@ -17,10 +17,11 @@ class OracleDoctor(Doctor):
         self.truth = truth
 
     def treat(self, env: Environment) -> Diagnosis:
-        from hack.bench.score import FAULT_LABELS
+        from hack.patients import get_bench  # the oracle is bench sanity: it may see the catalog
 
         gt = self.truth["ground_truth"]
-        causes = [RootCause(sorted(FAULT_LABELS[f])[0], 1.0, gt["root_cause"]) for f in self.truth["resolved_fault_ids"]]
+        labels = get_bench(env.patient.name).fault_labels
+        causes = [RootCause(sorted(labels[f])[0], 1.0, gt["root_cause"]) for f in self.truth["resolved_fault_ids"]]
         if gt["correct_fix"]:
             env.apply_patch(gt["correct_fix"], "oracle fix")
         if gt.get("requires_retry"):
@@ -51,15 +52,6 @@ class Restart(Doctor):
 # B1: a runbook a good on-call engineer would write after seeing the DEV incidents only.
 # ---------------------------------------------------------------------------
 
-API_CONTRACT: dict[str, set[str]] = {  # documented response keys per tool (from the API docs)
-    "check_stock": {"sku", "qty_available", "price", "cached"},
-    "create_order": {"order_id", "status", "total_sar"},
-    "get_order": {"order_id", "status", "total_sar"},
-    "confirm_order": {"order_id", "status"},
-    "charge": {"payment_id", "order_id", "status", "amount_sar"},
-    "get_payment": {"payment_id", "order_id", "status", "amount_sar"},
-    "webhook_status": {"order_id", "status"},
-}
 HEALTHY_MAX_TURNS = 10
 
 
@@ -100,7 +92,7 @@ class Runbook(Doctor):
         if metrics["loop_chats"] > 0 or config["current"]["max_turns"] > HEALTHY_MAX_TURNS:
             causes.append(RootCause("agent_loop", 0.6, f"{metrics['loop_chats']} chats hit the turn cap"))
             plan.append(("patch", {"max_turns": HEALTHY_MAX_TURNS}, "restore the turn guard"))
-        mapping = self._field_mapping_fix(tools, config["current"]["field_mappings"])
+        mapping = self._field_mapping_fix(tools, config["current"]["field_mappings"], env.patient.api_contract)
         if mapping:
             causes.append(RootCause("schema_change", 0.8, f"response field renamed: {mapping}"))
             plan.append(("patch", mapping, "map renamed response fields"))
@@ -139,17 +131,19 @@ class Runbook(Doctor):
         return changes[-1] if changes else None
 
     @staticmethod
-    def _field_mapping_fix(tools: list[dict[str, Any]], mappings: dict[str, str]) -> dict[str, str]:
+    def _field_mapping_fix(tools: list[dict[str, Any]], mappings: dict[str, str],
+                           contract: dict[str, set[str]]) -> dict[str, str]:
+        """One documented key missing and one undocumented key present = a renamed response field."""
         patch: dict[str, str] = {}
         for s in tools:
             if s["status"]["code"] == "ERROR":
                 continue
             name = s["attributes"]["tool.name"]
             result = json.loads(s["attributes"]["tool.result"])
-            if name not in API_CONTRACT or not isinstance(result, dict):
+            if name not in contract or not isinstance(result, dict):
                 continue
-            missing = API_CONTRACT[name] - set(result)
-            extra = set(result) - API_CONTRACT[name] - {"as_of"}
+            missing = contract[name] - set(result)
+            extra = set(result) - contract[name] - {"as_of"}
             if len(missing) == 1 and len(extra) == 1:
                 physical, new_key = missing.pop(), extra.pop()
                 for logical, mapped in mappings.items():

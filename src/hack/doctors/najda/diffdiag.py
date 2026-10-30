@@ -138,8 +138,7 @@ def bisect_config(env: Environment) -> dict[str, Any]:
             hi = mid
     culprit = next(v for v in history if v.version == versions[hi])
     prev = next(v for v in history if v.version == versions[lo])
-    from hack.patient.config import diff_configs
-    changed = {k: {"old": o, "new": n} for k, (o, n) in diff_configs(prev.config, culprit.config).items()}
+    changed = {k: {"old": o, "new": n} for k, (o, n) in env.diff_configs(prev.config, culprit.config).items()}
     return {"applicable": True, "culprit_version": culprit.version, "last_good_version": prev.version,
             "changed": changed, "actor": culprit.actor, "reason": culprit.reason, "tested": tested,
             "verdict": f"tested versions {','.join(str(t['version']) for t in tested)} -> v{culprit.version} "

@@ -7,16 +7,11 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-from hack.bench.chats import CHAT_SCRIPTS, SCRIPTS_BY_ID
+from hack.bench.chats import CHAT_SCRIPTS
 from hack.bench.truth import write_truth
-from hack.faults.catalog import COMBOS, apply_faults, merged_truth
-from hack.patient.bot import ChatResult, OrderBot
-from hack.patient.brains import Brain, ScriptedBrain
 from hack.patient.clock import REPLAY_OFFSET_S
 from hack.patient.config import ControlPanel
-from hack.patient.invariants import Violation, check_invariants, order_completed
-from hack.patient.tracing import metrics_from_spans
-from hack.patient.world import World
+from hack.patients import DEFAULT_PATIENT, PatientBench, get_bench, get_patient
 
 
 @dataclass
@@ -29,6 +24,7 @@ class IncidentSpec:
     chat_ids: list[str] = field(default_factory=list)
     modifiers: list[str] = field(default_factory=list)      # decoys: change what the doctor sees, not the fault
     conditions: dict[str, Any] = field(default_factory=dict)  # noise / drop_spans / weak_signal / language
+    patient: str = DEFAULT_PATIENT                            # which registered patient this incident is about
 
     @property
     def family(self) -> str:
@@ -38,11 +34,12 @@ class IncidentSpec:
 @dataclass
 class IncidentRun:
     spec: IncidentSpec
-    world: World
-    results: list[ChatResult]
-    violations: list[Violation]
+    world: Any
+    results: list[Any]
+    violations: list[Any]
 
     def chat_verdicts(self) -> dict[str, dict[str, Any]]:
+        patient = get_bench(self.spec.patient)
         bad_chats = {v.chat_id for v in self.violations}
         progress: dict[str, set[str]] = {}
         for s in self.world.tracer.spans:  # distinct tool steps that succeeded: how far the chat got
@@ -51,16 +48,17 @@ class IncidentRun:
         out = {}
         for r in self.results:
             inv_ok = r.chat_id not in bad_chats
-            done = order_completed(self.world, r)
+            done = patient.completed(self.world, r)
             out[r.chat_id] = {"pass": inv_ok and done, "invariants_ok": inv_ok, "order_completed": done,
                               "outcome": r.outcome, "turns": r.turns, "progress": len(progress.get(r.chat_id, ()))}
         return out
 
 
-def resolve_faults(fault_ids: list[str]) -> list[str]:
+def resolve_faults(fault_ids: list[str], patient: str = DEFAULT_PATIENT) -> list[str]:
+    combos = get_bench(patient).combos
     out: list[str] = []
     for f in fault_ids:
-        out += list(COMBOS.get(f, (f,)))
+        out += list(combos.get(f, (f,)))
     return out
 
 
@@ -70,49 +68,55 @@ def pick_chats(seed: int, n_min: int = 5, n_max: int = 10, language: str | None 
     return sorted(rng.sample(pool, min(len(pool), rng.randint(n_min, n_max))))
 
 
-def run_incident(spec: IncidentSpec, brain: Brain | None = None, chat_ids: list[str] | None = None,
+def run_incident(spec: IncidentSpec, brain: Any | None = None, chat_ids: list[str] | None = None,
                  extra_patch: dict[str, Any] | None = None, panel: ControlPanel | None = None,
                  later: bool = False) -> IncidentRun:
-    """Run an incident. `panel` replaces the post-fault control panel (used to rerun under a doctor's
-    config). `later=True` is a replay: it happens after the incident, so transient faults have cleared."""
-    world = World.build(spec.seed, spec.incident_id, clock_offset_s=REPLAY_OFFSET_S if later else 0.0)
-    apply_faults(world, resolve_faults(spec.fault_ids), spec.noisy, spec.modifiers, spec.conditions.get("noise"))
+    """Run an incident of whichever patient the spec names. `panel` replaces the post-fault control panel
+    (used to rerun under a doctor's config). `later=True` is a replay: it happens after the incident, so
+    transient faults have cleared."""
+    p: PatientBench = get_bench(spec.patient)
+    world = p.build_world(spec.seed, spec.incident_id, REPLAY_OFFSET_S if later else 0.0)
+    p.apply_faults(world, resolve_faults(spec.fault_ids, spec.patient), spec.noisy, spec.modifiers,
+                   spec.conditions.get("noise"))
     if panel is not None:
-        world.panel = ControlPanel.from_snapshot(panel.snapshot())
+        world.panel = ControlPanel.from_snapshot(panel.snapshot(), get_patient(spec.patient).config_cls)
     if extra_patch:
         world.panel.apply(extra_patch, "candidate fix", "najda", world.clock.now())
-    bot = OrderBot(world, brain or ScriptedBrain())
-    results = [bot.run_chat(SCRIPTS_BY_ID[c]) for c in (chat_ids or spec.chat_ids)]
-    return IncidentRun(spec, world, results, check_invariants(world, results))
+    bot = p.make_bot(world, brain or p.make_brain("scripted"))
+    results = [bot.run_chat(p.scripts[c]) for c in (chat_ids or spec.chat_ids)]
+    return IncidentRun(spec, world, results, p.check_invariants(world, results))
 
 
 def spec_from_truth(truth: dict[str, Any]) -> IncidentSpec:
     return IncidentSpec(truth["incident_id"], truth["split"], truth["seed"], truth["fault_ids"],
-                        truth["noisy"], truth["chat_ids"], truth.get("modifiers", []), truth.get("conditions", {}))
+                        truth["noisy"], truth["chat_ids"], truth.get("modifiers", []), truth.get("conditions", {}),
+                        truth.get("patient", DEFAULT_PATIENT))
 
 
 def rerun(truth: dict[str, Any], panel: ControlPanel, chats: str | list[str] = "failed",
-          brain: Brain | None = None) -> IncidentRun:
+          brain: Any | None = None, replay_brain: str = "scripted") -> IncidentRun:
     """Rebuild the broken world from an in-memory truth record and rerun chats under `panel`, later in time.
     chats="failed" reruns the chats that failed in the incident (all chats if none failed); "all" reruns
-    every chat; a list reruns exactly those chat ids."""
+    every chat; a list reruns exactly those chat ids. The brain is the patient's own ('scripted' or 'llm')."""
     if isinstance(chats, list):
         chat_ids = [c for c in chats if c in truth["chat_ids"]]
     else:
         chat_ids = truth["failed_chats"] if chats == "failed" else truth["chat_ids"]
-    return run_incident(spec_from_truth(truth), brain=brain, chat_ids=chat_ids or truth["chat_ids"],
-                        panel=panel, later=True)
+    spec = spec_from_truth(truth)
+    brain = brain if brain is not None else get_bench(spec.patient).make_brain(replay_brain)
+    return run_incident(spec, brain=brain, chat_ids=chat_ids or truth["chat_ids"], panel=panel, later=True)
 
 
 def save_bundle(run: IncidentRun, root: Path) -> Path:
     """Write the bundle Najda sees, and the ground truth it never sees (separate directory)."""
     spec, world = run.spec, run.world
+    p = get_bench(spec.patient)
     bundle = root / spec.split / spec.incident_id
     bundle.mkdir(parents=True, exist_ok=True)
     world.tracer.write(bundle / "traces.jsonl")
     spans = [json.loads(l) for l in (bundle / "traces.jsonl").read_text(encoding="utf-8").splitlines()]
     outcomes = {r.chat_id: r.outcome for r in run.results}
-    metrics = metrics_from_spans(spans, outcomes)
+    metrics = p.metrics_from_spans(spans, outcomes)
     drop = float(spec.conditions.get("drop_spans", 0.0))
     if drop:  # partial observability: the collector lost spans; the bundle is what the doctor sees
         kept = drop_spans(spans, drop, spec.seed)
@@ -125,15 +129,19 @@ def save_bundle(run: IncidentRun, root: Path) -> Path:
                                   for r in run.results])
     _dump(bundle / "invariants.json", [v.to_dict() for v in run.violations])
     verdicts = run.chat_verdicts()
-    write_truth(bundle, {
+    resolved = resolve_faults(spec.fault_ids, spec.patient)
+    truth: dict[str, Any] = {
         "incident_id": spec.incident_id, "split": spec.split, "seed": spec.seed,
-        "fault_ids": spec.fault_ids, "resolved_fault_ids": resolve_faults(spec.fault_ids),
+        "fault_ids": spec.fault_ids, "resolved_fault_ids": resolved,
         "family": spec.family, "noisy": spec.noisy, "chat_ids": spec.chat_ids,
         "modifiers": spec.modifiers, "conditions": spec.conditions,
-        "ground_truth": merged_truth(resolve_faults(spec.fault_ids)).to_dict(),
+        "ground_truth": p.merged_truth(resolved).to_dict(),
         "failed_chats": sorted(c for c, v in verdicts.items() if not v["pass"]),
         "chat_verdicts": verdicts,
-    })
+    }
+    if spec.patient != DEFAULT_PATIENT:  # order-bot truth files stay byte-identical to the frozen bench
+        truth["patient"] = spec.patient
+    write_truth(bundle, truth)
     return bundle
 
 

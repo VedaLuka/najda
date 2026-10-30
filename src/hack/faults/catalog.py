@@ -336,8 +336,8 @@ MODIFIERS: dict[str, Callable[[World], None]] = {
 }
 
 
-def merged_truth(fault_ids: list[str]) -> GroundTruth:
-    truths = [FAULTS[f].truth for f in fault_ids]
+def merged_truth(fault_ids: list[str], faults: dict[str, Fault] | None = None) -> GroundTruth:
+    truths = [(faults or FAULTS)[f].truth for f in fault_ids]
     fix: dict[str, Any] | None = {}
     for t in truths:
         if t.correct_fix is None:
@@ -348,6 +348,27 @@ def merged_truth(fault_ids: list[str]) -> GroundTruth:
     outcome = "unfixable" if "unfixable" in outcomes else "contain" if "contain" in outcomes else "recover"
     return GroundTruth("; ".join(t.root_cause for t in truths), fix, any(t.should_escalate for t in truths), outcome,
                        any(t.requires_retry for t in truths))
+
+
+# Acceptable root-cause labels per fault (from hack.doctors.taxonomy). Read by the scorer only.
+FAULT_LABELS: dict[str, set[str]] = {
+    "healthy": {"no_fault"},
+    "transient_blip": {"upstream_outage"},
+    "schema_drift": {"schema_change"},
+    "prompt_regression": {"bad_prompt_deploy"},
+    "rate_limit_429": {"rate_limiting"},
+    "infinite_loop": {"agent_loop"},
+    "hallucinated_tool": {"invalid_tool", "bad_prompt_deploy"},
+    "auth_expired_401": {"auth_failure"},
+    "price_unit_halalas": {"unit_mismatch"},
+    "arabic_numerals": {"input_format"},
+    "stale_stock": {"stale_data"},
+    "dropped_payment_webhook": {"missing_event"},
+    "latency_timeouts": {"upstream_latency"},
+    "payment_down": {"upstream_outage"},
+    "stock_corrupt": {"data_corruption"},
+    "ambiguous_payment": {"ambiguous_state"},
+}
 
 
 def faults_for_split(split: str) -> list[Fault]:
