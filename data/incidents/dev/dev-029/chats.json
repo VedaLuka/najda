@@ -1,0 +1,112 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج و 1 بيبسي"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج, 1 x بيبسي. الإجمالي 28 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نكمل الدفع، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_11",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "عطني 5 ببسي و 2 بطاطا"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 5 x بيبسي, 2 x بطاطس. الإجمالي 36 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "تمام اكد"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نكمل الدفع، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like 3 falafel and 1 karak"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 3 x Falafel Sandwich, 1 x Karak Tea. Total 23 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "ok"
+      },
+      {
+        "role": "bot",
+        "text": "We couldn't complete the payment, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_08",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "3 fries please"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 3 x Fries. Total 24 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "no, cancel"
+      },
+      {
+        "role": "bot",
+        "text": "No problem, order cancelled. See you soon!"
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ممكن 1 kabsa and 2 كرك"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x كبسة دجاج, 2 x شاي كرك. الإجمالي 38 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نكمل الدفع، حاول بعد شوي."
+      }
+    ]
+  }
+]

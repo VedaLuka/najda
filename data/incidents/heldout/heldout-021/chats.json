@@ -1,0 +1,112 @@
+[
+  {
+    "chat_id": "ar_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي 3 فلافل و 1 كرك لو سمحت"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 3 x ساندويتش فلافل, 1 x شاي كرك. الإجمالي 23 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "تمام"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نكمل الدفع، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_07",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ودي بـ 2 كرك و 1 فلافل"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاي كرك, 1 x ساندويتش فلافل. الإجمالي 16 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ماشي"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد طلبك رقم ORD-0002. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج. الإجمالي 24 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا خلاص الغي"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الطلب. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_07",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "one karak and one water"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 1 x Karak Tea, 1 x Water. Total 7 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "okay"
+      },
+      {
+        "role": "bot",
+        "text": "We couldn't complete the payment, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_01",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "hey ابغى 2 shawarma dajaj و 1 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج, 1 x بيبسي. الإجمالي 28 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "yes تمام"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد طلبك رقم ORD-0004. شكراً لك!"
+      }
+    ]
+  }
+]

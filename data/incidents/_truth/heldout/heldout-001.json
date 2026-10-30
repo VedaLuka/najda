@@ -1,0 +1,89 @@
+{
+  "incident_id": "heldout-001",
+  "split": "heldout",
+  "seed": 2001,
+  "fault_ids": [
+    "price_unit_halalas"
+  ],
+  "resolved_fault_ids": [
+    "price_unit_halalas"
+  ],
+  "family": "price_unit_halalas",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_03",
+    "ar_11",
+    "en_02",
+    "en_03",
+    "en_04",
+    "en_08"
+  ],
+  "ground_truth": {
+    "root_cause": "StockAPI price field switched from SAR to halalas; bot treats it as SAR",
+    "correct_fix": {
+      "price_unit": "halalas"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_03",
+    "ar_11",
+    "en_02",
+    "en_03",
+    "en_04"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "ar_11": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    }
+  }
+}

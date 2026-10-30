@@ -1,0 +1,97 @@
+{
+  "incident_id": "heldout-012",
+  "split": "heldout",
+  "seed": 2012,
+  "fault_ids": [
+    "dropped_payment_webhook"
+  ],
+  "resolved_fault_ids": [
+    "dropped_payment_webhook"
+  ],
+  "family": "dropped_payment_webhook",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_04",
+    "ar_07",
+    "ar_09",
+    "ar_10",
+    "en_01",
+    "en_05",
+    "en_08"
+  ],
+  "ground_truth": {
+    "root_cause": "payment webhook delivery is dropped; bot verifies via webhook instead of querying the payment",
+    "correct_fix": {
+      "payment_verify": "query"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_04",
+    "ar_07",
+    "ar_09",
+    "en_01",
+    "en_05"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "ar_10": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    }
+  }
+}

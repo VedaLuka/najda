@@ -1,0 +1,116 @@
+{
+  "incident_id": "dev-009",
+  "split": "dev",
+  "seed": 1009,
+  "fault_ids": [
+    "rate_limit_429"
+  ],
+  "resolved_fault_ids": [
+    "rate_limit_429"
+  ],
+  "family": "rate_limit_429",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_05",
+    "ar_06",
+    "ar_08",
+    "en_02",
+    "en_03",
+    "en_04",
+    "en_05",
+    "en_07",
+    "en_08"
+  ],
+  "ground_truth": {
+    "root_cause": "StockAPI rate limiting; bot has no retry policy",
+    "correct_fix": {
+      "retry.max_retries": 3,
+      "retry.backoff_s": 0.5
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_05",
+    "ar_08",
+    "en_02",
+    "en_03",
+    "en_04",
+    "en_07",
+    "en_08"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_06": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 7
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 3
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "en_05": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 7
+    },
+    "en_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "en_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    }
+  }
+}

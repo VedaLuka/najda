@@ -1,0 +1,69 @@
+{
+  "incident_id": "heldout-004",
+  "split": "heldout",
+  "seed": 2004,
+  "fault_ids": [
+    "arabic_numerals"
+  ],
+  "resolved_fault_ids": [
+    "arabic_numerals"
+  ],
+  "family": "arabic_numerals",
+  "noisy": false,
+  "chat_ids": [
+    "ar_06",
+    "ar_08",
+    "ar_12",
+    "en_02",
+    "en_08"
+  ],
+  "ground_truth": {
+    "root_cause": "customer messages contain Arabic-Indic digits; numeral normalisation is off",
+    "correct_fix": {
+      "normalize_numerals": true
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_06",
+    "en_02"
+  ],
+  "chat_verdicts": {
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 7
+    },
+    "ar_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 9
+    },
+    "ar_12": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    }
+  }
+}

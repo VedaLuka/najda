@@ -1,0 +1,106 @@
+{
+  "incident_id": "dev-018",
+  "split": "dev",
+  "seed": 1018,
+  "fault_ids": [
+    "hallucinated_tool"
+  ],
+  "resolved_fault_ids": [
+    "hallucinated_tool"
+  ],
+  "family": "hallucinated_tool",
+  "noisy": false,
+  "chat_ids": [
+    "ar_08",
+    "ar_09",
+    "ar_10",
+    "en_02",
+    "en_04",
+    "en_05",
+    "en_06",
+    "en_08",
+    "mix_02"
+  ],
+  "ground_truth": {
+    "root_cause": "prompt v1_promo references non-existent tool apply_promo",
+    "correct_fix": {
+      "prompt_version": "v1"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_08",
+    "ar_09",
+    "en_02",
+    "en_04",
+    "en_05",
+    "en_06",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "ar_10": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    }
+  }
+}

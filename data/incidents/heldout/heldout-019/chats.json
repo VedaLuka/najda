@@ -1,0 +1,86 @@
+[
+  {
+    "chat_id": "ar_09",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "اثنين كبسة و ثلاث مويه"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف كبسة دجاج غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_12",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي ١ كرك بس"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف شاي كرك غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like ٣ falafel and ١ karak"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف ساندويتش فلافل غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_04",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "two meat shawarma with fries"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, Meat Shawarma is out of stock right now."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_07",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "one karak and one water"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, Karak Tea is out of stock right now."
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ممكن ١ kabsa and ٢ كرك"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف كبسة دجاج غير متوفر حالياً."
+      }
+    ]
+  }
+]

@@ -1,0 +1,115 @@
+{
+  "incident_id": "dev-032",
+  "split": "dev",
+  "seed": 1032,
+  "fault_ids": [
+    "stock_corrupt"
+  ],
+  "resolved_fault_ids": [
+    "stock_corrupt"
+  ],
+  "family": "stock_corrupt",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_03",
+    "ar_04",
+    "ar_07",
+    "ar_08",
+    "ar_11",
+    "en_02",
+    "en_06",
+    "en_08",
+    "mix_01"
+  ],
+  "ground_truth": {
+    "root_cause": "inventory database corruption (negative quantities); needs a human",
+    "correct_fix": null,
+    "should_escalate": true,
+    "expected_outcome": "contain"
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_03",
+    "ar_04",
+    "ar_07",
+    "ar_08",
+    "ar_11",
+    "en_02",
+    "en_06",
+    "en_08",
+    "mix_01"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_11": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "en_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    }
+  }
+}

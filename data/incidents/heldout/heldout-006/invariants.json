@@ -1,0 +1,17 @@
+[
+  {
+    "invariant": "qty_matches_request",
+    "chat_id": "ar_02",
+    "detail": "customer asked {'kabsa': 1, 'water': 2}, order has {'kabsa': 1, 'water': 1}"
+  },
+  {
+    "invariant": "qty_matches_request",
+    "chat_id": "ar_11",
+    "detail": "customer asked {'pepsi': 5, 'fries': 2}, order has {'pepsi': 1, 'fries': 1}"
+  },
+  {
+    "invariant": "qty_matches_request",
+    "chat_id": "en_05",
+    "detail": "customer asked {'kabsa': 2}, order has {'kabsa': 1}"
+  }
+]

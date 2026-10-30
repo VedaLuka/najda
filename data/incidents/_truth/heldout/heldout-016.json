@@ -1,0 +1,73 @@
+{
+  "incident_id": "heldout-016",
+  "split": "heldout",
+  "seed": 2016,
+  "fault_ids": [
+    "combo_price_latency"
+  ],
+  "resolved_fault_ids": [
+    "price_unit_halalas",
+    "latency_timeouts"
+  ],
+  "family": "combo_price_latency",
+  "noisy": false,
+  "chat_ids": [
+    "ar_04",
+    "ar_05",
+    "en_01",
+    "en_08",
+    "mix_02"
+  ],
+  "ground_truth": {
+    "root_cause": "StockAPI price field switched from SAR to halalas; bot treats it as SAR; OrderAPI latency rose above the bot timeout_s",
+    "correct_fix": {
+      "price_unit": "halalas",
+      "timeout_s": 8.0
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_04",
+    "ar_05",
+    "en_01",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    }
+  }
+}

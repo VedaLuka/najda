@@ -1,0 +1,27 @@
+[
+  {
+    "invariant": "total_matches_menu",
+    "chat_id": "ar_07",
+    "detail": "ORD-0001 total 1600.0 SAR, menu says 16.0"
+  },
+  {
+    "invariant": "total_matches_menu",
+    "chat_id": "ar_08",
+    "detail": "ORD-0002 total 2600.0 SAR, menu says 26.0"
+  },
+  {
+    "invariant": "total_matches_menu",
+    "chat_id": "en_04",
+    "detail": "ORD-0003 total 3600.0 SAR, menu says 36.0"
+  },
+  {
+    "invariant": "total_matches_menu",
+    "chat_id": "en_06",
+    "detail": "ORD-0004 total 6400.0 SAR, menu says 64.0"
+  },
+  {
+    "invariant": "total_matches_menu",
+    "chat_id": "mix_02",
+    "detail": "ORD-0005 total 3800.0 SAR, menu says 38.0"
+  }
+]

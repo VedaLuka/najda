@@ -1,0 +1,81 @@
+{
+  "incident_id": "dev-003",
+  "split": "dev",
+  "seed": 1003,
+  "fault_ids": [
+    "schema_drift"
+  ],
+  "resolved_fault_ids": [
+    "schema_drift"
+  ],
+  "family": "schema_drift",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_03",
+    "ar_04",
+    "ar_07",
+    "ar_09",
+    "en_03"
+  ],
+  "ground_truth": {
+    "root_cause": "OrderAPI response schema changed: order_id -> id; bot reads a missing key",
+    "correct_fix": {
+      "field_mappings.order_id": "id"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_03",
+    "ar_04",
+    "ar_07",
+    "ar_09",
+    "en_03"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    }
+  }
+}

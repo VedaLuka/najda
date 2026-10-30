@@ -1,0 +1,99 @@
+{
+  "incident_id": "dev-013",
+  "split": "dev",
+  "seed": 1013,
+  "fault_ids": [
+    "infinite_loop"
+  ],
+  "resolved_fault_ids": [
+    "infinite_loop"
+  ],
+  "family": "infinite_loop",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_05",
+    "ar_06",
+    "ar_08",
+    "en_02",
+    "en_05",
+    "en_06",
+    "mix_01"
+  ],
+  "ground_truth": {
+    "root_cause": "OrderAPI never moves orders out of 'queued'; max_turns guard was raised to 60 so the bot loops",
+    "correct_fix": {
+      "max_turns": 10
+    },
+    "should_escalate": true,
+    "expected_outcome": "contain"
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_05",
+    "ar_06",
+    "ar_08",
+    "en_02",
+    "en_05",
+    "en_06",
+    "mix_01"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    }
+  }
+}

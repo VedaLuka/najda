@@ -1,0 +1,22 @@
+[
+  {
+    "invariant": "total_matches_menu",
+    "chat_id": "ar_02",
+    "detail": "ORD-0001 total 3200.0 SAR, menu says 32.0"
+  },
+  {
+    "invariant": "total_matches_menu",
+    "chat_id": "ar_06",
+    "detail": "ORD-0002 total 4800.0 SAR, menu says 48.0"
+  },
+  {
+    "invariant": "total_matches_menu",
+    "chat_id": "en_01",
+    "detail": "ORD-0003 total 2800.0 SAR, menu says 28.0"
+  },
+  {
+    "invariant": "total_matches_menu",
+    "chat_id": "en_02",
+    "detail": "ORD-0004 total 3200.0 SAR, menu says 32.0"
+  }
+]

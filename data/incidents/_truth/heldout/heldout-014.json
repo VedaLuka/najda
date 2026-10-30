@@ -1,0 +1,107 @@
+{
+  "incident_id": "heldout-014",
+  "split": "heldout",
+  "seed": 2014,
+  "fault_ids": [
+    "latency_timeouts"
+  ],
+  "resolved_fault_ids": [
+    "latency_timeouts"
+  ],
+  "family": "latency_timeouts",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_04",
+    "ar_05",
+    "ar_06",
+    "ar_08",
+    "ar_10",
+    "en_01",
+    "en_05",
+    "mix_02"
+  ],
+  "ground_truth": {
+    "root_cause": "OrderAPI latency rose above the bot timeout_s",
+    "correct_fix": {
+      "timeout_s": 8.0
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_04",
+    "ar_05",
+    "ar_06",
+    "ar_08",
+    "en_01",
+    "en_05",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "ar_10": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    }
+  }
+}

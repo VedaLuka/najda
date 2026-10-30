@@ -1,0 +1,98 @@
+{
+  "chats": 10,
+  "tool_calls": 56,
+  "error_rate": 0.0,
+  "mean_tool_latency_ms": 114.6,
+  "p95_tool_latency_ms": 300.0,
+  "orders_created": 9,
+  "orders_paid": 9,
+  "orders_confirmed": 9,
+  "chats_confirmed": 9,
+  "chats_failed": 0,
+  "mean_turns": 7.6,
+  "loop_chats": 0,
+  "tokens": 0,
+  "warn_logs": 0,
+  "per_chat": {
+    "ar_01": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    },
+    "ar_03": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    },
+    "ar_04": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    },
+    "ar_07": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    },
+    "ar_08": {
+      "outcome": "confirmed",
+      "turns": 9,
+      "tool_calls": 7,
+      "errors": 0,
+      "latency_ms": 775.0,
+      "tokens": 0
+    },
+    "ar_11": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    },
+    "ar_12": {
+      "outcome": "declined",
+      "turns": 3,
+      "tool_calls": 1,
+      "errors": 0,
+      "latency_ms": 80.0,
+      "tokens": 0
+    },
+    "en_02": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    },
+    "en_04": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    },
+    "en_06": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    }
+  }
+}

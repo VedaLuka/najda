@@ -1,0 +1,80 @@
+{
+  "incident_id": "heldout-022",
+  "split": "heldout",
+  "seed": 2022,
+  "fault_ids": [
+    "healthy"
+  ],
+  "resolved_fault_ids": [
+    "healthy"
+  ],
+  "family": "healthy",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_03",
+    "ar_07",
+    "ar_12",
+    "en_02",
+    "en_05",
+    "en_08"
+  ],
+  "ground_truth": {
+    "root_cause": "no fault",
+    "correct_fix": {},
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "ar_03": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "ar_07": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "ar_12": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "en_02": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "en_05": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 7
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    }
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "incident_id": "dev-037",
+  "split": "dev",
+  "seed": 1037,
+  "fault_ids": [
+    "auth_expired_401"
+  ],
+  "resolved_fault_ids": [
+    "auth_expired_401"
+  ],
+  "family": "auth_expired_401",
+  "noisy": true,
+  "chat_ids": [
+    "ar_02",
+    "ar_04",
+    "ar_05",
+    "ar_10",
+    "ar_11",
+    "ar_12",
+    "en_02",
+    "en_03",
+    "en_04",
+    "en_06"
+  ],
+  "ground_truth": {
+    "root_cause": "auth token rotated to tok_v2; bot config still uses tok_v1",
+    "correct_fix": {
+      "auth_token": "tok_v2"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_04",
+    "ar_05",
+    "ar_11",
+    "en_02",
+    "en_03",
+    "en_04",
+    "en_06"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4
+    },
+    "ar_10": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "ar_11": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_12": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    }
+  }
+}

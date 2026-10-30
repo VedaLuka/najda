@@ -1,0 +1,84 @@
+{
+  "incident_id": "heldout-020",
+  "split": "heldout",
+  "seed": 2020,
+  "fault_ids": [
+    "ambiguous_payment"
+  ],
+  "resolved_fault_ids": [
+    "ambiguous_payment"
+  ],
+  "family": "ambiguous_payment",
+  "noisy": false,
+  "chat_ids": [
+    "ar_04",
+    "ar_05",
+    "ar_07",
+    "ar_12",
+    "en_05",
+    "en_06",
+    "mix_01"
+  ],
+  "ground_truth": {
+    "root_cause": "charges intermittently time out after being captured; customers charged with no confirmed order",
+    "correct_fix": null,
+    "should_escalate": true,
+    "expected_outcome": "unfixable"
+  },
+  "failed_chats": [
+    "ar_04",
+    "ar_07",
+    "en_06"
+  ],
+  "chat_verdicts": {
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "ar_05": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 7
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "ar_12": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "en_05": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 7
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "mix_01": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 8
+    }
+  }
+}

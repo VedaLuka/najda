@@ -1,0 +1,99 @@
+{
+  "incident_id": "dev-020",
+  "split": "dev",
+  "seed": 1020,
+  "fault_ids": [
+    "hallucinated_tool"
+  ],
+  "resolved_fault_ids": [
+    "hallucinated_tool"
+  ],
+  "family": "hallucinated_tool",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_03",
+    "ar_05",
+    "ar_09",
+    "ar_11",
+    "en_03",
+    "en_04",
+    "en_07"
+  ],
+  "ground_truth": {
+    "root_cause": "prompt v1_promo references non-existent tool apply_promo",
+    "correct_fix": {
+      "prompt_version": "v1"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_03",
+    "ar_05",
+    "ar_09",
+    "ar_11",
+    "en_03",
+    "en_04",
+    "en_07"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "ar_11": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "en_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    }
+  }
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "ar_05",
+    "detail": "PAY-0001 paid 28.0 SAR for ORD-0001 which is not confirmed"
+  },
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "ar_08",
+    "detail": "PAY-0002 paid 26.0 SAR for ORD-0002 which is not confirmed"
+  },
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "en_01",
+    "detail": "PAY-0003 paid 28.0 SAR for ORD-0003 which is not confirmed"
+  },
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "en_02",
+    "detail": "PAY-0004 paid 32.0 SAR for ORD-0004 which is not confirmed"
+  },
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "en_04",
+    "detail": "PAY-0005 paid 36.0 SAR for ORD-0005 which is not confirmed"
+  },
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "en_05",
+    "detail": "PAY-0006 paid 56.0 SAR for ORD-0006 which is not confirmed"
+  },
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "en_07",
+    "detail": "PAY-0007 paid 7.0 SAR for ORD-0007 which is not confirmed"
+  },
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "mix_01",
+    "detail": "PAY-0008 paid 28.0 SAR for ORD-0008 which is not confirmed"
+  },
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "mix_02",
+    "detail": "PAY-0009 paid 38.0 SAR for ORD-0009 which is not confirmed"
+  }
+]

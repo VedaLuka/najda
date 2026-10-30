@@ -1,0 +1,89 @@
+{
+  "incident_id": "dev-016",
+  "split": "dev",
+  "seed": 1016,
+  "fault_ids": [
+    "infinite_loop"
+  ],
+  "resolved_fault_ids": [
+    "infinite_loop"
+  ],
+  "family": "infinite_loop",
+  "noisy": false,
+  "chat_ids": [
+    "ar_06",
+    "ar_07",
+    "en_01",
+    "en_03",
+    "en_08",
+    "mix_01",
+    "mix_02"
+  ],
+  "ground_truth": {
+    "root_cause": "OrderAPI never moves orders out of 'queued'; max_turns guard was raised to 60 so the bot loops",
+    "correct_fix": {
+      "max_turns": 10
+    },
+    "should_escalate": true,
+    "expected_outcome": "contain"
+  },
+  "failed_chats": [
+    "ar_06",
+    "ar_07",
+    "en_01",
+    "en_03",
+    "mix_01",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60
+    }
+  }
+}

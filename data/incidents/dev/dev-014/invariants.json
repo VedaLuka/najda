@@ -1,0 +1,32 @@
+[
+  {
+    "invariant": "turns_under_cap",
+    "chat_id": "ar_05",
+    "detail": "60 turns > hard cap 12"
+  },
+  {
+    "invariant": "turns_under_cap",
+    "chat_id": "ar_06",
+    "detail": "60 turns > hard cap 12"
+  },
+  {
+    "invariant": "turns_under_cap",
+    "chat_id": "ar_07",
+    "detail": "60 turns > hard cap 12"
+  },
+  {
+    "invariant": "turns_under_cap",
+    "chat_id": "ar_09",
+    "detail": "60 turns > hard cap 12"
+  },
+  {
+    "invariant": "turns_under_cap",
+    "chat_id": "en_01",
+    "detail": "60 turns > hard cap 12"
+  },
+  {
+    "invariant": "turns_under_cap",
+    "chat_id": "en_07",
+    "detail": "60 turns > hard cap 12"
+  }
+]

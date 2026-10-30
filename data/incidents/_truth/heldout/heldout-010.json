@@ -1,0 +1,116 @@
+{
+  "incident_id": "heldout-010",
+  "split": "heldout",
+  "seed": 2010,
+  "fault_ids": [
+    "dropped_payment_webhook"
+  ],
+  "resolved_fault_ids": [
+    "dropped_payment_webhook"
+  ],
+  "family": "dropped_payment_webhook",
+  "noisy": false,
+  "chat_ids": [
+    "ar_05",
+    "ar_08",
+    "ar_12",
+    "en_01",
+    "en_02",
+    "en_04",
+    "en_05",
+    "en_07",
+    "mix_01",
+    "mix_02"
+  ],
+  "ground_truth": {
+    "root_cause": "payment webhook delivery is dropped; bot verifies via webhook instead of querying the payment",
+    "correct_fix": {
+      "payment_verify": "query"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_05",
+    "ar_08",
+    "en_01",
+    "en_02",
+    "en_04",
+    "en_05",
+    "en_07",
+    "mix_01",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 8
+    },
+    "ar_12": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "en_07": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7
+    }
+  }
+}

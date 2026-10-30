@@ -1,0 +1,27 @@
+[
+  {
+    "invariant": "confirmed_has_payment",
+    "chat_id": "ar_01",
+    "detail": "ORD-0001 confirmed with no paid payment"
+  },
+  {
+    "invariant": "confirmed_has_payment",
+    "chat_id": "ar_03",
+    "detail": "ORD-0002 confirmed with no paid payment"
+  },
+  {
+    "invariant": "confirmed_has_payment",
+    "chat_id": "en_03",
+    "detail": "ORD-0003 confirmed with no paid payment"
+  },
+  {
+    "invariant": "confirmed_has_payment",
+    "chat_id": "en_05",
+    "detail": "ORD-0004 confirmed with no paid payment"
+  },
+  {
+    "invariant": "confirmed_has_payment",
+    "chat_id": "en_07",
+    "detail": "ORD-0005 confirmed with no paid payment"
+  }
+]

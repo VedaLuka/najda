@@ -1,0 +1,99 @@
+{
+  "incident_id": "heldout-009",
+  "split": "heldout",
+  "seed": 2009,
+  "fault_ids": [
+    "stale_stock"
+  ],
+  "resolved_fault_ids": [
+    "stale_stock"
+  ],
+  "family": "stale_stock",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_03",
+    "ar_04",
+    "ar_09",
+    "ar_12",
+    "en_06",
+    "en_08",
+    "mix_02"
+  ],
+  "ground_truth": {
+    "root_cause": "StockAPI cached reads return a stale snapshot (qty 0); bot does not request fresh reads",
+    "correct_fix": {
+      "stock_fresh_read": true
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_03",
+    "ar_04",
+    "ar_09",
+    "ar_12",
+    "en_06",
+    "en_08",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_12": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "en_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    }
+  }
+}

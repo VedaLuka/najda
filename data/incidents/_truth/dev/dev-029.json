@@ -1,0 +1,69 @@
+{
+  "incident_id": "dev-029",
+  "split": "dev",
+  "seed": 1029,
+  "fault_ids": [
+    "payment_down"
+  ],
+  "resolved_fault_ids": [
+    "payment_down"
+  ],
+  "family": "payment_down",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_11",
+    "en_03",
+    "en_08",
+    "mix_02"
+  ],
+  "ground_truth": {
+    "root_cause": "payment provider outage; nothing in the bot config can fix it",
+    "correct_fix": null,
+    "should_escalate": true,
+    "expected_outcome": "contain"
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_11",
+    "en_03",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "ar_11": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6
+    }
+  }
+}

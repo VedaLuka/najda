@@ -4,32 +4,29 @@ CFG ?=
 NOTE ?=
 CFG_ARG = $(if $(CFG),--config $(CFG),)
 
-.PHONY: setup smoke split eval robust holdout compare report test
+.PHONY: setup smoke incidents eval holdout compare report test
 
 setup:            ## create venv and install deps
 	$(PY) -m venv .venv && .venv/bin/pip install -q -r requirements.txt
 	@test -f .env || cp .env.example .env
 	@echo "Now: source .venv/bin/activate && edit .env"
 
-smoke:            ## end-to-end check on the toy data (no API key needed)
-	$(PY) scripts/split_data.py data/sample_raw.jsonl --stratify --out data/_smoke
-	$(PY) eval/run_eval.py --system baseline_majority --data-dir data/_smoke --note smoke
-	$(PY) eval/run_eval.py --system baseline_echo --data-dir data/_smoke --robustness --note smoke
-	$(PY) scripts/report.py
+smoke:            ## patient bot + fault injector + mini IncidentBench, scripted brain, no API key
+	$(PY) -m pytest -q 2>&1 | tail -n 3
+	$(PY) scripts/make_incidents.py --small --out data/_smoke
+	$(PY) scripts/run_chat.py --fault schema_drift --out experiments/smoke_broken.jsonl | tail -n 2
+	$(PY) scripts/run_chat.py --fault schema_drift --fix '{"field_mappings.order_id": "id"}' --out experiments/smoke_fixed.jsonl | tail -n 2
 
-split:            ## make train/dev/holdout: make split RAW=data/raw.jsonl
-	$(PY) scripts/split_data.py $(RAW) --stratify
+incidents:        ## build the full IncidentBench into data/incidents/
+	$(PY) scripts/make_incidents.py
 
-eval:             ## make eval SYS=v2_fewshot CFG=configs/v2.json NOTE="added 5 examples"
+eval:             ## make eval SYS=najda_v2 CFG=configs/v2.json NOTE="what changed"
 	$(PY) eval/run_eval.py --system $(SYS) $(CFG_ARG) --split dev --note "$(NOTE)"
-
-robust:           ## make robust SYS=v2_fewshot
-	$(PY) eval/run_eval.py --system $(SYS) $(CFG_ARG) --split dev --robustness --note "$(NOTE)"
 
 holdout:          ## milestones only
 	$(PY) eval/run_eval.py --system $(SYS) $(CFG_ARG) --split holdout --note "$(NOTE)"
 
-compare:          ## make compare OLD=latest:baseline_majority NEW=latest:v2_fewshot
+compare:          ## make compare OLD=latest:najda_v1 NEW=latest:najda_v2
 	$(PY) scripts/compare.py $(OLD) $(NEW)
 
 report:

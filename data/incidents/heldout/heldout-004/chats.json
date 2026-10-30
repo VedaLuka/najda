@@ -1,0 +1,112 @@
+[
+  {
+    "chat_id": "ar_06",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ممكن ٤ شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x شاورما دجاج. الإجمالي 12 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه اكد"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد طلبك رقم ORD-0001. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_08",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى ١ شاورما لحم و ١ بيبسي و ١ بطاطس"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x شاورما لحم, 1 x بيبسي, 1 x بطاطس. الإجمالي 26 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد طلبك رقم ORD-0002. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_12",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي ١ كرك بس"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x شاي كرك. الإجمالي 5 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا ما ابغى"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الطلب. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "١ kabsa and ٢ water please"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x كبسة دجاج, 1 x ماء. الإجمالي 30 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "yes confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Your order ORD-0003 is confirmed. Thank you!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_08",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "٣ fries please"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x بطاطس. الإجمالي 8 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "no, cancel"
+      },
+      {
+        "role": "bot",
+        "text": "No problem, order cancelled. See you soon!"
+      }
+    ]
+  }
+]

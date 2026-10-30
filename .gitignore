@@ -4,8 +4,13 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .cache/
+npm-cache/
 # Organisers' data is under NDA: keep it out of git unless the rules say otherwise
 data/*
 !data/.gitkeep
 !data/sample_raw.jsonl
+# Synthetic IncidentBench is ours; the smoke copy is throwaway
+!data/incidents/
 .DS_Store
+experiments/chat_traces.jsonl
+experiments/smoke_*.jsonl

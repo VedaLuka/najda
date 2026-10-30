@@ -1,0 +1,12 @@
+[
+  {
+    "invariant": "qty_matches_request",
+    "chat_id": "ar_06",
+    "detail": "customer asked {'shawarma_chicken': 4}, order has {'shawarma_chicken': 1}"
+  },
+  {
+    "invariant": "qty_matches_request",
+    "chat_id": "en_02",
+    "detail": "customer asked {'kabsa': 1, 'water': 2}, order has {'kabsa': 1, 'water': 1}"
+  }
+]

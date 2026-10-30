@@ -1,0 +1,107 @@
+{
+  "incident_id": "dev-005",
+  "split": "dev",
+  "seed": 1005,
+  "fault_ids": [
+    "prompt_regression"
+  ],
+  "resolved_fault_ids": [
+    "prompt_regression"
+  ],
+  "family": "prompt_regression",
+  "noisy": false,
+  "chat_ids": [
+    "ar_04",
+    "ar_07",
+    "en_01",
+    "en_02",
+    "en_04",
+    "en_05",
+    "en_06",
+    "en_08",
+    "mix_02"
+  ],
+  "ground_truth": {
+    "root_cause": "prompt v2_fast dropped the charge step; orders are confirmed unpaid",
+    "correct_fix": {
+      "prompt_version": "v1"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover"
+  },
+  "failed_chats": [
+    "ar_04",
+    "ar_07",
+    "en_01",
+    "en_02",
+    "en_04",
+    "en_05",
+    "en_06",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 5
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6
+    }
+  }
+}

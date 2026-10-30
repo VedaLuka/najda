@@ -1,0 +1,17 @@
+[
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "ar_04",
+    "detail": "PAY-0001 paid 44.0 SAR for ORD-0001 which is not confirmed"
+  },
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "ar_07",
+    "detail": "PAY-0003 paid 16.0 SAR for ORD-0003 which is not confirmed"
+  },
+  {
+    "invariant": "payment_has_confirmed_order",
+    "chat_id": "en_06",
+    "detail": "PAY-0005 paid 64.0 SAR for ORD-0005 which is not confirmed"
+  }
+]
