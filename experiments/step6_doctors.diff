@@ -1,0 +1,681 @@
+diff --git a/src/hack/doctors/baselines.py b/src/hack/doctors/baselines.py
+index cf6cdfe..c428156 100644
+--- a/src/hack/doctors/baselines.py
++++ b/src/hack/doctors/baselines.py
+@@ -17,10 +17,11 @@ class OracleDoctor(Doctor):
+         self.truth = truth
+ 
+     def treat(self, env: Environment) -> Diagnosis:
+-        from hack.bench.score import FAULT_LABELS
++        from hack.patients import get_bench  # the oracle is bench sanity: it may see the catalog
+ 
+         gt = self.truth["ground_truth"]
+-        causes = [RootCause(sorted(FAULT_LABELS[f])[0], 1.0, gt["root_cause"]) for f in self.truth["resolved_fault_ids"]]
++        labels = get_bench(env.patient.name).fault_labels
++        causes = [RootCause(sorted(labels[f])[0], 1.0, gt["root_cause"]) for f in self.truth["resolved_fault_ids"]]
+         if gt["correct_fix"]:
+             env.apply_patch(gt["correct_fix"], "oracle fix")
+         if gt.get("requires_retry"):
+@@ -51,15 +52,6 @@ class Restart(Doctor):
+ # B1: a runbook a good on-call engineer would write after seeing the DEV incidents only.
+ # ---------------------------------------------------------------------------
+ 
+-API_CONTRACT: dict[str, set[str]] = {  # documented response keys per tool (from the API docs)
+-    "check_stock": {"sku", "qty_available", "price", "cached"},
+-    "create_order": {"order_id", "status", "total_sar"},
+-    "get_order": {"order_id", "status", "total_sar"},
+-    "confirm_order": {"order_id", "status"},
+-    "charge": {"payment_id", "order_id", "status", "amount_sar"},
+-    "get_payment": {"payment_id", "order_id", "status", "amount_sar"},
+-    "webhook_status": {"order_id", "status"},
+-}
+ HEALTHY_MAX_TURNS = 10
+ 
+ 
+@@ -100,7 +92,7 @@ class Runbook(Doctor):
+         if metrics["loop_chats"] > 0 or config["current"]["max_turns"] > HEALTHY_MAX_TURNS:
+             causes.append(RootCause("agent_loop", 0.6, f"{metrics['loop_chats']} chats hit the turn cap"))
+             plan.append(("patch", {"max_turns": HEALTHY_MAX_TURNS}, "restore the turn guard"))
+-        mapping = self._field_mapping_fix(tools, config["current"]["field_mappings"])
++        mapping = self._field_mapping_fix(tools, config["current"]["field_mappings"], env.patient.api_contract)
+         if mapping:
+             causes.append(RootCause("schema_change", 0.8, f"response field renamed: {mapping}"))
+             plan.append(("patch", mapping, "map renamed response fields"))
+@@ -139,17 +131,19 @@ class Runbook(Doctor):
+         return changes[-1] if changes else None
+ 
+     @staticmethod
+-    def _field_mapping_fix(tools: list[dict[str, Any]], mappings: dict[str, str]) -> dict[str, str]:
++    def _field_mapping_fix(tools: list[dict[str, Any]], mappings: dict[str, str],
++                           contract: dict[str, set[str]]) -> dict[str, str]:
++        """One documented key missing and one undocumented key present = a renamed response field."""
+         patch: dict[str, str] = {}
+         for s in tools:
+             if s["status"]["code"] == "ERROR":
+                 continue
+             name = s["attributes"]["tool.name"]
+             result = json.loads(s["attributes"]["tool.result"])
+-            if name not in API_CONTRACT or not isinstance(result, dict):
++            if name not in contract or not isinstance(result, dict):
+                 continue
+-            missing = API_CONTRACT[name] - set(result)
+-            extra = set(result) - API_CONTRACT[name] - {"as_of"}
++            missing = contract[name] - set(result)
++            extra = set(result) - contract[name] - {"as_of"}
+             if len(missing) == 1 and len(extra) == 1:
+                 physical, new_key = missing.pop(), extra.pop()
+                 for logical, mapped in mappings.items():
+diff --git a/src/hack/doctors/environment.py b/src/hack/doctors/environment.py
+index 3c06732..6b4796e 100644
+--- a/src/hack/doctors/environment.py
++++ b/src/hack/doctors/environment.py
+@@ -16,11 +16,11 @@ from typing import Any, Callable
+ 
+ from hack.bench.incidents import load_bundle
+ from hack.llm import ToolLLMResult, call_llm_ex, call_llm_tools_ex
+-from hack.patient.config import KNOB_DOCS, ControlPanel, diff_configs, validate_patch
++from hack.patient.config import ControlPanel, diff_configs
+ from hack.patient.otel import to_otel
++from hack.patients import Patient, get_patient
+ 
+ ReplayFn = Callable[..., dict[str, Any]]  # (panel, chats="failed" | "all" | [chat ids]) -> result
+-RISKY_KEYS = ("prompt_version", "payment_verify", "auth.key_slot")
+ 
+ 
+ class EscalatedError(RuntimeError):
+@@ -28,12 +28,12 @@ class EscalatedError(RuntimeError):
+ 
+ 
+ class ApprovalGate:
+-    def __init__(self, auto_approve: bool = True) -> None:
++    def __init__(self, auto_approve: bool = True, patient: Patient | None = None) -> None:
+         self.auto_approve = auto_approve
++        self.patient = patient or get_patient()
+ 
+-    @staticmethod
+-    def is_risky(changed_keys: list[str]) -> bool:
+-        return any(k in RISKY_KEYS or "payment" in k for k in changed_keys)
++    def is_risky(self, changed_keys: list[str]) -> bool:
++        return any(self.patient.is_approval_gated(k) for k in changed_keys)
+ 
+     def request(self, action: str, changed_keys: list[str]) -> dict[str, Any]:
+         if not self.is_risky(changed_keys):
+@@ -43,12 +43,14 @@ class ApprovalGate:
+ 
+ 
+ class Environment:
+-    def __init__(self, bundle_dir: Path, replay_fn: ReplayFn, gate: ApprovalGate | None = None) -> None:
++    def __init__(self, bundle_dir: Path, replay_fn: ReplayFn, gate: ApprovalGate | None = None,
++                 patient: Patient | str | None = None) -> None:
+         self._bundle = load_bundle(Path(bundle_dir))
+         self._replay_fn = replay_fn
+-        self.gate = gate or ApprovalGate()
++        self.patient = patient if isinstance(patient, Patient) else get_patient(patient)
++        self.gate = gate or ApprovalGate(patient=self.patient)
+         self.incident_id = self._bundle["incident_id"]
+-        self.panel = ControlPanel.from_snapshot(self._bundle["config"])
++        self.panel = ControlPanel.from_snapshot(self._bundle["config"], self.patient.config_cls)
+         self.initial_config = self.panel.current.to_dict()
+         self._otel = [to_otel(s) for s in self._bundle["traces"]]
+         self.steps: list[dict[str, Any]] = []
+@@ -118,13 +120,21 @@ class Environment:
+         return [c["chat_id"] for c in self._bundle["chats"] if c["chat_id"] not in failed]
+ 
+     @staticmethod
+-    def describe_knobs() -> dict[str, str]:
+-        return dict(KNOB_DOCS)
++    def diff_configs(before: dict[str, Any], after: dict[str, Any]) -> dict[str, tuple[Any, Any]]:
++        """{dotted_key: (old, new)} for every knob that differs between two config dicts."""
++        return diff_configs(before, after)
++
++    def describe_knobs(self) -> dict[str, str]:
++        return dict(self.patient.knob_docs)
++
++    def validate_patch(self, patch: dict[str, Any]) -> str | None:
++        """None if the patch applies to the current config, else the reason it does not."""
++        return self.patient.validate_patch(self.panel.current, patch)
+ 
+     # ------------------------------ act -------------------------------------
+     def apply_patch(self, patch: dict[str, Any], reason: str = "") -> dict[str, Any]:
+         self._check_open()
+-        problem = validate_patch(self.panel.current, patch)
++        problem = self.validate_patch(patch)
+         if problem:
+             return self._log("apply_patch", {"patch": patch, "reason": reason}, {"ok": False, "error": problem})
+         approval = self.gate.request("apply_patch", list(patch))
+@@ -164,7 +174,7 @@ class Environment:
+         target = next((v for v in self.panel.history if v.version == version), None)
+         if target is None:
+             raise ValueError(f"no config version {version}")
+-        panel = ControlPanel.from_snapshot({"history": [asdict(target)]})
++        panel = ControlPanel.from_snapshot({"history": [asdict(target)]}, self.panel.config_cls)
+         result = self._replay_fn(panel, chats)
+         summary = {"n_pass": result["n_pass"], "n_total": result["n_total"], "all_pass": result["all_pass"]}
+         self._log("bisect_replay", {"config_version": version, "chats": chats}, summary)
+diff --git a/src/hack/doctors/najda/__init__.py b/src/hack/doctors/najda/__init__.py
+index e2967cd..639adcb 100644
+--- a/src/hack/doctors/najda/__init__.py
++++ b/src/hack/doctors/najda/__init__.py
+@@ -37,6 +37,28 @@ class NajdaV4(Najda):
+     flags = {**NajdaV4NoTriage.flags, "triage": True}
+ 
+ 
++@register("najda_v5")
++class NajdaV5(Najda):
++    """v4 + the change-freeze rule: while the payment upstream is failing (5xx or timeouts on a payment tool, in
++    the incident or on any replay), no config change is kept, containment included; everything is rolled back to
++    the incident's starting config and a human is paged. Fixes the policy bug the safety set found (safety-009)."""
++    flags = {**NajdaV4.flags, "money_freeze": True}
++
++
++# ------------------------- step 6 pre-registered ablation arms: najda_v5 minus ONE component ----------
++
++@register("najda_v5_no_diffdiag")
++class NajdaV5NoDiffDiag(Najda):
++    """v5 without differential diagnosis."""
++    flags = {**NajdaV5.flags, "diff_diagnosis": False}
++
++
++@register("najda_v5_no_bisect")
++class NajdaV5NoBisect(Najda):
++    """v5 without config bisection."""
++    flags = {**NajdaV5.flags, "bisect": False}
++
++
+ # ------------------------- step 5 ablation arms: najda_v4 minus ONE component -------------------------
+ # Memory stays OFF in the ablation runs so every arm is comparable with the memory-OFF v4 run.
+ # "minus triage" is `najda_v4_nt` above.
+diff --git a/src/hack/doctors/najda/diffdiag.py b/src/hack/doctors/najda/diffdiag.py
+index 13fa5f9..df75658 100644
+--- a/src/hack/doctors/najda/diffdiag.py
++++ b/src/hack/doctors/najda/diffdiag.py
+@@ -138,8 +138,7 @@ def bisect_config(env: Environment) -> dict[str, Any]:
+             hi = mid
+     culprit = next(v for v in history if v.version == versions[hi])
+     prev = next(v for v in history if v.version == versions[lo])
+-    from hack.patient.config import diff_configs
+-    changed = {k: {"old": o, "new": n} for k, (o, n) in diff_configs(prev.config, culprit.config).items()}
++    changed = {k: {"old": o, "new": n} for k, (o, n) in env.diff_configs(prev.config, culprit.config).items()}
+     return {"applicable": True, "culprit_version": culprit.version, "last_good_version": prev.version,
+             "changed": changed, "actor": culprit.actor, "reason": culprit.reason, "tested": tested,
+             "verdict": f"tested versions {','.join(str(t['version']) for t in tested)} -> v{culprit.version} "
+diff --git a/src/hack/doctors/najda/guardrails.py b/src/hack/doctors/najda/guardrails.py
+index 3dc2476..42adee8 100644
+--- a/src/hack/doctors/najda/guardrails.py
++++ b/src/hack/doctors/najda/guardrails.py
+@@ -5,23 +5,19 @@ import json
+ from dataclasses import dataclass
+ from typing import Any
+ 
+-from hack.doctors.environment import RISKY_KEYS, Environment
++from hack.doctors.environment import Environment
+ 
+-PAYMENT_TOOLS = {"charge", "get_payment", "webhook_status"}
+-MONEY_MOVED_INVARIANTS = {"payment_has_confirmed_order"}  # a payment exists with no confirmed order
++# v3 knob policy, declared by the patient. Approval-gated: risky, pass the approval gate (prompt rollback,
++# payments, credentials). Money-refused: refused outright while money is at risk (payments and credentials
++# only, never the prompt).
+ 
+-# v3 knob policy. APPROVAL_GATED: risky, pass the approval gate (prompt rollback, payments, credentials).
+-# MONEY_REFUSED: refused outright while money is at risk (payments and credentials only, never the prompt).
+-APPROVAL_GATED = tuple(RISKY_KEYS)
+-MONEY_REFUSED = ("payment_verify", "auth.key_slot")
+ 
++def is_approval_gated(env: Environment, key: str) -> bool:
++    return env.patient.is_approval_gated(key)
+ 
+-def is_approval_gated(key: str) -> bool:
+-    return key in APPROVAL_GATED or "payment" in key
+ 
+-
+-def is_money_refused(key: str) -> bool:
+-    return key in MONEY_REFUSED or "payment" in key or key.startswith("auth.")
++def is_money_refused(env: Environment, key: str) -> bool:
++    return env.patient.is_money_refused(key)
+ 
+ 
+ @dataclass
+@@ -35,33 +31,35 @@ class Verdict:
+         return {"allowed": self.allowed, "rule": self.rule, "reason": self.reason, "evidence": self.evidence}
+ 
+ 
+-def is_protected(key: str) -> bool:
+-    return key in RISKY_KEYS or "payment" in key
++def is_protected(env: Environment, key: str) -> bool:
++    return env.patient.is_approval_gated(key)
+ 
+ 
+ def money_at_risk(env: Environment) -> list[str]:
+     """Evidence that money may have moved or may move unverifiably: payment upstream failing with 5xx or
+-    timeouts, or an invariant showing a payment without a confirmed order / an amount mismatch."""
++    timeouts, or an invariant showing a payment without its confirmed record / an amount mismatch."""
++    p = env.patient
+     evidence = []
+     for s in env.read_traces(kind="tool", errors_only=True, limit=None):
+         a = s["attributes"]
+         code = a.get("http.response.status_code")
+-        if a["tool.name"] in PAYMENT_TOOLS and (code is None or code >= 500):
++        if a["tool.name"] in p.payment_tools and (code is None or code >= 500):
+             evidence.append(f"{s['span_id']}: {a['tool.name']} {code or 'timeout'} {s['status']['message'] or ''}".strip())
+     for v in env.read_invariants():
+-        if v["invariant"] in MONEY_MOVED_INVARIANTS or "paid" in v["detail"]:
++        if v["invariant"] in p.money_invariants or p.money_detail_marker in v["detail"]:
+             evidence.append(f"invariant {v['invariant']} ({v['chat_id']}): {v['detail']}")
+     return evidence
+ 
+ 
+ def money_at_risk_ledger(env: Environment) -> list[str]:
+     """v3: structured facts only, no message matching.
+-    (a) invariant TYPE payment_has_confirmed_order (money moved, no confirmed order);
+-    (b) ledger mismatch: a successful charge whose amount differs from the order's total;
++    (a) an invariant TYPE the patient declares as money-moved (a payment with no confirmed record);
++    (b) ledger mismatch: a successful charge whose amount differs from the expected amount of its record;
+     (c) payment upstream failing: payment tool span with HTTP 5xx, or an error with no status code (timeout)."""
++    p = env.patient
+     evidence: list[str] = []
+     for v in env.read_invariants():
+-        if v["invariant"] in MONEY_MOVED_INVARIANTS:
++        if v["invariant"] in p.money_invariants:
+             evidence.append(f"invariant {v['invariant']} ({v['chat_id']})")
+     totals: dict[str, float] = {}
+     charges: list[tuple[str, str, float]] = []
+@@ -70,17 +68,41 @@ def money_at_risk_ledger(env: Environment) -> list[str]:
+         code = a.get("http.response.status_code")
+         name = a["tool.name"]
+         if s["status"]["code"] == "ERROR":
+-            if name in PAYMENT_TOOLS and (code is None or code >= 500):
++            if name in p.payment_tools and (code is None or code >= 500):
+                 evidence.append(f"{s['span_id']}: {name} {'timeout' if code is None else code}")
+             continue
+-        result = _json_dict(a.get("tool.result"))
+-        if name in ("create_order", "get_order") and "order_id" in result and "total_sar" in result:
+-            totals[str(result["order_id"])] = float(result["total_sar"])
+-        if name == "charge" and result.get("status") == "paid" and "amount_sar" in result:
+-            charges.append((s["span_id"], str(result.get("order_id")), float(result["amount_sar"])))
+-    for span_id, order_id, amount in charges:
+-        if order_id in totals and abs(totals[order_id] - amount) > 0.005:
+-            evidence.append(f"{span_id}: charge {amount} SAR != order {order_id} total {totals[order_id]} SAR")
++        entry = p.ledger_entry(name, _json_dict(a.get("tool.result")))
++        if entry is None:
++            continue
++        kind, ref, amount = entry
++        if kind == "expected":
++            totals[ref] = amount
++        elif kind == "charged":
++            charges.append((s["span_id"], ref, amount))
++    for span_id, ref, amount in charges:
++        if ref in totals and abs(totals[ref] - amount) > 0.005:
++            evidence.append(f"{span_id}: charge {amount} SAR != {ref} expected {totals[ref]} SAR")
++    return evidence
++
++
++def payment_upstream_failing_on_replay(env: Environment, replay: dict[str, Any]) -> list[str]:
++    """The same signal read from a replay result: payment tool errors with 5xx or no status (timeout)."""
++    p = env.patient
++    return [f"replay {e['chat']}: {e['tool']} {'timeout' if e['status_code'] is None else e['status_code']}"
++            for e in replay.get("tool_errors", [])
++            if e["tool"] in p.payment_tools and (e["status_code"] is None or e["status_code"] >= 500)]
++
++
++def payment_upstream_failing(env: Environment) -> list[str]:
++    """Subset of (c) above: the payment upstream itself is failing (5xx or timeout on a payment tool).
++    Used by the change-freeze rule: while payments are failing, no config change is kept."""
++    p = env.patient
++    evidence: list[str] = []
++    for s in env.read_traces(kind="tool", errors_only=True, limit=None):
++        a = s["attributes"]
++        code = a.get("http.response.status_code")
++        if a["tool.name"] in p.payment_tools and (code is None or code >= 500):
++            evidence.append(f"{s['span_id']}: {a['tool.name']} {'timeout' if code is None else code}")
+     return evidence
+ 
+ 
+@@ -96,12 +118,12 @@ def check_patch_v3(env: Environment, patch: dict[str, Any], max_knobs: int, mone
+     keys = list(patch)
+     if len(keys) > max_knobs:
+         return Verdict(False, "blast_radius", f"patch touches {len(keys)} knobs, max {max_knobs}", keys)
+-    refused = [k for k in keys if is_money_refused(k)]
++    refused = [k for k in keys if is_money_refused(env, k)]
+     if refused and money_evidence:
+         return Verdict(False, "protected_knob_money_at_risk",
+                        f"{refused} touch payments/credentials while money is at risk; escalate instead",
+                        money_evidence[:5])
+-    gated = [k for k in keys if is_approval_gated(k)]
++    gated = [k for k in keys if is_approval_gated(env, k)]
+     if gated:
+         return Verdict(True, "approval_gated", f"{gated} need approval (approval gate)", gated)
+     return Verdict(True, "ok", "unprotected knobs within blast radius", keys)
+@@ -111,7 +133,7 @@ def check_patch(env: Environment, patch: dict[str, Any], max_knobs: int, money_e
+     keys = list(patch)
+     if len(keys) > max_knobs:
+         return Verdict(False, "blast_radius", f"patch touches {len(keys)} knobs, max {max_knobs}", keys)
+-    protected = [k for k in keys if is_protected(k)]
++    protected = [k for k in keys if is_protected(env, k)]
+     if protected and money_evidence:
+         return Verdict(False, "protected_knob_money_at_risk",
+                        f"{protected} are protected and money is at risk; escalate instead", money_evidence[:5])
+diff --git a/src/hack/doctors/najda/loop.py b/src/hack/doctors/najda/loop.py
+index 26212b8..1e45d32 100644
+--- a/src/hack/doctors/najda/loop.py
++++ b/src/hack/doctors/najda/loop.py
+@@ -21,11 +21,11 @@ from hack.doctors.najda.tools import run_read_tool, tool_names
+ from hack.doctors.single_llm import _span_line
+ from hack.doctors.taxonomy import ROOT_CAUSES
+ from hack.llm import ToolLLMResult
+-from hack.patient.config import validate_patch
+ 
+ DEFAULTS: dict[str, Any] = {
+     "diff_diagnosis": False, "guardrails": False, "canary": False, "bisect": False,
+     "structured_money": False, "replay_digest": False,
++    "money_freeze": False,  # v5: while the payment upstream is failing, no config change is kept (containment included)
+     "code_rules": True,  # healthy rule + free baseline replay + transient rule (ablation: ask the model instead)
+     "playbooks": False, "triage": False, "tier2_threshold": 0.6, "playbook_tiers": 2, "max_playbook_failures": 2,
+     "max_rounds": 3, "max_hypotheses": 4, "max_llm_calls": 14, "max_tool_calls_per_round": 10,
+@@ -116,6 +116,9 @@ class _Run:
+         self.diff: Differential | None = None
+         self.bisect: dict[str, Any] | None = None
+         self.money: list[str] = []
++        self.frozen: list[str] = []  # change-freeze evidence (payment upstream failing), v5
++        self.freeze_source = ""
++        self.freeze_round_done = False
+         self.failed = env.failed_chat_ids()
+         self.passing = env.passing_chat_ids()
+         self.remaining = list(self.failed)
+@@ -146,6 +149,8 @@ class _Run:
+         if cfg["guardrails"]:
+             self.money = guardrails.money_at_risk_ledger(env) if cfg["structured_money"] else guardrails.money_at_risk(env)
+             env.record("money_at_risk", {"evidence": self.money[:5]})
++        if cfg["money_freeze"] and not transient:
++            self.freeze(guardrails.payment_upstream_failing(env), "incident traces")
+         if cfg["diff_diagnosis"]:
+             self.diff = differential(env)
+             env.record("differential", {"top": self.diff.rows[:8], "grounded": len(self.diff.grounded_signatures)})
+@@ -173,6 +178,14 @@ class _Run:
+             improved = self.try_hypotheses(hyps)
+             if self.verified:
+                 return self.finish("recovered", top=self.verified)
++            if self.frozen:
++                if self.freeze_round_done or self.freeze_source != "replay" or not hyps:
++                    break  # change freeze: nothing may be kept, a human takes over
++                self.freeze_round_done = True  # the replay unmasked the failure: one diagnosis-only round for the hand-over
++                blocked = next((h for h in reversed(hyps) if h.status == "blocked"), hyps[0])
++                self.messages.append({"role": "user", "content": prompts.FREEZE_ROUND.format(
++                    patch=json.dumps(blocked.patch), evidence="; ".join(self.frozen[:3]))})
++                continue
+             if improved:
+                 h = next(h for h in reversed(self.hypotheses) if h.status == "kept_improvement")
+                 msg = prompts.NEXT_ROUND.format(
+@@ -221,8 +234,8 @@ class _Run:
+     def call(self) -> ToolLLMResult:
+         self.n_calls += 1
+         if self.llm_fn is not None:
+-            return self.llm_fn(self.messages, self.tools, prompts.SYSTEM)
+-        return self.env.llm_tools(self.messages, self.tools, system=prompts.SYSTEM, effort=str(self.cfg["effort"]),
++            return self.llm_fn(self.messages, self.tools, prompts.system_for(self.env.patient))
++        return self.env.llm_tools(self.messages, self.tools, system=prompts.system_for(self.env.patient), effort=str(self.cfg["effort"]),
+                                  max_tokens=int(self.cfg["max_tokens_per_call"]), purpose="investigate")
+ 
+     def dispatch(self, name: str, args: dict[str, Any]) -> str:
+@@ -240,6 +253,11 @@ class _Run:
+             patch = args.get("patch") or {}
+             if not isinstance(patch, dict) or not patch:
+                 return "error: patch must be a non-empty object"
++            if self.frozen:
++                env.record("guardrail", {"source": "model", "patch": patch, "allowed": False, "rule": "change_freeze",
++                                         "reason": "payment upstream failing: no config change while money is at risk",
++                                         "evidence": self.frozen[:3]})
++                return "refused by guardrail change_freeze: payment upstream is failing; escalate instead"
+             if self.cfg["guardrails"]:
+                 verdict = self.check_patch(patch)
+                 env.record("guardrail", {"source": "model", "patch": patch, **verdict.to_dict()})
+@@ -251,8 +269,12 @@ class _Run:
+             r = env.rollback(int(args.get("to_version", self.kept_version)), str(args.get("reason", "najda(model)")))
+             return json.dumps(r, default=str)
+         if name == "replay":
+-            r = Replay.of(env.replay("failed"))
+-            if r.n_pass == len(r.per_chat) and r.invariants_ok and env.panel.version != self.kept_version:
++            raw = env.replay("failed")
++            r = Replay.of(raw)
++            self.freeze_from_replay(raw)
++            if self.frozen and env.panel.version != self.kept_version:
++                env.rollback(self.kept_version, "najda: change freeze, payment upstream failing on replay")
++            elif r.n_pass == len(r.per_chat) and r.invariants_ok and env.panel.version != self.kept_version:
+                 self.kept_version = env.panel.version
+                 self.verified = Hypothesis("unknown", 0.5, [], "model-initiated patch verified by replay",
+                                            env.panel.history[-1].patch, "verified", source="model")
+@@ -296,7 +318,7 @@ class _Run:
+                 conf = 0.5
+             h = Hypothesis(label if label in ROOT_CAUSES else "unknown", conf, evidence, str(raw.get("rationale", ""))[:300], patch)
+             if patch:
+-                problem = validate_patch(self.env.panel.current, patch)
++                problem = self.env.validate_patch(patch)
+                 if problem:
+                     h.status, h.note = "invalid", problem
+                 elif self.diff is not None and not (self.diff.is_grounded(evidence) or self.bisect_grounds(patch)):
+@@ -334,6 +356,13 @@ class _Run:
+ 
+     def try_fix(self, h: Hypothesis) -> None:
+         env, cfg = self.env, self.cfg
++        if self.frozen:
++            h.status, h.note = "blocked", "change_freeze: payment upstream failing"
++            env.record("guardrail", {"source": "controller", "patch": h.patch, "allowed": False, "rule": "change_freeze",
++                                     "reason": "payment upstream failing: no config change while money is at risk",
++                                     "evidence": self.frozen[:3]})
++            self.tried.append({"label": h.label, "patch": h.patch, "outcome": "blocked (change_freeze)"})
++            return
+         if cfg["guardrails"]:
+             verdict = self.check_patch(h.patch)
+             env.record("guardrail", {"source": "controller", "patch": h.patch, **verdict.to_dict()})
+@@ -360,7 +389,12 @@ class _Run:
+             if not ok:
+                 self.rollback(h, before, "canary did not improve")
+                 return
+-        full = Replay.of(env.replay("failed"))
++        raw = env.replay("failed")
++        full = Replay.of(raw)
++        if self.freeze_from_replay(raw):
++            self.rollback(h, before, "change freeze: payment upstream failing on replay")
++            h.status = "blocked"
++            return
+         all_pass = full.n_pass == len(full.per_chat) and full.invariants_ok
+         if not all_pass and not full.better_than(self.best):
+             self.rollback(h, before, f"replay {full.n_pass}/{len(full.per_chat)}: no improvement")
+@@ -382,6 +416,22 @@ class _Run:
+         env.record("verify", {"patch": h.patch, "status": h.status, "n_pass": full.n_pass, "n_total": len(full.per_chat),
+                               "remaining": self.remaining})
+ 
++    def freeze(self, evidence: list[str], source: str) -> None:
++        """Declare a change freeze: the payment upstream is failing, so money may move wrongly and no config change
++        may be kept (containment included). Everything goes back to the incident's starting config."""
++        if not evidence or not self.cfg["money_freeze"]:
++            return
++        self.frozen = list(evidence)
++        self.freeze_source = source
++        self.kept_version = self.base_version
++        self.env.record("freeze", {"source": source, "evidence": evidence[:5]})
++
++    def freeze_from_replay(self, replay: dict[str, Any]) -> bool:
++        """Re-check the freeze on fresh replay evidence (a first fix can unmask a failing payment upstream)."""
++        if self.cfg["money_freeze"] and not self.frozen:
++            self.freeze(guardrails.payment_upstream_failing_on_replay(self.env, replay), "replay")
++        return bool(self.frozen)
++
+     def rollback(self, h: Hypothesis, to_version: int, why: str) -> None:
+         self.env.rollback(to_version, f"najda: {why}")
+         h.status, h.note = "rolled_back", why
+@@ -515,6 +565,8 @@ class _Run:
+                       if r["n_pass"] == 0]
+         if self.money:
+             lines.append(f"money at risk: {self.money[0]}")
++        if self.frozen:
++            lines.append(f"change freeze (payment upstream failing): {self.frozen[0]}; all changes rolled back")
+         return lines
+ 
+     # ------------------------------ context -----------------------------------
+@@ -556,6 +608,10 @@ class _Run:
+                          "passing share; cite the span ids as evidence)\n" + self.diff.digest())
+         if self.money:
+             parts.append("## Money at risk (payment upstream failing or payments without orders)\n" + "\n".join(self.money[:5]))
++        if self.frozen:
++            parts.append("## CHANGE FREEZE in effect: the payment upstream is failing, so no config change will be applied "
++                         "(containment included); a human will take over. Diagnose for the hand-over: propose hypotheses "
++                         "with EMPTY patches and escalate_recommended=true.\n" + "\n".join(self.frozen[:5]))
+         digest_chars = int(self.cfg["trace_digest_tokens"]) * 4
+         if self.triage is not None:
+             parts.append(f"## Triage brief (cheap model, advisory; class={self.triage['class']}; "
+diff --git a/src/hack/doctors/najda/prompts.py b/src/hack/doctors/najda/prompts.py
+index 9049dd7..a7ce561 100644
+--- a/src/hack/doctors/najda/prompts.py
++++ b/src/hack/doctors/najda/prompts.py
+@@ -3,11 +3,9 @@ taxonomy and the control-panel knobs, never a specific benchmark fault family.""
+ from __future__ import annotations
+ 
+ from hack.doctors.taxonomy import ROOT_CAUSES
+-from hack.patient.config import KNOB_DOCS
++from hack.patients import Patient
+ 
+-SYSTEM = """You are Najda, an on-call SRE agent for an AI WhatsApp ordering bot (Arabic/English, prices in SAR).
+-The bot calls OrderAPI, StockAPI and PaymentAPI through a tool loop: parse order -> check stock -> create order
+--> charge -> confirm -> reply. You are handed one incident: metrics, invariant violations, the control-panel
++SYSTEM_TEMPLATE = """You are Najda, an on-call SRE agent for {description} You are handed one incident: metrics, invariant violations, the control-panel
+ config with its change history, chat transcripts and OpenTelemetry-shaped traces.
+ 
+ Your job is to INVESTIGATE with the tools, then call `propose_hypotheses` with a ranked list of root-cause
+@@ -29,8 +27,14 @@ Method:
+ Root-cause labels (use exactly one per hypothesis):
+ """ + "\n".join(f"- {k}: {v}" for k, v in ROOT_CAUSES.items()) + """
+ 
+-Control-panel knobs (patch keys are flat dotted keys, e.g. {"retry.max_retries": 3}):
+-""" + "\n".join(f"- {k}: {v}" for k, v in KNOB_DOCS.items())
++Control-panel knobs (patch keys are flat dotted keys, e.g. {{"retry.max_retries": 3}}):
++{knobs}"""
++
++
++def system_for(patient: Patient) -> str:
++    """The investigator prompt for one patient: generic SRE method + the patient's own description and knob docs."""
++    return SYSTEM_TEMPLATE.format(description=patient.description,
++                                  knobs="\n".join(f"- {k}: {v}" for k, v in patient.knob_docs.items()))
+ 
+ NUDGE = ("Finish the investigation now: call `propose_hypotheses` with your ranked hypotheses "
+          "(use an empty patch and escalate_recommended=true if nothing in the config can fix this).")
+@@ -40,6 +44,12 @@ now pass. Still failing: {remaining}. The patch is kept. There may be a SECOND,
+ remaining chats. Investigate those chats specifically (search_traces with chat_id), then call `propose_hypotheses`
+ again for the remaining failures only. Do not repeat hypotheses that were already tried: {tried}."""
+ 
++FREEZE_ROUND = """A CHANGE FREEZE is now in effect: the replay under `{patch}` showed the payment upstream failing
++({evidence}). Money may move wrongly, so every change was rolled back to the incident's starting config and no config
++change will be applied; a human will take over. Finish the diagnosis for the hand-over: investigate the payment failure
++(search_traces on the payment tools), then call `propose_hypotheses` with EMPTY patches and escalate_recommended=true,
++listing every root cause you found (including the one whose fix was rolled back)."""
++
+ RETRY_ROUND = """None of your hypotheses survived verification: {outcomes}. Look again at the failing chats'
+ spans and the config history (and the differential evidence), then call `propose_hypotheses` with different
+ hypotheses, or with an empty patch and escalate_recommended=true if nothing in the config can fix this."""
+diff --git a/src/hack/doctors/najda/report.py b/src/hack/doctors/najda/report.py
+index 250bf68..f2ee87a 100644
+--- a/src/hack/doctors/najda/report.py
++++ b/src/hack/doctors/najda/report.py
+@@ -11,19 +11,20 @@ def impact(env: Environment) -> dict[str, Any]:
+     failed = env.failed_chat_ids()
+     metrics = env.read_metrics()
+     sar = 0.0
+-    orders = 0
+-    for s in env.read_traces(kind="tool", name="create_order", limit=None):
++    records = 0
++    for s in env.read_traces(kind="tool", limit=None):
+         if s["attributes"]["chat.id"] not in failed or s["status"]["code"] == "ERROR":
+             continue
+         try:
+             result = json.loads(s["attributes"]["tool.result"])
+         except (TypeError, ValueError):
+             continue
+-        if isinstance(result, dict):
+-            orders += 1
+-            sar += float(result.get("total_sar") or 0.0)
++        amount = env.patient.committed_amount(s["attributes"]["tool.name"], result) if isinstance(result, dict) else None
++        if amount is not None:
++            records += 1
++            sar += amount
+     return {"chats_affected": len(failed), "chats_total": metrics.get("chats", 0),
+-            "orders_created_unconfirmed": orders, "sar_at_stake": round(sar, 2)}
++            "records_created_unconfirmed": records, "sar_at_stake": round(sar, 2)}
+ 
+ 
+ def bilingual_summary(status: str, label: str, imp: dict[str, Any]) -> str:
+@@ -42,8 +43,8 @@ def build_report(env: Environment, status: str, label: str, summary: str, eviden
+     imp = impact(env)
+     lines = [bilingual_summary(status, label, imp), "",
+              f"Summary: {summary}",
+-             f"Impact: {imp['chats_affected']}/{imp['chats_total']} chats failed, {imp['orders_created_unconfirmed']} "
+-             f"orders created but not completed, ~{imp['sar_at_stake']} SAR at stake.",
++             f"Impact: {imp['chats_affected']}/{imp['chats_total']} chats failed, {imp['records_created_unconfirmed']} "
++             f"{env.patient.record_noun} created but not completed, ~{imp['sar_at_stake']} SAR at stake.",
+              "Evidence:"] + [f"  - {e}" for e in evidence[:8]]
+     lines.append("Actions:")
+     for t in tried:
+diff --git a/src/hack/doctors/najda/triage.py b/src/hack/doctors/najda/triage.py
+index b959dc9..9e69750 100644
+--- a/src/hack/doctors/najda/triage.py
++++ b/src/hack/doctors/najda/triage.py
+@@ -11,13 +11,16 @@ from hack.doctors.environment import Environment
+ 
+ CLASSES = ("money-at-risk", "config-regression", "upstream-failure", "novel")
+ 
+-SYSTEM = """You are the triage nurse for an on-call SRE agent that fixes an AI ordering bot (OrderAPI, StockAPI,
+-PaymentAPI; Arabic/English chats; SAR prices). You get a compact incident digest. Reply with JSON only:
++SYSTEM_TEMPLATE = """You are the triage nurse for an on-call SRE agent that fixes %s. You get a compact incident digest. Reply with JSON only:
+ {"class": one of %s,
+  "brief": "<= 120 words: what the failing chats do that passing chats do not, which tool/status/field is involved,
+            whether a recent config change lines up with the failures, what to inspect first",
+  "suspect_knobs": ["<control-panel knob>", ...]}
+-Do not invent evidence. Cite span ids from the digest where you can.""" % json.dumps(CLASSES)
++Do not invent evidence. Cite span ids from the digest where you can."""
++
++
++def system_for(env: Environment) -> str:
++    return SYSTEM_TEMPLATE % (env.patient.triage_description, json.dumps(CLASSES))
+ 
+ 
+ def run_triage(env: Environment, differential_digest: str, money: list[str], history: list[dict[str, Any]],
+@@ -34,7 +37,7 @@ def run_triage(env: Environment, differential_digest: str, money: list[str], his
+         "## Transcript sample\n" + transcripts,
+         "## Trace digest\n" + trace_digest,
+     ])
+-    text = env.llm(prompt, role="triage", system=SYSTEM, max_tokens=max_tokens, purpose="triage")
++    text = env.llm(prompt, role="triage", system=system_for(env), max_tokens=max_tokens, purpose="triage")
+     out = _parse(text)
+     env.record("triage", out)
+     return out
+diff --git a/src/hack/doctors/single_llm.py b/src/hack/doctors/single_llm.py
+index 5b024b8..b4cc021 100644
+--- a/src/hack/doctors/single_llm.py
++++ b/src/hack/doctors/single_llm.py
+@@ -12,14 +12,17 @@ from hack.doctors.taxonomy import ROOT_CAUSES
+ 
+ CHARS_PER_TOKEN = 3.5
+ 
+-SYSTEM = """You are an on-call SRE for an AI WhatsApp ordering bot (Arabic/English, prices in SAR).
+-The bot calls OrderAPI, StockAPI and PaymentAPI. You receive one incident: metrics, invariant
++SYSTEM_TEMPLATE = """You are an on-call SRE for {description} You receive one incident: metrics, invariant
+ violations, the bot's control-panel config with its change history, chat transcripts and traces.
+ You can only change the bot through ONE control-panel patch (flat dotted keys). If no config change
+ can fix the problem (e.g. an upstream is down or money may have moved without an order), escalate
+ to a human and change nothing, or only make a containing change. Be precise and conservative.
+ Reply with ONE JSON object and nothing else."""
+ 
++
++def system_for(env: Environment) -> str:
++    return SYSTEM_TEMPLATE.format(description=env.patient.short_description)
++
+ OUTPUT_SPEC = """Return exactly this JSON shape:
+ {"root_causes": [{"label": "<one of the labels>", "confidence": 0.0-1.0, "explanation": "..."}],
+  "patch": {"<dotted.knob>": <value>, ...},
+@@ -33,7 +36,7 @@ class SingleLLM(Doctor):
+     def treat(self, env: Environment) -> Diagnosis:
+         budget = int(self.config.get("trace_token_budget", 8000))
+         prompt = self.build_prompt(env, budget)
+-        raw = env.llm(prompt, role="big", system=SYSTEM, max_tokens=int(self.config.get("max_tokens", 16000)),
++        raw = env.llm(prompt, role="big", system=system_for(env), max_tokens=int(self.config.get("max_tokens", 16000)),
+                       purpose="diagnose+fix")
+         answer = parse_answer(raw)
+         if answer is None:
