@@ -9,7 +9,7 @@ Supersedes decision 35 (Fri 19:00) and its addendum 43 (Fri 19:42). Budget mode 
 |---|---|---|
 | Held-out split (order bot, 25 incidents, 5 families + combos + ambiguous_payment + healthy + noisy) | IncidentBench v1.1, byte-identical since v1 | manifest `9ef717b2e5fa00b9`, decision 16 |
 | Transfer split (Hajz reservation bot, 22 incidents, 14 families) | tag `transfer-v1` | manifest `d693690d83b42938`, `scripts/make_transfer_set.py --verify` (also a test) |
-| Code (doctors, bench, patients) | tag `prereg-final` | this commit |
+| Code (doctors, bench, patients) | tag `prereg-final` = commit `aa4203a` (aa4203a5114b01e357433ddb272b306ac654cc85) | `git diff prereg-final -- src eval scripts configs` must be empty at run time |
 | ONLINE playbook store | `experiments/runs/1030-194216_najda_v4_dev/playbooks.json` (7 playbooks learned on dev, 6 fix + 1 escalate) | decision 43 |
 
 Before the freeze, exactly two doctors ran on the transfer split: `oracle` (1.000) and `do_nothing` (0.045), as sanity
@@ -17,7 +17,7 @@ checks (decision 54). Nobody has run on held-out since the bench was built.
 
 ## One run, results reported as they come
 
-The run happens once, on Sat 31 Oct 2026, started by the author. Every arm is one `eval/run_bench.py` call logged to
+The run happens once, started by the author on Fri 30 Oct 2026 at 21:3x KSA (brought forward from Sat). Only infrastructure failures (network, rate limit, API errors) may be retried, with no logic change; every retry is logged here. Every arm is one `eval/run_bench.py` call logged to
 `experiments/log.jsonl`; results are reported in the order they arrive and nothing in code, prompts, flags, splits or
 scoring changes after the first result is seen. If an arm crashes for an infrastructure reason (API outage), it is
 rerun once with the same command and the crash is disclosed. Driver: `scripts/final_run.sh` (prints live spend after
