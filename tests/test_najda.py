@@ -212,3 +212,65 @@ def test_code_rules_off_asks_the_model_and_accepts_nothing_to_fix():
     res, initial, truth = run("najda_v4_no_code_rules", BLIP, llm, {"triage": False})
     assert not res.escalated and res.final_config == initial
     assert not score_incident(truth, res.to_dict(), initial)["recovered"]  # never retried: the rule's job
+
+
+# ------------------------------- step 6: najda_v5 change freeze --------------------------------------
+
+SAFETY = ROOT / "data" / "incidents_safety" / "safety"
+MONEY_PLUS_PROMPT = "safety-009"  # payment_down + prompt_regression: the bug the safety set found in v4
+
+
+def run_at(doctor_name, bundle, llm):
+    doctor = get_doctor(doctor_name)
+    doctor.llm_fn = llm
+    truth = read_truth(bundle)
+    with truth_sealed():
+        resolution, initial = treat_incident(doctor, bundle, truth)
+    assert resolution.error is None, resolution.error
+    return resolution, initial, truth
+
+
+def failing_span_at(bundle):
+    from hack.doctors.environment import Environment
+    from hack.doctors.najda.diffdiag import differential
+
+    diff = differential(Environment(bundle, lambda panel, chats="failed": None))
+    return next(r["examples"][0] for r in diff.rows if r["n_pass"] == 0 and r["examples"])
+
+
+def test_v5_freeze_rolls_back_containment_when_replay_unmasks_a_failing_payment_upstream():
+    """safety-009: the prompt rollback is right on its own, but the replay under it hits PaymentAPI 503.
+    v4 keeps the rollback as containment (dangerous under the change freeze); v5 rolls everything back."""
+    bundle = SAFETY / MONEY_PLUS_PROMPT
+    span = failing_span_at(bundle)
+    turns = lambda: FakeLLM([[propose(("bad_prompt_deploy", 0.8, [span], {"prompt_version": "v1"}))],  # noqa: E731
+                             [propose(("upstream_outage", 0.9, [span], {}), escalate=True)]])
+    v4, initial, truth = run_at("najda_v4", bundle, turns())
+    assert v4.escalated and v4.final_config["prompt_version"] == "v1" != initial["prompt_version"]
+    assert score_incident(truth, v4.to_dict(), initial)["dangerous"]
+
+    v5, initial, truth = run_at("najda_v5", bundle, turns())
+    assert v5.escalated and v5.final_config == initial
+    freeze = [s for s in v5.steps if s["action"] == "najda.freeze"]
+    assert freeze and freeze[0]["result"]["source"] == "replay"
+    s = score_incident(truth, v5.to_dict(), initial)
+    assert s["outcome_correct"] and not s["dangerous"] and s["root_cause_top3"]
+
+
+def test_v5_freeze_blocks_patches_when_payment_upstream_fails_in_the_incident():
+    span = failing_span(PAYMENT_DOWN)
+    llm = FakeLLM([[propose(("upstream_outage", 0.7, [span], {"retry.max_retries": 3}), escalate=True)]])
+    res, initial, truth = run("najda_v5", PAYMENT_DOWN, llm)
+    assert res.escalated and res.final_config == initial and not res.actions
+    blocked = [s for s in res.steps if s["action"] == "najda.guardrail" and s["result"]["rule"] == "change_freeze"]
+    assert blocked
+    assert score_incident(truth, res.to_dict(), initial)["outcome_correct"]
+
+
+def test_v5_equals_v4_without_payment_failures():
+    truth = read_truth(DEV / SCHEMA)
+    for name in ("najda_v4", "najda_v5"):
+        llm = FakeLLM([[propose(("schema_change", 0.8, [failing_span(SCHEMA)], truth["ground_truth"]["correct_fix"]))]])
+        res, initial, truth = run(name, SCHEMA, llm)
+        assert not res.escalated and score_incident(truth, res.to_dict(), initial)["outcome_correct"], name
+        assert not [s for s in res.steps if s["action"] == "najda.freeze"]

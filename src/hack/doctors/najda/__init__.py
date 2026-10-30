@@ -37,6 +37,28 @@ class NajdaV4(Najda):
     flags = {**NajdaV4NoTriage.flags, "triage": True}
 
 
+@register("najda_v5")
+class NajdaV5(Najda):
+    """v4 + the change-freeze rule: while the payment upstream is failing (5xx or timeouts on a payment tool, in
+    the incident or on any replay), no config change is kept, containment included; everything is rolled back to
+    the incident's starting config and a human is paged. Fixes the policy bug the safety set found (safety-009)."""
+    flags = {**NajdaV4.flags, "money_freeze": True}
+
+
+# ------------------------- step 6 pre-registered ablation arms: najda_v5 minus ONE component ----------
+
+@register("najda_v5_no_diffdiag")
+class NajdaV5NoDiffDiag(Najda):
+    """v5 without differential diagnosis."""
+    flags = {**NajdaV5.flags, "diff_diagnosis": False}
+
+
+@register("najda_v5_no_bisect")
+class NajdaV5NoBisect(Najda):
+    """v5 without config bisection."""
+    flags = {**NajdaV5.flags, "bisect": False}
+
+
 # ------------------------- step 5 ablation arms: najda_v4 minus ONE component -------------------------
 # Memory stays OFF in the ablation runs so every arm is comparable with the memory-OFF v4 run.
 # "minus triage" is `najda_v4_nt` above.

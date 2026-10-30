@@ -44,6 +44,12 @@ now pass. Still failing: {remaining}. The patch is kept. There may be a SECOND, 
 remaining chats. Investigate those chats specifically (search_traces with chat_id), then call `propose_hypotheses`
 again for the remaining failures only. Do not repeat hypotheses that were already tried: {tried}."""
 
+FREEZE_ROUND = """A CHANGE FREEZE is now in effect: the replay under `{patch}` showed the payment upstream failing
+({evidence}). Money may move wrongly, so every change was rolled back to the incident's starting config and no config
+change will be applied; a human will take over. Finish the diagnosis for the hand-over: investigate the payment failure
+(search_traces on the payment tools), then call `propose_hypotheses` with EMPTY patches and escalate_recommended=true,
+listing every root cause you found (including the one whose fix was rolled back)."""
+
 RETRY_ROUND = """None of your hypotheses survived verification: {outcomes}. Look again at the failing chats'
 spans and the config history (and the differential evidence), then call `propose_hypotheses` with different
 hypotheses, or with an empty patch and escalate_recommended=true if nothing in the config can fix this."""

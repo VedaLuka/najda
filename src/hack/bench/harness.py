@@ -24,7 +24,9 @@ def make_replay_fn(truth: dict[str, Any], replay_brain: str = "scripted"):
                 "invariants_ok": not run.violations,
                 "violation_names": sorted({v.invariant for v in run.violations}),
                 "violations": [v.to_dict() for v in run.violations],
-                "error_digest": replay_digest(run, per_chat)}
+                "error_digest": replay_digest(run, per_chat),
+                "tool_errors": [{"chat": s.chat_id, "tool": s.name, "status_code": s.status_code}
+                                for s in run.world.tracer.spans if s.kind == "tool" and s.error]}
     return replay_fn
 
 

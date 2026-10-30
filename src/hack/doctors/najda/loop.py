@@ -25,6 +25,7 @@ from hack.llm import ToolLLMResult
 DEFAULTS: dict[str, Any] = {
     "diff_diagnosis": False, "guardrails": False, "canary": False, "bisect": False,
     "structured_money": False, "replay_digest": False,
+    "money_freeze": False,  # v5: while the payment upstream is failing, no config change is kept (containment included)
     "code_rules": True,  # healthy rule + free baseline replay + transient rule (ablation: ask the model instead)
     "playbooks": False, "triage": False, "tier2_threshold": 0.6, "playbook_tiers": 2, "max_playbook_failures": 2,
     "max_rounds": 3, "max_hypotheses": 4, "max_llm_calls": 14, "max_tool_calls_per_round": 10,
@@ -115,6 +116,9 @@ class _Run:
         self.diff: Differential | None = None
         self.bisect: dict[str, Any] | None = None
         self.money: list[str] = []
+        self.frozen: list[str] = []  # change-freeze evidence (payment upstream failing), v5
+        self.freeze_source = ""
+        self.freeze_round_done = False
         self.failed = env.failed_chat_ids()
         self.passing = env.passing_chat_ids()
         self.remaining = list(self.failed)
@@ -145,6 +149,8 @@ class _Run:
         if cfg["guardrails"]:
             self.money = guardrails.money_at_risk_ledger(env) if cfg["structured_money"] else guardrails.money_at_risk(env)
             env.record("money_at_risk", {"evidence": self.money[:5]})
+        if cfg["money_freeze"] and not transient:
+            self.freeze(guardrails.payment_upstream_failing(env), "incident traces")
         if cfg["diff_diagnosis"]:
             self.diff = differential(env)
             env.record("differential", {"top": self.diff.rows[:8], "grounded": len(self.diff.grounded_signatures)})
@@ -172,6 +178,14 @@ class _Run:
             improved = self.try_hypotheses(hyps)
             if self.verified:
                 return self.finish("recovered", top=self.verified)
+            if self.frozen:
+                if self.freeze_round_done or self.freeze_source != "replay" or not hyps:
+                    break  # change freeze: nothing may be kept, a human takes over
+                self.freeze_round_done = True  # the replay unmasked the failure: one diagnosis-only round for the hand-over
+                blocked = next((h for h in reversed(hyps) if h.status == "blocked"), hyps[0])
+                self.messages.append({"role": "user", "content": prompts.FREEZE_ROUND.format(
+                    patch=json.dumps(blocked.patch), evidence="; ".join(self.frozen[:3]))})
+                continue
             if improved:
                 h = next(h for h in reversed(self.hypotheses) if h.status == "kept_improvement")
                 msg = prompts.NEXT_ROUND.format(
@@ -239,6 +253,11 @@ class _Run:
             patch = args.get("patch") or {}
             if not isinstance(patch, dict) or not patch:
                 return "error: patch must be a non-empty object"
+            if self.frozen:
+                env.record("guardrail", {"source": "model", "patch": patch, "allowed": False, "rule": "change_freeze",
+                                         "reason": "payment upstream failing: no config change while money is at risk",
+                                         "evidence": self.frozen[:3]})
+                return "refused by guardrail change_freeze: payment upstream is failing; escalate instead"
             if self.cfg["guardrails"]:
                 verdict = self.check_patch(patch)
                 env.record("guardrail", {"source": "model", "patch": patch, **verdict.to_dict()})
@@ -250,8 +269,12 @@ class _Run:
             r = env.rollback(int(args.get("to_version", self.kept_version)), str(args.get("reason", "najda(model)")))
             return json.dumps(r, default=str)
         if name == "replay":
-            r = Replay.of(env.replay("failed"))
-            if r.n_pass == len(r.per_chat) and r.invariants_ok and env.panel.version != self.kept_version:
+            raw = env.replay("failed")
+            r = Replay.of(raw)
+            self.freeze_from_replay(raw)
+            if self.frozen and env.panel.version != self.kept_version:
+                env.rollback(self.kept_version, "najda: change freeze, payment upstream failing on replay")
+            elif r.n_pass == len(r.per_chat) and r.invariants_ok and env.panel.version != self.kept_version:
                 self.kept_version = env.panel.version
                 self.verified = Hypothesis("unknown", 0.5, [], "model-initiated patch verified by replay",
                                            env.panel.history[-1].patch, "verified", source="model")
@@ -333,6 +356,13 @@ class _Run:
 
     def try_fix(self, h: Hypothesis) -> None:
         env, cfg = self.env, self.cfg
+        if self.frozen:
+            h.status, h.note = "blocked", "change_freeze: payment upstream failing"
+            env.record("guardrail", {"source": "controller", "patch": h.patch, "allowed": False, "rule": "change_freeze",
+                                     "reason": "payment upstream failing: no config change while money is at risk",
+                                     "evidence": self.frozen[:3]})
+            self.tried.append({"label": h.label, "patch": h.patch, "outcome": "blocked (change_freeze)"})
+            return
         if cfg["guardrails"]:
             verdict = self.check_patch(h.patch)
             env.record("guardrail", {"source": "controller", "patch": h.patch, **verdict.to_dict()})
@@ -359,7 +389,12 @@ class _Run:
             if not ok:
                 self.rollback(h, before, "canary did not improve")
                 return
-        full = Replay.of(env.replay("failed"))
+        raw = env.replay("failed")
+        full = Replay.of(raw)
+        if self.freeze_from_replay(raw):
+            self.rollback(h, before, "change freeze: payment upstream failing on replay")
+            h.status = "blocked"
+            return
         all_pass = full.n_pass == len(full.per_chat) and full.invariants_ok
         if not all_pass and not full.better_than(self.best):
             self.rollback(h, before, f"replay {full.n_pass}/{len(full.per_chat)}: no improvement")
@@ -380,6 +415,22 @@ class _Run:
         self.tried.append({"label": h.label, "patch": h.patch, "outcome": f"{h.status} ({h.note})"})
         env.record("verify", {"patch": h.patch, "status": h.status, "n_pass": full.n_pass, "n_total": len(full.per_chat),
                               "remaining": self.remaining})
+
+    def freeze(self, evidence: list[str], source: str) -> None:
+        """Declare a change freeze: the payment upstream is failing, so money may move wrongly and no config change
+        may be kept (containment included). Everything goes back to the incident's starting config."""
+        if not evidence or not self.cfg["money_freeze"]:
+            return
+        self.frozen = list(evidence)
+        self.freeze_source = source
+        self.kept_version = self.base_version
+        self.env.record("freeze", {"source": source, "evidence": evidence[:5]})
+
+    def freeze_from_replay(self, replay: dict[str, Any]) -> bool:
+        """Re-check the freeze on fresh replay evidence (a first fix can unmask a failing payment upstream)."""
+        if self.cfg["money_freeze"] and not self.frozen:
+            self.freeze(guardrails.payment_upstream_failing_on_replay(self.env, replay), "replay")
+        return bool(self.frozen)
 
     def rollback(self, h: Hypothesis, to_version: int, why: str) -> None:
         self.env.rollback(to_version, f"najda: {why}")
@@ -514,6 +565,8 @@ class _Run:
                       if r["n_pass"] == 0]
         if self.money:
             lines.append(f"money at risk: {self.money[0]}")
+        if self.frozen:
+            lines.append(f"change freeze (payment upstream failing): {self.frozen[0]}; all changes rolled back")
         return lines
 
     # ------------------------------ context -----------------------------------
@@ -555,6 +608,10 @@ class _Run:
                          "passing share; cite the span ids as evidence)\n" + self.diff.digest())
         if self.money:
             parts.append("## Money at risk (payment upstream failing or payments without orders)\n" + "\n".join(self.money[:5]))
+        if self.frozen:
+            parts.append("## CHANGE FREEZE in effect: the payment upstream is failing, so no config change will be applied "
+                         "(containment included); a human will take over. Diagnose for the hand-over: propose hypotheses "
+                         "with EMPTY patches and escalate_recommended=true.\n" + "\n".join(self.frozen[:5]))
         digest_chars = int(self.cfg["trace_digest_tokens"]) * 4
         if self.triage is not None:
             parts.append(f"## Triage brief (cheap model, advisory; class={self.triage['class']}; "

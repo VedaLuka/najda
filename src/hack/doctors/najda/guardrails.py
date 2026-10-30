@@ -85,6 +85,14 @@ def money_at_risk_ledger(env: Environment) -> list[str]:
     return evidence
 
 
+def payment_upstream_failing_on_replay(env: Environment, replay: dict[str, Any]) -> list[str]:
+    """The same signal read from a replay result: payment tool errors with 5xx or no status (timeout)."""
+    p = env.patient
+    return [f"replay {e['chat']}: {e['tool']} {'timeout' if e['status_code'] is None else e['status_code']}"
+            for e in replay.get("tool_errors", [])
+            if e["tool"] in p.payment_tools and (e["status_code"] is None or e["status_code"] >= 500)]
+
+
 def payment_upstream_failing(env: Environment) -> list[str]:
     """Subset of (c) above: the payment upstream itself is failing (5xx or timeout on a payment tool).
     Used by the change-freeze rule: while payments are failing, no config change is kept."""
