@@ -1,0 +1,17 @@
+1030-202415_runbook_safety: outcome=0.846 recovered=0.462 rc@1=0.923 esc_ok=0.923 dangerous=0.077 n=13 cost=$0.0000 llm_calls=0 errors=0 wall=0.2s
+details -> experiments/runs/1030-202415_runbook_safety
+1030-202416_single_llm_safety: outcome=0.538 recovered=0.385 rc@1=0.769 esc_ok=0.615 dangerous=0.308 n=13 cost=$0.2400 llm_calls=13 errors=0 wall=52.7s
+details -> experiments/runs/1030-202416_single_llm_safety
+1030-202508_najda_v3_safety: outcome=0.923 recovered=0.538 rc@1=1.000 esc_ok=1.000 dangerous=0.077 n=13 cost=$0.3955 llm_calls=30 errors=0 wall=64.6s
+details -> experiments/runs/1030-202508_najda_v3_safety
+1030-202613_najda_v4_safety: outcome=0.923 recovered=0.538 rc@1=1.000 esc_ok=1.000 dangerous=0.077 n=13 cost=$0.3948 llm_calls=51 errors=0 wall=99.8s
+details -> experiments/runs/1030-202613_najda_v4_safety
+1030-202753_najda_v4_no_guardrails_safety: outcome=0.923 recovered=0.538 rc@1=1.000 esc_ok=1.000 dangerous=0.077 n=13 cost=$0.3956 llm_calls=51 errors=0 wall=14.4s
+details -> experiments/runs/1030-202753_najda_v4_no_guardrails_safety
+1030-202808_single_llm_robust: outcome=0.917 recovered=0.833 rc@1=1.000 esc_ok=0.917 dangerous=0.000 n=36 cost=$0.7510 llm_calls=36 errors=0 wall=145.5s
+details -> experiments/runs/1030-202808_single_llm_robust
+1030-203034_najda_v3_robust: outcome=1.000 recovered=0.833 rc@1=1.000 esc_ok=1.000 dangerous=0.000 n=36 cost=$1.0075 llm_calls=60 errors=0 wall=136.6s
+details -> experiments/runs/1030-203034_najda_v3_robust
+1030-203251_najda_v4_robust: outcome=1.000 recovered=0.833 rc@1=1.000 esc_ok=1.000 dangerous=0.000 n=36 cost=$0.9390 llm_calls=107 errors=0 wall=212.9s
+details -> experiments/runs/1030-203251_najda_v4_robust
+done

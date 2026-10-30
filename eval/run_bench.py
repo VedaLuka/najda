@@ -53,19 +53,24 @@ def bench_version(bench_dir: Path) -> str:
     return path.read_text().strip() if path.exists() else "1.0"
 
 
-def list_bundles(bench_dir: Path, split: str, limit: int | None) -> list[Path]:
+def list_bundles(bench_dir: Path, split: str, limit: int | None, ids: list[str] | None = None) -> list[Path]:
     bundles = sorted(p for p in (bench_dir / split).iterdir() if p.is_dir())
+    if ids:
+        missing = set(ids) - {b.name for b in bundles}
+        if missing:
+            sys.exit(f"unknown incident ids: {sorted(missing)}")
+        bundles = [b for b in bundles if b.name in set(ids)]
     return bundles[:limit] if limit else bundles
 
 
 def run_bench(doctor_name: str, split: str, bench_dir: Path, limit: int | None = None, sequential: bool = False,
               memory: bool = False, workers: int = 4, config: dict | None = None,
               replay_brain: str = "scripted", memory_in: Path | None = None, order_seed: int | None = None,
-              memory_out: Path | None = None) -> list[dict]:
+              memory_out: Path | None = None, ids: list[str] | None = None) -> list[dict]:
     """Treat every incident, then score. Truth is preloaded, then sealed while doctors run.
     Sequential runs may start from a saved memory store (memory_in), stream incidents in a seeded shuffle
     (order_seed) and save the store they end with (memory_out)."""
-    bundles = list_bundles(bench_dir, split, limit)
+    bundles = list_bundles(bench_dir, split, limit, ids)
     if order_seed is not None:
         random.Random(order_seed).shuffle(bundles)
     truths = {b.name: read_truth(b) for b in bundles}
@@ -93,6 +98,7 @@ def run_bench(doctor_name: str, split: str, bench_dir: Path, limit: int | None =
         truth = truths[bundle.name]
         res = resolution.to_dict()
         rows.append({"incident_id": bundle.name, "family": truth["family"], "noisy": truth["noisy"], "position": position,
+                     "conditions": truth.get("conditions", {}), "modifiers": truth.get("modifiers", []),
                      "scores": score_incident(truth, res, incident_config, make_brain(replay_brain)),
                      "memory": memory_events(res), "resolution": res})
     return rows
@@ -112,6 +118,8 @@ def main() -> None:
     ap.add_argument("--doctor", required=True)
     ap.add_argument("--split", default="dev", help="dev | heldout | a stress-set split such as safety / robust")
     ap.add_argument("--limit", type=int)
+    ap.add_argument("--ids", help="comma-separated incident ids to run (subset runs are probes, like --limit)")
+    ap.add_argument("--models", help="alternate configs/models.json for this run (model swap)")
     ap.add_argument("--sequential", action="store_true", help="run incidents in fixed order, one doctor instance")
     ap.add_argument("--memory", default="off", choices=["on", "off"], help="keep doctor memory across incidents (needs --sequential)")
     ap.add_argument("--config", help="JSON config file for the doctor")
@@ -131,13 +139,16 @@ def main() -> None:
     if a.split == "heldout":
         print("!! HELDOUT run: milestones only. Never tune on these results. !!")
 
+    if a.models:
+        os.environ["NAJDA_MODELS"] = str(Path(a.models).resolve())
+    ids = [x for x in a.ids.split(",") if x] if a.ids else None
     config = json.loads(Path(a.config).read_text()) if a.config else {}
     t0 = time.time()
     replay_cost_before = STATS["cost_usd"] if a.replay_brain == "llm" else 0.0
     run_id = f"{datetime.now().strftime('%m%d-%H%M%S')}_{a.doctor}_{a.split}"
     memory_out = None if a.no_log or a.memory != "on" else ROOT / "experiments" / "runs" / run_id / "playbooks.json"
     rows = run_bench(a.doctor, a.split, Path(a.bench_dir), a.limit, a.sequential, a.memory == "on", a.workers, config,
-                     a.replay_brain, Path(a.memory_in) if a.memory_in else None, a.order_seed, memory_out)
+                     a.replay_brain, Path(a.memory_in) if a.memory_in else None, a.order_seed, memory_out, ids)
     wall = time.time() - t0
     agg = aggregate(rows)
 
@@ -149,7 +160,8 @@ def main() -> None:
         "primary_metric": PRIMARY_METRIC, "primary": agg[PRIMARY_METRIC], "metrics": agg,
         "errors": sum(1 for r in rows if r["resolution"]["error"]), "wall_s": round(wall, 1),
         "mean_latency_s": agg["mean_wall_s"], "llm": {"calls": agg["llm_calls"], "cost_usd": agg["cost_usd"]},
-        "models": roles, "sequential": a.sequential, "memory": a.memory, "limit": a.limit,
+        "models": roles, "sequential": a.sequential, "memory": a.memory, "limit": a.limit or (len(ids) if ids else None),
+        "ids": ids, "models_file": a.models,
         "memory_in": a.memory_in, "order_seed": a.order_seed,
         "playbooks": {k: sum(1 for r in rows if r["memory"]["outcome"] == k) for k in ("hit", "hit_escalate", "partial", "false_match", "miss")},
         "config_hash": hashlib.sha1(json.dumps(config, sort_keys=True).encode()).hexdigest()[:8], "config": config,

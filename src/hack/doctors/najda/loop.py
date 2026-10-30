@@ -26,6 +26,7 @@ from hack.patient.config import validate_patch
 DEFAULTS: dict[str, Any] = {
     "diff_diagnosis": False, "guardrails": False, "canary": False, "bisect": False,
     "structured_money": False, "replay_digest": False,
+    "code_rules": True,  # healthy rule + free baseline replay + transient rule (ablation: ask the model instead)
     "playbooks": False, "triage": False, "tier2_threshold": 0.6, "playbook_tiers": 2, "max_playbook_failures": 2,
     "max_rounds": 3, "max_hypotheses": 4, "max_llm_calls": 14, "max_tool_calls_per_round": 10,
     "max_tokens_total": 150_000, "max_cost_usd": 0.40, "max_knobs_per_patch": 3,
@@ -129,16 +130,19 @@ class _Run:
     # ------------------------------ main --------------------------------------
     def treat(self) -> Diagnosis:
         env, cfg = self.env, self.cfg
-        if not self.failed and not env.read_invariants():
+        if cfg["code_rules"] and not self.failed and not env.read_invariants():
             env.record("decision", {"status": "healthy", "reason": "no failed chats and no invariant violations"})
             return Diagnosis([RootCause("no_fault", 0.9, "no failed chats, no invariant violations")],
                              "healthy: nothing to fix")
 
-        baseline = Replay.of(env.replay("failed"))  # free retry: restarted services, later in time
+        if cfg["code_rules"]:
+            baseline = Replay.of(env.replay("failed"))  # free retry: restarted services, later in time
+            transient = baseline.n_pass == len(baseline.per_chat) and baseline.invariants_ok
+            env.record("baseline_replay", {"n_pass": baseline.n_pass, "n_total": len(baseline.per_chat),
+                                            "transient": transient})
+        else:  # ablation: no free replay; the incident's own verdicts are the comparison point
+            baseline, transient = self.incident_baseline(), False
         self.best = baseline
-        transient = baseline.n_pass == len(baseline.per_chat) and baseline.invariants_ok
-        env.record("baseline_replay", {"n_pass": baseline.n_pass, "n_total": len(baseline.per_chat),
-                                        "transient": transient})
         if cfg["guardrails"]:
             self.money = guardrails.money_at_risk_ledger(env) if cfg["structured_money"] else guardrails.money_at_risk(env)
             env.record("money_at_risk", {"evidence": self.money[:5]})
@@ -164,6 +168,8 @@ class _Run:
             hyps = self.validate(proposal)
             if transient:
                 return self.finish("recovered", top=hyps[0] if hyps else None, note="transient: retry passed")
+            if not cfg["code_rules"] and hyps and not any(h.patch for h in hyps) and not proposal.get("escalate_recommended"):
+                return self.finish("recovered", top=hyps[0], note="model: nothing to fix")  # the model's call stands
             improved = self.try_hypotheses(hyps)
             if self.verified:
                 return self.finish("recovered", top=self.verified)
@@ -512,6 +518,12 @@ class _Run:
         return lines
 
     # ------------------------------ context -----------------------------------
+    def incident_baseline(self) -> Replay:
+        """Replay-shaped view of the incident itself: every failed chat failing, no progress credit."""
+        bad = {v["chat_id"] for v in self.env.read_invariants()}
+        per_chat = {c: {"pass": False, "invariants_ok": c not in bad, "progress": 0} for c in self.failed}
+        return Replay(0, not bad, 0, per_chat)
+
     def initial_context(self, baseline: Replay, transient: bool) -> str:
         env = self.env
         metrics = env.read_metrics()
@@ -523,11 +535,13 @@ class _Run:
             "## Invariant violations\n" + (_compact(env.read_invariants()[:12]) or "none"),
             "## Config (current)\n" + _compact(env.read_config()["current"]),
             "## Config change history (old -> new)\n" + (_compact(env.config_history_diff()) or "no changes since v1"),
-            "## Baseline replay (failed chats rerun on the CURRENT config, services restarted, 1h later)\n"
-            + f"{baseline.n_pass}/{len(baseline.per_chat)} pass, invariants_ok={baseline.invariants_ok}"
-            + ("\n=> The failure cleared without any change: it looks transient. Label the root cause and propose "
-               "hypotheses with EMPTY patches; do not change config that is not broken." if transient else ""),
         ]
+        if self.cfg["code_rules"]:
+            parts.append(
+                "## Baseline replay (failed chats rerun on the CURRENT config, services restarted, 1h later)\n"
+                + f"{baseline.n_pass}/{len(baseline.per_chat)} pass, invariants_ok={baseline.invariants_ok}"
+                + ("\n=> The failure cleared without any change: it looks transient. Label the root cause and propose "
+                   "hypotheses with EMPTY patches; do not change config that is not broken." if transient else ""))
         if self.kept_version != self.base_version:
             parts.append("## Already applied and KEPT before you (a learned playbook improved but did not fix everything)\n"
                          + "; ".join(f"{t['patch']}: {t['outcome']}" for t in self.tried)

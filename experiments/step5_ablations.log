@@ -1,0 +1,11 @@
+1030-202415_najda_v4_no_diffdiag_dev: outcome=0.976 recovered=0.786 rc@1=1.000 esc_ok=0.976 dangerous=0.000 n=42 cost=$1.0647 llm_calls=128 errors=0 wall=242.5s
+details -> experiments/runs/1030-202415_najda_v4_no_diffdiag_dev
+1030-202818_najda_v4_no_guardrails_dev: outcome=0.976 recovered=0.786 rc@1=1.000 esc_ok=0.976 dangerous=0.000 n=42 cost=$1.0663 llm_calls=119 errors=0 wall=12.7s
+details -> experiments/runs/1030-202818_najda_v4_no_guardrails_dev
+1030-202831_najda_v4_no_canary_dev: outcome=0.976 recovered=0.786 rc@1=1.000 esc_ok=0.976 dangerous=0.000 n=42 cost=$1.1710 llm_calls=120 errors=0 wall=18.5s
+details -> experiments/runs/1030-202831_najda_v4_no_canary_dev
+1030-202850_najda_v4_no_bisect_dev: outcome=0.976 recovered=0.786 rc@1=1.000 esc_ok=0.976 dangerous=0.000 n=42 cost=$1.0553 llm_calls=115 errors=0 wall=155.1s
+details -> experiments/runs/1030-202850_najda_v4_no_bisect_dev
+1030-203125_najda_v4_no_code_rules_dev: outcome=0.952 recovered=0.786 rc@1=0.976 esc_ok=0.976 dangerous=0.024 n=42 cost=$1.1216 llm_calls=128 errors=0 wall=186.4s
+details -> experiments/runs/1030-203125_najda_v4_no_code_rules_dev
+done

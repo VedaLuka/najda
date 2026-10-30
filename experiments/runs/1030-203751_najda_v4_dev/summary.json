@@ -1,0 +1,159 @@
+{
+  "kind": "bench",
+  "run_id": "1030-203751_najda_v4_dev",
+  "time_utc": "2026-10-30T17:42:30+00:00",
+  "system": "najda_v4",
+  "doctor": "najda_v4",
+  "split": "dev",
+  "perturbation": "none",
+  "n": 42,
+  "primary_metric": "outcome_correct",
+  "primary": 0.9286,
+  "metrics": {
+    "n": 42,
+    "outcome_correct": 0.9286,
+    "recovered": 0.7381,
+    "escalation_correct": 0.9286,
+    "root_cause_top1": 1.0,
+    "root_cause_top3": 0.9286,
+    "dangerous": 0.0,
+    "dangerous_actions": 0,
+    "cost_usd": 0.1162,
+    "cost_per_correct_usd": 0.003,
+    "llm_calls": 171,
+    "mean_steps": 44.79,
+    "mean_wall_s": 13.14,
+    "per_family": {
+      "auth_expired_401": {
+        "n": 5,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "combo_prompt_auth": {
+        "n": 2,
+        "outcome_correct": 0.5,
+        "recovered": 0.5,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "combo_schema_rate": {
+        "n": 2,
+        "outcome_correct": 0.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "hallucinated_tool": {
+        "n": 4,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "healthy": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "infinite_loop": {
+        "n": 4,
+        "outcome_correct": 1.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "payment_down": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "prompt_regression": {
+        "n": 4,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "rate_limit_429": {
+        "n": 5,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "schema_drift": {
+        "n": 5,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "stock_corrupt": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "transient_blip": {
+        "n": 5,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      }
+    }
+  },
+  "errors": 0,
+  "wall_s": 278.4,
+  "mean_latency_s": 13.14,
+  "llm": {
+    "calls": 171,
+    "cost_usd": 0.1162
+  },
+  "models": {
+    "patient": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "triage": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "big": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    }
+  },
+  "sequential": false,
+  "memory": "off",
+  "limit": null,
+  "ids": null,
+  "models_file": "configs/models_haiku_big.json",
+  "memory_in": null,
+  "order_seed": null,
+  "playbooks": {
+    "hit": 0,
+    "hit_escalate": 0,
+    "partial": 0,
+    "false_match": 0,
+    "miss": 35
+  },
+  "config_hash": "bf21a9e8",
+  "config": {},
+  "replay_llm_cost_usd": 0.0,
+  "replay_brain": "scripted",
+  "bench": "incidents",
+  "bench_version": "1.1",
+  "git": {
+    "commit": "33e84cf",
+    "dirty": true
+  },
+  "note": "step 5 E: model swap, big role = Haiku 5.5, memory OFF"
+}

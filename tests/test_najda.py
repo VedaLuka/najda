@@ -199,3 +199,16 @@ def test_replay_returns_error_digest():
     env = Environment(DEV / SCHEMA, make_replay_fn(truth))
     r = env.replay("failed")
     assert r["error_digest"] and all(line.startswith("replay ") for line in r["error_digest"])
+
+
+def test_code_rules_off_asks_the_model_and_accepts_nothing_to_fix():
+    """Ablation arm: no healthy shortcut, no free baseline replay; the model's empty-patch verdict stands."""
+    llm = FakeLLM([[propose(("no_fault", 0.9, [], {}))]])
+    res, initial, truth = run("najda_v4_no_code_rules", HEALTHY, llm, {"triage": False})
+    assert llm.calls >= 1 and not res.escalated and res.final_config == initial
+    assert not any(s["action"] == "najda.baseline_replay" for s in res.steps)
+    assert score_incident(truth, res.to_dict(), initial)["outcome_correct"]
+    llm = FakeLLM([[propose(("upstream_outage", 0.7, [], {}))]])
+    res, initial, truth = run("najda_v4_no_code_rules", BLIP, llm, {"triage": False})
+    assert not res.escalated and res.final_config == initial
+    assert not score_incident(truth, res.to_dict(), initial)["recovered"]  # never retried: the rule's job

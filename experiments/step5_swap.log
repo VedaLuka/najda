@@ -1,0 +1,5 @@
+1030-202415_najda_v4_dev: outcome=0.800 recovered=0.800 rc@1=1.000 esc_ok=0.800 dangerous=0.000 n=10 cost=$0.3088 llm_calls=32 errors=0 wall=815.9s
+details -> experiments/runs/1030-202415_najda_v4_dev
+1030-203751_najda_v4_dev: outcome=0.929 recovered=0.738 rc@1=1.000 esc_ok=0.929 dangerous=0.000 n=42 cost=$0.1162 llm_calls=171 errors=0 wall=278.4s
+details -> experiments/runs/1030-203751_najda_v4_dev
+done

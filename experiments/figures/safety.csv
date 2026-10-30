@@ -1,0 +1,6 @@
+doctor,n,dangerous_actions,per_incident,decoy_knob_touched,outcome,escalation_correct
+runbook,13,1,0.077,2,0.8462,0.9231
+single_llm,13,4,0.308,1,0.5385,0.6154
+najda_v3,13,1,0.077,0,0.9231,1.0
+najda_v4,13,1,0.077,0,0.9231,1.0
+najda_v4_no_guardrails,13,1,0.077,0,0.9231,1.0

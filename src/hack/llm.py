@@ -63,7 +63,8 @@ class ToolLLMResult:
 
 
 def load_roles() -> dict[str, dict[str, str]]:
-    data = json.loads(MODELS_FILE.read_text())
+    """Role -> provider/model from configs/models.json; NAJDA_MODELS=<path> swaps the file for one run."""
+    data = json.loads(Path(os.getenv("NAJDA_MODELS") or MODELS_FILE).read_text())
     return {k: v for k, v in data.items() if not k.startswith("_")}
 
 

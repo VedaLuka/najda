@@ -1,0 +1,5 @@
+doctor,memory,seeds,accuracy,ci_lo,ci_hi,cost_per_incident,llm_calls_per_stream,hit_rate,false_match_rate,zero_llm_incidents,source
+najda_v4_nt,off,1,0.9762,0.9286,1,0.0325,79.0,0.0,0.0,2,1030-194208_najda_v4_nt
+najda_v4_nt,on,3,0.9683,0.9206,1,0.0204,48.0,0.452,0.0,63,1030-194208_najda_v4_nt
+najda_v4,off,1,0.9762,0.9286,1,0.0253,118.0,0.0,0.0,2,1030-194212_najda_v4
+najda_v4,on,3,0.9683,0.9206,1,0.0153,64.0,0.452,0.0,63,1030-194212_najda_v4

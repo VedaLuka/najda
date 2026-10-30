@@ -1,0 +1,6 @@
+{
+  "_note": "Step 5 model swap: the big (investigator) role on Haiku 5.5. Patient and triage unchanged.",
+  "patient": {"provider": "anthropic", "model": "claude-haiku-5-5"},
+  "triage":  {"provider": "anthropic", "model": "claude-haiku-5-5"},
+  "big":     {"provider": "anthropic", "model": "claude-haiku-5-5"}
+}

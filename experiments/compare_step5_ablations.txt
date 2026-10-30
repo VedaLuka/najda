@@ -1,0 +1,5 @@
+outcome_correct: 0.9762 (najda_v4) -> 0.9762 (najda_v4_no_diffdiag)  delta=+0.0000 shared: 42 | fixed 0 | broken 0 
+outcome_correct: 0.9762 (najda_v4) -> 0.9762 (najda_v4_no_guardrails)  delta=+0.0000 shared: 42 | fixed 0 | broken 0 
+outcome_correct: 0.9762 (najda_v4) -> 0.9762 (najda_v4_no_canary)  delta=+0.0000 shared: 42 | fixed 0 | broken 0 
+outcome_correct: 0.9762 (najda_v4) -> 0.9762 (najda_v4_no_bisect)  delta=+0.0000 shared: 42 | fixed 0 | broken 0 
+[BROKEN] dev-032 (stock_corrupt)   old: recovered=False escalated=True causes=data_corruption changed=-   new: recovered=False escalated=True causes=stale_data,data_corruption changed=['stock_fresh_read'] 
