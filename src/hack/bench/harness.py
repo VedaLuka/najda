@@ -18,8 +18,8 @@ def make_brain(replay_brain: str) -> Brain:
 
 
 def make_replay_fn(truth: dict[str, Any], replay_brain: str = "scripted"):
-    def replay_fn(panel: ControlPanel) -> dict[str, Any]:
-        run = rerun(truth, panel, chats="failed", brain=make_brain(replay_brain))
+    def replay_fn(panel: ControlPanel, chats: str | list[str] = "failed") -> dict[str, Any]:
+        run = rerun(truth, panel, chats=chats, brain=make_brain(replay_brain))
         per_chat = run.chat_verdicts()
         n_pass = sum(v["pass"] for v in per_chat.values())
         return {"per_chat": per_chat, "n_pass": n_pass, "n_total": len(per_chat),

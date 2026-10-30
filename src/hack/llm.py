@@ -39,6 +39,29 @@ class LLMResult:
     priced: bool
 
 
+@dataclass
+class ToolLLMResult:
+    """One assistant turn of a tool-use conversation. `content` is the raw list of content blocks
+    (text / tool_use / thinking) as plain dicts, ready to be appended back to the messages."""
+    content: list[dict[str, Any]]
+    stop_reason: str
+    model: str
+    input_tokens: int
+    output_tokens: int
+    cache_read_tokens: int
+    cost_usd: float
+    cached: bool
+    priced: bool
+
+    @property
+    def text(self) -> str:
+        return "".join(b.get("text", "") for b in self.content if b.get("type") == "text")
+
+    @property
+    def tool_uses(self) -> list[dict[str, Any]]:
+        return [b for b in self.content if b.get("type") == "tool_use"]
+
+
 def load_roles() -> dict[str, dict[str, str]]:
     data = json.loads(MODELS_FILE.read_text())
     return {k: v for k, v in data.items() if not k.startswith("_")}
@@ -122,6 +145,77 @@ def call_llm_ex(
 
 def call_llm(prompt: str | list[dict], **kwargs: Any) -> str:
     return call_llm_ex(prompt, **kwargs).text
+
+
+def call_llm_tools_ex(
+    messages: list[dict[str, Any]],
+    tools: list[dict[str, Any]],
+    role: str = "big",
+    system: str | None = None,
+    max_tokens: int = 4096,
+    effort: str = "medium",
+    use_cache: bool = True,
+    retries: int = 3,
+) -> ToolLLMResult:
+    """One assistant turn with the Anthropic tools API (tool_use blocks returned, not executed).
+    Cache key covers tools + messages + system. Prompt caching: the request carries a top-level
+    ephemeral cache_control, so the server caches the longest stable prefix (system + tools + the
+    conversation so far) and each loop turn re-reads it at the cache-read rate."""
+    provider, model = role_model(role)
+    if provider != "anthropic":
+        raise NotImplementedError("tool use is implemented for the anthropic provider only")
+    payload = {"provider": provider, "model": model, "messages": messages, "system": system,
+               "tools": tools, "max_tokens": max_tokens, "effort": effort}
+    path = CACHE_DIR / f"{_key(payload)}.json"
+
+    cached = use_cache and path.exists()
+    if cached:
+        entry = json.loads(path.read_text())
+        content, stop_reason, usage, seconds = entry["content"], entry["stop_reason"], entry.get("usage", {}), 0.0
+    else:
+        t0 = time.time()
+        for attempt in range(retries):
+            try:
+                content, stop_reason, usage = _call_tools(model, messages, system, tools, max_tokens, effort)
+                break
+            except Exception:
+                if attempt == retries - 1:
+                    raise
+                time.sleep(2 ** attempt)
+        seconds = time.time() - t0
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps({"payload": payload, "content": content, "stop_reason": stop_reason,
+                                    "usage": usage}, ensure_ascii=False))
+
+    tin = int(usage.get("input", 0)) + int(usage.get("cache_write", 0)) + int(usage.get("cache_read", 0))
+    tout = int(usage.get("output", 0))
+    cost, priced = cost_of(model, usage)
+    with _LOCK:
+        STATS["calls"] += 1
+        STATS["cache_hits"] += int(cached)
+        STATS["input_tokens"] += tin
+        STATS["output_tokens"] += tout
+        STATS["cost_usd"] += cost
+        STATS["seconds"] += seconds
+        STATS["unpriced_calls"] += int(not priced)
+    return ToolLLMResult(content, stop_reason, model, tin, tout, int(usage.get("cache_read", 0)), cost, cached, priced)
+
+
+def _call_tools(model, messages, system, tools, max_tokens, effort):
+    import anthropic
+
+    client = anthropic.Anthropic()
+    kwargs: dict[str, Any] = {"model": model, "messages": messages, "tools": tools, "max_tokens": max_tokens,
+                              "cache_control": {"type": "ephemeral"}, "output_config": {"effort": effort}}
+    if system:
+        kwargs["system"] = system
+    resp = client.messages.create(**kwargs)
+    content = [b.model_dump(exclude_none=True) for b in resp.content]
+    u = resp.usage
+    usage = {"input": u.input_tokens, "output": u.output_tokens,
+             "cache_write": getattr(u, "cache_creation_input_tokens", 0) or 0,
+             "cache_read": getattr(u, "cache_read_input_tokens", 0) or 0}
+    return content, resp.stop_reason, usage
 
 
 def _call(provider, model, messages, system, temperature, max_tokens):

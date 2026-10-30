@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
+from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +30,66 @@ def latest_by_doctor(rows: list[dict], split: str) -> dict[str, dict]:
 
 def pct(x: float | None) -> str:
     return "-" if x is None else f"{x:.3f}"
+
+
+CI_METRICS = ("outcome_correct", "recovered", "escalation_correct", "root_cause_top1", "dangerous")
+
+
+def load_results(run_id: str) -> list[dict]:
+    path = ROOT / "experiments" / "runs" / run_id / "results.jsonl"
+    return [json.loads(l) for l in path.read_text().splitlines() if l.strip()] if path.exists() else []
+
+
+def bootstrap_ci(values: list[bool], n_boot: int = 2000, seed: int = 0) -> tuple[float, float]:
+    """95% percentile bootstrap CI of a rate over incidents (resampled with replacement)."""
+    rng = random.Random(seed)
+    n = len(values)
+    if n == 0:
+        return 0.0, 0.0
+    means = sorted(sum(rng.choice(values) for _ in range(n)) / n for _ in range(n_boot))
+    return means[int(0.025 * n_boot)], means[int(0.975 * n_boot) - 1]
+
+
+def confidence_intervals(latest: dict[str, dict], split: str) -> list[str]:
+    out = ["", f"## 95% bootstrap confidence intervals ({split}, 2000 resamples over incidents)", "",
+           "| Doctor | n | " + " | ".join(CI_METRICS) + " |", "|---|---|" + "---|" * len(CI_METRICS)]
+    for name, r in latest.items():
+        if name in SANITY_ONLY:
+            continue
+        rows = load_results(r["run_id"])
+        if not rows:
+            continue
+        cells = []
+        for m in CI_METRICS:
+            vals = [bool(x["scores"][m]) for x in rows]
+            lo, hi = bootstrap_ci(vals)
+            cells.append(f"{sum(vals) / len(vals):.3f} [{lo:.3f}, {hi:.3f}]")
+        out.append(f"| `{name}` | {len(rows)} | " + " | ".join(cells) + " |")
+    return out
+
+
+def calibration(latest: dict[str, dict], doctor: str, split: str) -> list[str]:
+    """Top hypothesis confidence (as logged by the doctor) vs whether the incident outcome was correct."""
+    if doctor not in latest:
+        return []
+    buckets: dict[str, list[tuple[float, bool]]] = defaultdict(list)
+    for row in load_results(latest[doctor]["run_id"]):
+        causes = row["resolution"]["root_causes"]
+        if not causes:
+            continue
+        c = float(causes[0]["confidence"])
+        b = "<0.5" if c < 0.5 else "0.5-0.7" if c < 0.7 else "0.7-0.9" if c < 0.9 else ">=0.9"
+        buckets[b].append((c, bool(row["scores"]["outcome_correct"])))
+    if not buckets:
+        return []
+    out = ["", f"## Calibration of `{doctor}` ({split}): top-hypothesis confidence vs outcome_correct", "",
+           "| Confidence bucket | n | outcome_correct | mean confidence |", "|---|---|---|---|"]
+    for b in ("<0.5", "0.5-0.7", "0.7-0.9", ">=0.9"):
+        if b in buckets:
+            xs = buckets[b]
+            out.append(f"| {b} | {len(xs)} | {sum(ok for _, ok in xs) / len(xs):.3f} | "
+                       f"{sum(c for c, _ in xs) / len(xs):.3f} |")
+    return out
 
 
 def progression(latest: dict[str, dict], split: str) -> list[str]:
@@ -72,6 +134,7 @@ def dev_vs_heldout(dev: dict[str, dict], held: dict[str, dict]) -> list[str]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
+    ap.add_argument("--calibrate", default="najda_v2", help="doctor whose logged confidences get a calibration table")
     a = ap.parse_args()
     log = ROOT / "experiments" / "log.jsonl"
     rows = [json.loads(line) for line in log.read_text().splitlines() if line.strip()] if log.exists() else []
@@ -82,7 +145,8 @@ def main() -> None:
     dev, held = latest_by_doctor(rows, "dev"), latest_by_doctor(rows, "heldout")
     out: list[str] = []
     if dev:
-        out += progression(dev, "dev") + per_family(dev, "dev")
+        out += progression(dev, "dev") + per_family(dev, "dev") + confidence_intervals(dev, "dev")
+        out += calibration(dev, a.calibrate, "dev")
     if held:
         out += ["", "> !! Heldout results below: milestones only, never tune on them."]
         out += progression(held, "heldout")

@@ -42,12 +42,16 @@ class IncidentRun:
 
     def chat_verdicts(self) -> dict[str, dict[str, Any]]:
         bad_chats = {v.chat_id for v in self.violations}
+        progress: dict[str, set[str]] = {}
+        for s in self.world.tracer.spans:  # distinct tool steps that succeeded: how far the chat got
+            if s.kind == "tool" and not s.error:
+                progress.setdefault(s.chat_id, set()).add(s.name)
         out = {}
         for r in self.results:
             inv_ok = r.chat_id not in bad_chats
             done = order_completed(self.world, r)
             out[r.chat_id] = {"pass": inv_ok and done, "invariants_ok": inv_ok, "order_completed": done,
-                              "outcome": r.outcome, "turns": r.turns}
+                              "outcome": r.outcome, "turns": r.turns, "progress": len(progress.get(r.chat_id, ()))}
         return out
 
 
@@ -84,10 +88,15 @@ def spec_from_truth(truth: dict[str, Any]) -> IncidentSpec:
                         truth["noisy"], truth["chat_ids"])
 
 
-def rerun(truth: dict[str, Any], panel: ControlPanel, chats: str = "failed", brain: Brain | None = None) -> IncidentRun:
+def rerun(truth: dict[str, Any], panel: ControlPanel, chats: str | list[str] = "failed",
+          brain: Brain | None = None) -> IncidentRun:
     """Rebuild the broken world from an in-memory truth record and rerun chats under `panel`, later in time.
-    chats="failed" reruns the chats that failed in the incident (all chats if none failed)."""
-    chat_ids = truth["failed_chats"] if chats == "failed" else truth["chat_ids"]
+    chats="failed" reruns the chats that failed in the incident (all chats if none failed); "all" reruns
+    every chat; a list reruns exactly those chat ids."""
+    if isinstance(chats, list):
+        chat_ids = [c for c in chats if c in truth["chat_ids"]]
+    else:
+        chat_ids = truth["failed_chats"] if chats == "failed" else truth["chat_ids"]
     return run_incident(spec_from_truth(truth), brain=brain, chat_ids=chat_ids or truth["chat_ids"],
                         panel=panel, later=True)
 

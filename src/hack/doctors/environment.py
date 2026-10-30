@@ -10,15 +10,16 @@ from __future__ import annotations
 
 import json
 import time
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Callable
 
 from hack.bench.incidents import load_bundle
-from hack.llm import call_llm_ex
+from hack.llm import ToolLLMResult, call_llm_ex, call_llm_tools_ex
 from hack.patient.config import KNOB_DOCS, ControlPanel, diff_configs, validate_patch
 from hack.patient.otel import to_otel
 
-ReplayFn = Callable[[ControlPanel], dict[str, Any]]
+ReplayFn = Callable[..., dict[str, Any]]  # (panel, chats="failed" | "all" | [chat ids]) -> result
 RISKY_KEYS = ("prompt_version", "payment_verify", "auth.key_slot")
 
 
@@ -96,6 +97,26 @@ class Environment:
         self._log("read_invariants", {}, {"violations": len(self._bundle["invariants"])})
         return json.loads(json.dumps(self._bundle["invariants"]))
 
+    def config_history_diff(self) -> list[dict[str, Any]]:
+        """Every config version after the first with the knobs it changed (old -> new), actor and reason."""
+        hist = self.panel.history
+        out = []
+        for prev, cur in zip(hist, hist[1:]):
+            changed = {k: {"old": o, "new": n} for k, (o, n) in diff_configs(prev.config, cur.config).items()}
+            out.append({"version": cur.version, "actor": cur.actor, "reason": cur.reason, "time": cur.time,
+                        "changed": changed})
+        self._log("config_history_diff", {}, {"versions": len(out)})
+        return out
+
+    def failed_chat_ids(self) -> list[str]:
+        """Chats that did not end well: outcome 'failed', or an invariant violation on the chat."""
+        bad = {v["chat_id"] for v in self._bundle["invariants"]}
+        return [c["chat_id"] for c in self._bundle["chats"] if c["outcome"] == "failed" or c["chat_id"] in bad]
+
+    def passing_chat_ids(self) -> list[str]:
+        failed = set(self.failed_chat_ids())
+        return [c["chat_id"] for c in self._bundle["chats"] if c["chat_id"] not in failed]
+
     @staticmethod
     def describe_knobs() -> dict[str, str]:
         return dict(KNOB_DOCS)
@@ -128,12 +149,25 @@ class Environment:
         return self._log("rollback", {"to_version": to_version, "reason": reason},
                          {"ok": True, "version": version, "changed": changed}, approval)
 
-    def replay(self) -> dict[str, Any]:
-        """Rerun the incident's failed chats with the CURRENT config. Returns pass/fail per chat."""
-        result = self._replay_fn(self.panel)
+    def replay(self, chats: str | list[str] = "failed") -> dict[str, Any]:
+        """Rerun the incident's failed chats ("failed"), every chat ("all") or the given chat ids with the
+        CURRENT config. Returns pass/fail per chat."""
+        result = self._replay_fn(self.panel, chats)
         summary = {"n_pass": result["n_pass"], "n_total": result["n_total"], "all_pass": result["all_pass"],
                    "invariants_ok": result["invariants_ok"], "violations": result["violation_names"]}
-        self._log("replay", {"config_version": self.panel.version}, summary)
+        self._log("replay", {"config_version": self.panel.version, "chats": chats}, summary)
+        return result
+
+    def replay_at_version(self, version: int, chats: str | list[str] = "failed") -> dict[str, Any]:
+        """Rerun chats against a HISTORICAL config version without changing the control panel.
+        Used for config bisection; logged separately from a real replay so it never counts as a retry."""
+        target = next((v for v in self.panel.history if v.version == version), None)
+        if target is None:
+            raise ValueError(f"no config version {version}")
+        panel = ControlPanel.from_snapshot({"history": [asdict(target)]})
+        result = self._replay_fn(panel, chats)
+        summary = {"n_pass": result["n_pass"], "n_total": result["n_total"], "all_pass": result["all_pass"]}
+        self._log("bisect_replay", {"config_version": version, "chats": chats}, summary)
         return result
 
     def escalate(self, report: str) -> None:
@@ -154,6 +188,26 @@ class Environment:
                   {"input_tokens": res.input_tokens, "output_tokens": res.output_tokens,
                    "cost_usd": round(res.cost_usd, 6), "cached": res.cached, "priced": res.priced})
         return res.text
+
+    def llm_tools(self, messages: list[dict], tools: list[dict], role: str = "big", system: str | None = None,
+                  max_tokens: int = 8000, effort: str = "medium", purpose: str = "") -> ToolLLMResult:
+        """One assistant turn of a tool-use conversation (tool calls are returned, not executed)."""
+        res = call_llm_tools_ex(messages, tools, role=role, system=system, max_tokens=max_tokens, effort=effort)
+        u = self.llm_usage
+        u["calls"] += 1
+        u["input_tokens"] += res.input_tokens
+        u["output_tokens"] += res.output_tokens
+        u["cost_usd"] += res.cost_usd
+        self._log("llm", {"role": role, "model": res.model, "purpose": purpose, "tool_use": True},
+                  {"input_tokens": res.input_tokens, "output_tokens": res.output_tokens,
+                   "cache_read_tokens": res.cache_read_tokens, "cost_usd": round(res.cost_usd, 6),
+                   "cached": res.cached, "priced": res.priced, "stop_reason": res.stop_reason,
+                   "tool_calls": [b["name"] for b in res.tool_uses]})
+        return res
+
+    def record(self, event: str, data: dict[str, Any]) -> None:
+        """Doctor-level trajectory entry (hypotheses, guardrail verdicts, canary results, ...)."""
+        self._log(f"najda.{event}", {}, data)
 
     # ------------------------------ internals --------------------------------
     @property

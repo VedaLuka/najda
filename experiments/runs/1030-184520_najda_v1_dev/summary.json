@@ -1,0 +1,71 @@
+{
+  "kind": "bench",
+  "run_id": "1030-184520_najda_v1_dev",
+  "time_utc": "2026-10-30T15:45:20+00:00",
+  "system": "najda_v1",
+  "doctor": "najda_v1",
+  "split": "dev",
+  "perturbation": "none",
+  "n": 3,
+  "primary_metric": "outcome_correct",
+  "primary": 1.0,
+  "metrics": {
+    "n": 3,
+    "outcome_correct": 1.0,
+    "recovered": 1.0,
+    "escalation_correct": 1.0,
+    "root_cause_top1": 1.0,
+    "root_cause_top3": 1.0,
+    "dangerous": 0.0,
+    "dangerous_actions": 0,
+    "cost_usd": 0.0653,
+    "cost_per_correct_usd": 0.0218,
+    "llm_calls": 4,
+    "mean_steps": 18.0,
+    "mean_wall_s": 7.04,
+    "per_family": {
+      "schema_drift": {
+        "n": 3,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      }
+    }
+  },
+  "errors": 0,
+  "wall_s": 13.7,
+  "mean_latency_s": 7.04,
+  "llm": {
+    "calls": 4,
+    "cost_usd": 0.0653
+  },
+  "models": {
+    "patient": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "triage": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "big": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5"
+    }
+  },
+  "sequential": false,
+  "memory": "off",
+  "limit": 3,
+  "config_hash": "bf21a9e8",
+  "config": {},
+  "replay_llm_cost_usd": 0.0,
+  "replay_brain": "scripted",
+  "bench": "incidents",
+  "bench_version": "1.1",
+  "git": {
+    "commit": "07172d1",
+    "dirty": true
+  },
+  "note": "step3 probe: v1 cost check"
+}

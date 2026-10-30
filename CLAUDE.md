@@ -40,8 +40,14 @@ Pieces:
 - **Doctor prompts** may use the generic root-cause taxonomy but must contain nothing written for a
   specific held-out family.
 - **Models** (`configs/models.json`): provider + model per role (patient, triage, big). Prices in
-  `configs/prices.json` (approximate). Cache entries keep original token usage so reruns report real cost.
-- **Najda** (step 3, not built yet): registered as new doctors and scored with `eval/run_bench.py`.
+  `configs/prices.json` (confirmed from the official Anthropic pricing page, 2026-10-30). Cache entries keep original token usage so reruns report real cost.
+- **Najda** (`src/hack/doctors/najda/`): `loop.py` = INVESTIGATE (big model, Anthropic tools API over the
+  Environment) -> HYPOTHESISE (ranked, taxonomy label + span evidence + confidence + smallest patch) -> FIX
+  (one patch at a time, guardrails) -> VERIFY (canary then full replay of failed chats, regression replay of
+  passing chats) -> next hypothesis / next fault / ESCALATE. Code decides; the model proposes. Flags:
+  `diff_diagnosis` (failing-vs-passing span signatures, grounded hypotheses), `guardrails` (blast radius,
+  protected knobs, money-at-risk, auto-rollback), `canary`, `bisect` (config-history binary search by replay).
+  `najda_v1` = core loop; `najda_v2` = all flags. Tests use a fake LLM (`tests/test_najda.py`).
 
 ## Non-negotiable workflow
 1. **Baseline first.** No clever Najda until `do_nothing`, `restart`, `runbook` and `single_llm`
@@ -51,6 +57,7 @@ Pieces:
 4. **One change at a time** where possible, so each gain is attributable (ablations).
 5. **Heldout split is for milestones only.** Never tune on it. Never look at heldout incidents or `_truth/` to write prompts.
 6. **Record decisions** in `docs/DECISIONS.md` (one line each: decision, alternatives, evidence/run_id).
+   All timestamps (decisions, notes, docs) are KSA time (UTC+3); check `TZ=Asia/Riyadh date` / git log, never guess.
 7. **Tests stay green**: `python -m pytest -q`. Add a test for every bug fixed. `make smoke` must run with no API key.
 8. **All LLM calls go through `hack.llm.call_llm`** (cached, reproducible, token-counted). Temperature 0 unless there's a logged reason.
 9. **Commands print short summaries only.** Long output (traces, bundles, diffs, full test logs)
