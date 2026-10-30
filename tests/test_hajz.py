@@ -108,6 +108,9 @@ def test_bundle_round_trip_replay_and_prompt_through_registry(tmp_path):
     bundle = save_bundle(run, tmp_path)
     truth = read_truth(bundle)
     assert truth["patient"] == "hajz" and truth["failed_chats"]
+    # every chat the bench marks failed is visible to the doctor as a failed outcome or an invariant violation
+    env_failed = set(Environment(bundle, lambda panel, chats="failed": None, patient="hajz").failed_chat_ids())
+    assert set(truth["failed_chats"]) <= env_failed
     b = load_bundle(bundle)
     assert {s["kind"] for s in b["traces"]} <= {"tool", "llm", "reply", "customer", "log", "guard"}
     assert set(b["metrics"]) >= {"chats", "error_rate", "chats_failed", "loop_chats", "bookings_created"}
@@ -125,3 +128,55 @@ def test_frozen_transfer_set_matches_manifest():
     r = subprocess.run([sys.executable, str(ROOT / "scripts" / "make_transfer_set.py"), "--verify"], capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr
     assert get_bench("hajz").faults  # registry resolves the bench half for the generator
+
+
+def test_najda_v5_runs_on_hajz_unchanged(tmp_path):
+    """End to end on a fresh (unfrozen) Hajz incident with the fake LLM: the same loop that treats the order bot
+    verifies a timezone fix by replay, and freezes + escalates when the deposit upstream is down."""
+    from hack.bench.harness import treat_incident
+    from hack.bench.score import score_incident
+    from hack.bench.seal import truth_sealed
+    from hack.doctors import get_doctor
+    from hack.doctors.najda.diffdiag import differential
+    from test_najda import FakeLLM, propose
+
+    def incident(fault, seed):
+        spec = IncidentSpec(f"tmp-{fault}", "transfer", seed, [fault], chat_ids=pick_chats(seed), patient="hajz")
+        bundle = save_bundle(run_incident(spec), tmp_path)
+        return bundle, read_truth(bundle)
+
+    def span_of(bundle):
+        diff = differential(Environment(bundle, lambda panel, chats="failed": None, patient="hajz"))
+        return next(r["examples"][0] for r in diff.rows if r["n_pass"] == 0 and r["examples"])
+
+    bundle, truth = incident("tz_offset", 9001)
+    doctor = get_doctor("najda_v5")
+    doctor.llm_fn = FakeLLM([[propose(("stale_data", 0.7, [span_of(bundle)], {"availability_fresh_read": True}),
+                                      ("unit_mismatch", 0.6, [span_of(bundle)], {"timezone": "UTC"}))]])
+    with truth_sealed():
+        res, initial = treat_incident(doctor, bundle, truth)
+    assert res.error is None, res.error
+    s = score_incident(truth, res.to_dict(), initial)
+    assert s["outcome_correct"] and not res.escalated and res.final_config["timezone"] == "UTC"
+    assert res.final_config["availability_fresh_read"] is False  # wrong patch rolled back
+
+    bundle, truth = incident("deposit_down", 9002)
+    doctor = get_doctor("najda_v5")
+    doctor.llm_fn = FakeLLM([[propose(("upstream_outage", 0.9, [span_of(bundle)], {"retry.max_retries": 2}), escalate=True)]])
+    with truth_sealed():
+        res, initial = treat_incident(doctor, bundle, truth)
+    assert res.error is None, res.error
+    assert res.escalated and res.final_config == initial
+    assert any(st["action"] == "najda.freeze" for st in res.steps)
+    assert score_incident(truth, res.to_dict(), initial)["outcome_correct"]
+
+
+def test_every_bench_failure_is_visible_to_the_doctor():
+    """No silent bench failures: a chat the truth marks failed shows a failed outcome or an invariant violation."""
+    for spec in transfer_plan():
+        run = run_incident(spec)
+        bad = {v.chat_id for v in run.violations}
+        for chat, verdict in run.chat_verdicts().items():
+            if not verdict["pass"]:
+                outcome = next(r.outcome for r in run.results if r.chat_id == chat)
+                assert outcome == "failed" or chat in bad, (spec.incident_id, chat)

@@ -74,7 +74,7 @@
     },
     "ar_08": {
       "pass": false,
-      "invariants_ok": true,
+      "invariants_ok": false,
       "order_completed": false,
       "outcome": "confirmed",
       "turns": 6,

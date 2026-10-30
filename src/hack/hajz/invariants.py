@@ -44,14 +44,14 @@ def check_invariants(world: World, chats: list[BookingChatResult]) -> list[Viola
 
     for c in chats:
         b = bookings.get(c.booking_id) if c.booking_id else None
-        if c.expected is not None and b is not None:
-            if b.slot != c.expected.utc:
+        if c.request is not None and b is not None:
+            if b.slot != c.request.utc:
                 out.append(Violation("booking_time_matches_request", c.chat_id,
-                                     f"customer asked {c.expected.day.isoformat()} {c.expected.time_s} Riyadh, "
+                                     f"customer asked {c.request.day.isoformat()} {c.request.time_s} Riyadh, "
                                      f"{b.booking_id} is at {to_riyadh(b.slot)} Riyadh"))
-            if b.party_size != c.expected.party:
+            if b.party_size != c.request.party:
                 out.append(Violation("booking_time_matches_request", c.chat_id,
-                                     f"customer asked for {c.expected.party} guests, {b.booking_id} has {b.party_size}"))
+                                     f"customer asked for {c.request.party} guests, {b.booking_id} has {b.party_size}"))
         if c.outcome == "confirmed" and (b is None or b.status != "confirmed"):
             out.append(Violation("reply_matches_ledger", c.chat_id, "bot told the customer the booking is confirmed but the ledger disagrees"))
         if c.outcome == "declined" and b is not None and b.status == "confirmed":
@@ -64,12 +64,12 @@ def check_invariants(world: World, chats: list[BookingChatResult]) -> list[Viola
 
 
 def booking_completed(world: World, chat: BookingChatResult) -> bool:
-    """Did the customer get the table they asked for (or a clean no)?"""
+    """Did the customer get the table they asked for (or a clean no when they cancelled or the slot was full)?"""
     b = world.booking_api.bookings.get(chat.booking_id) if chat.booking_id else None
-    if chat.expected is None:
+    if chat.expected_outcome == "declined":
         return chat.outcome == "declined" and (b is None or b.status != "confirmed")
-    if chat.outcome != "confirmed" or b is None or b.status != "confirmed":
+    if chat.outcome != "confirmed" or b is None or b.status != "confirmed" or chat.request is None:
         return False
     paid = world.deposit_api.paid_for(b.booking_id)
     return (len(paid) == 1 and abs(paid[0].amount_sar - b.party_size * DEPOSIT_PER_GUEST_SAR) < 0.005
-            and b.slot == chat.expected.utc and b.party_size == chat.expected.party)
+            and b.slot == chat.request.utc and b.party_size == chat.request.party)

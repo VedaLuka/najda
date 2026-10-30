@@ -4,7 +4,7 @@ from __future__ import annotations
 import random
 
 from hack.bench.incidents import IncidentSpec
-from hack.hajz.chats import CHAT_SCRIPTS, FULL_SLOT_CHATS
+from hack.hajz.chats import BOOKABLE_CHATS, CHAT_SCRIPTS, FULL_SLOT_CHATS
 
 TRANSFER_SEED_BASE = 5000
 
@@ -13,8 +13,7 @@ def pick_chats(seed: int, n_min: int = 5, n_max: int = 8) -> list[str]:
     """Seeded sample that always holds at least one full-slot request and one bookable request."""
     rng = random.Random(f"hajz-chats-{seed}")
     pool = [s.id for s in CHAT_SCRIPTS]
-    bookable = [s.id for s in CHAT_SCRIPTS if s.expected is not None]
-    chosen = {rng.choice(FULL_SLOT_CHATS), rng.choice(bookable)}
+    chosen = {rng.choice(FULL_SLOT_CHATS), rng.choice(BOOKABLE_CHATS)}
     n = rng.randint(n_min, n_max)
     rest = [c for c in pool if c not in chosen]
     chosen.update(rng.sample(rest, n - len(chosen)))

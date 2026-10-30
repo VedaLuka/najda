@@ -17,8 +17,18 @@ LOGICAL_KEYS = ("booking_id", "status", "available", "tables_left", "slot_time",
 class BookingScript:
     id: str
     messages: list[str]
-    expected: BookingRequest | None   # None = the customer declines or the slot is known to be full: no booking expected
+    request: BookingRequest           # what the customer asks for (Riyadh local time)
+    wants: bool = True                # False: the customer cancels at the confirmation step
     lang: str = "ar"
+
+    @property
+    def expected_outcome(self) -> str:
+        """'confirmed' when the customer wants the table and the slot has room, else 'declined'
+        (the customer cancelled, or the slot was already full before any chat: see world.FULL_SLOTS)."""
+        from hack.hajz.world import FULL_SLOTS
+
+        full = (self.request.day, self.request.time_s) in FULL_SLOTS
+        return "confirmed" if self.wants and not full else "declined"
 
 
 @dataclass
@@ -30,7 +40,8 @@ class BookingChatResult:
     deposit_id: str | None = None
     turns: int = 0
     error: str | None = None
-    expected: BookingRequest | None = None
+    request: BookingRequest | None = None
+    expected_outcome: str = "confirmed"
     customer_messages: list[str] = field(default_factory=list)
 
 
@@ -113,7 +124,7 @@ class HajzBot:
         cfg = self.world.config
         tracer = self.world.tracer
         state = BookingState(script.id, script.lang)
-        result = BookingChatResult(script.id, "failed", [], expected=script.expected)
+        result = BookingChatResult(script.id, "failed", [], request=script.request, expected_outcome=script.expected_outcome)
         self.brain.start_chat(cfg)
         try:
             for raw_msg in script.messages:

@@ -43,7 +43,7 @@
   "chat_verdicts": {
     "ar_01": {
       "pass": false,
-      "invariants_ok": true,
+      "invariants_ok": false,
       "order_completed": false,
       "outcome": "confirmed",
       "turns": 6,
@@ -51,7 +51,7 @@
     },
     "ar_03": {
       "pass": false,
-      "invariants_ok": true,
+      "invariants_ok": false,
       "order_completed": false,
       "outcome": "confirmed",
       "turns": 6,
@@ -75,7 +75,7 @@
     },
     "ar_08": {
       "pass": false,
-      "invariants_ok": true,
+      "invariants_ok": false,
       "order_completed": false,
       "outcome": "confirmed",
       "turns": 6,
