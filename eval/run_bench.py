@@ -110,7 +110,7 @@ def memory_events(res: dict) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--doctor", required=True)
-    ap.add_argument("--split", default="dev", choices=["dev", "heldout"])
+    ap.add_argument("--split", default="dev", help="dev | heldout | a stress-set split such as safety / robust")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--sequential", action="store_true", help="run incidents in fixed order, one doctor instance")
     ap.add_argument("--memory", default="off", choices=["on", "off"], help="keep doctor memory across incidents (needs --sequential)")
