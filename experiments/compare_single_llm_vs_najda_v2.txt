@@ -1,0 +1,29 @@
+outcome_correct: 0.8333 (single_llm) -> 0.8571 (najda_v2)  delta=+0.0238
+shared: 42 | fixed 5 | broken 4
+[FIXED] dev-014 (infinite_loop)
+  old: recovered=False escalated=False causes=agent_loop,upstream_latency changed=['max_turns']
+  new: recovered=False escalated=True causes=agent_loop,upstream_outage changed=['max_turns']
+[FIXED] dev-027 (combo_prompt_auth)
+  old: recovered=False escalated=False causes=auth_failure,bad_prompt_deploy changed=['auth.key_slot']
+  new: recovered=True escalated=False causes=bad_prompt_deploy,auth_failure changed=['auth.key_slot', 'prompt_version']
+[FIXED] dev-028 (combo_prompt_auth)
+  old: recovered=False escalated=False causes=auth_failure changed=['auth.key_slot']
+  new: recovered=True escalated=False causes=bad_prompt_deploy,auth_failure changed=['auth.key_slot', 'prompt_version']
+[FIXED] dev-031 (stock_corrupt)
+  old: recovered=False escalated=False causes=stale_data,data_corruption changed=['stock_fresh_read']
+  new: recovered=False escalated=True causes=data_corruption,stale_data changed=-
+[FIXED] dev-042 (transient_blip)
+  old: recovered=True escalated=True causes=upstream_outage,upstream_latency changed=['retry.max_retries']
+  new: recovered=True escalated=False causes=upstream_outage,no_fault changed=-
+[BROKEN] dev-005 (prompt_regression)
+  old: recovered=True escalated=False causes=bad_prompt_deploy,stale_data changed=['prompt_version']
+  new: recovered=False escalated=True causes=bad_prompt_deploy changed=-
+[BROKEN] dev-006 (prompt_regression)
+  old: recovered=True escalated=False causes=bad_prompt_deploy,no_fault changed=['prompt_version']
+  new: recovered=False escalated=True causes=bad_prompt_deploy changed=-
+[BROKEN] dev-007 (prompt_regression)
+  old: recovered=True escalated=False causes=bad_prompt_deploy,stale_data changed=['prompt_version']
+  new: recovered=False escalated=True causes=bad_prompt_deploy changed=-
+[BROKEN] dev-008 (prompt_regression)
+  old: recovered=True escalated=False causes=bad_prompt_deploy,stale_data changed=['prompt_version']
+  new: recovered=False escalated=True causes=bad_prompt_deploy changed=-

@@ -1,0 +1,44 @@
+outcome_correct: 0.6667 (runbook) -> 0.8571 (najda_v2)  delta=+0.1904
+shared: 42 | fixed 12 | broken 4
+[FIXED] dev-021 (auth_expired_401)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=auth_failure changed=['auth.key_slot']
+[FIXED] dev-022 (auth_expired_401)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=auth_failure changed=['auth.key_slot']
+[FIXED] dev-023 (auth_expired_401)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=auth_failure changed=['auth.key_slot']
+[FIXED] dev-024 (auth_expired_401)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=auth_failure changed=['auth.key_slot']
+[FIXED] dev-027 (combo_prompt_auth)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=bad_prompt_deploy,auth_failure changed=['auth.key_slot', 'prompt_version']
+[FIXED] dev-028 (combo_prompt_auth)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=bad_prompt_deploy,auth_failure changed=['auth.key_slot', 'prompt_version']
+[FIXED] dev-037 (auth_expired_401)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=auth_failure changed=['auth.key_slot']
+[FIXED] dev-038 (transient_blip)
+  old: recovered=False escalated=True causes=upstream_outage changed=-
+  new: recovered=True escalated=False causes=upstream_outage changed=-
+[FIXED] dev-039 (transient_blip)
+  old: recovered=False escalated=True causes=upstream_outage changed=-
+  new: recovered=True escalated=False causes=upstream_outage,rate_limiting changed=-
+[FIXED] dev-040 (transient_blip)
+  old: recovered=False escalated=True causes=upstream_outage changed=-
+  new: recovered=True escalated=False causes=upstream_outage changed=-
+[BROKEN] dev-005 (prompt_regression)
+  old: recovered=True escalated=False causes=bad_prompt_deploy changed=['prompt_version']
+  new: recovered=False escalated=True causes=bad_prompt_deploy changed=-
+[BROKEN] dev-006 (prompt_regression)
+  old: recovered=True escalated=False causes=bad_prompt_deploy changed=['prompt_version']
+  new: recovered=False escalated=True causes=bad_prompt_deploy changed=-
+[BROKEN] dev-007 (prompt_regression)
+  old: recovered=True escalated=False causes=bad_prompt_deploy changed=['prompt_version']
+  new: recovered=False escalated=True causes=bad_prompt_deploy changed=-
+[BROKEN] dev-008 (prompt_regression)
+  old: recovered=True escalated=False causes=bad_prompt_deploy changed=['prompt_version']
+  new: recovered=False escalated=True causes=bad_prompt_deploy changed=-

@@ -8,23 +8,44 @@
 | 2 | `restart` | 42 | **0.167** | 0.167 | 0.048 | 0.048 | 0.809 | 0.000 | 0.0000 | 0.0000 | 1.0 | 0 | 8fc90b3* | bench v1.1 + stricter outcome rule: restart |
 | 3 | `runbook` | 42 | **0.667** | 0.476 | 0.952 | 0.857 | 0.667 | 0.000 | 0.0000 | 0.0000 | 6.93 | 0 | 8fc90b3* | bench v1.1 + stricter outcome rule: runbook |
 | 4 | `single_llm` | 42 | **0.833** | 0.714 | 0.976 | 0.929 | 0.929 | 0.024 | 0.8542 | 0.0244 | 7.93 | 42 | 8fc90b3* | bench v1.1 + stricter outcome rule: single_llm (Sonnet 5.5, one call) |
+| 5 | `najda_v1` | 42 | **0.929** | 0.738 | 1.000 | 0.952 | 0.929 | 0.000 | 1.1001 | 0.0282 | 19.5 | 78 | 07172d1* | step3: najda v1 core loop (investigate/hypothesise/fix/verify/rollback, multi-fault rounds, budget) |
+| 6 | `najda_v2` | 42 | **0.857** | 0.667 | 1.000 | 0.952 | 0.857 | 0.000 | 1.1844 | 0.0329 | 30.14 | 88 | 417377c | step3: v2 = v1 + diff_diagnosis(grounded) + guardrails + canary + bisect |
 
 ## Outcome by fault family (dev)
 
-| Family | n | `do_nothing` | `restart` | `runbook` | `single_llm` |
-|---|---|---|---|---|---|
-| auth_expired_401 | 5 | 0.000 | 0.000 | 0.000 | 1.000 |
-| combo_prompt_auth | 2 | 0.000 | 0.000 | 0.000 | 0.000 |
-| combo_schema_rate | 2 | 0.000 | 0.000 | 0.000 | 0.000 |
-| hallucinated_tool | 4 | 0.000 | 0.000 | 1.000 | 1.000 |
-| healthy | 2 | 1.000 | 1.000 | 1.000 | 1.000 |
-| infinite_loop | 4 | 0.000 | 0.000 | 1.000 | 0.750 |
-| payment_down | 2 | 0.000 | 0.000 | 1.000 | 1.000 |
-| prompt_regression | 4 | 0.000 | 0.000 | 1.000 | 1.000 |
-| rate_limit_429 | 5 | 0.000 | 0.000 | 1.000 | 1.000 |
-| schema_drift | 5 | 0.000 | 0.000 | 1.000 | 1.000 |
-| stock_corrupt | 2 | 0.000 | 0.000 | 1.000 | 0.500 |
-| transient_blip | 5 | 0.000 | 1.000 | 0.000 | 0.800 |
+| Family | n | `do_nothing` | `restart` | `runbook` | `single_llm` | `najda_v1` | `najda_v2` |
+|---|---|---|---|---|---|---|---|
+| auth_expired_401 | 5 | 0.000 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 |
+| combo_prompt_auth | 2 | 0.000 | 0.000 | 0.000 | 0.000 | 0.500 | 1.000 |
+| combo_schema_rate | 2 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| hallucinated_tool | 4 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| healthy | 2 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| infinite_loop | 4 | 0.000 | 0.000 | 1.000 | 0.750 | 1.000 | 1.000 |
+| payment_down | 2 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| prompt_regression | 4 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 0.000 |
+| rate_limit_429 | 5 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| schema_drift | 5 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| stock_corrupt | 2 | 0.000 | 0.000 | 1.000 | 0.500 | 1.000 | 1.000 |
+| transient_blip | 5 | 0.000 | 1.000 | 0.000 | 0.800 | 1.000 | 1.000 |
+
+## 95% bootstrap confidence intervals (dev, 2000 resamples over incidents)
+
+| Doctor | n | outcome_correct | recovered | escalation_correct | root_cause_top1 | dangerous |
+|---|---|---|---|---|---|---|
+| `do_nothing` | 42 | 0.048 [0.000, 0.119] | 0.048 [0.000, 0.119] | 0.810 [0.690, 0.929] | 0.048 [0.000, 0.119] | 0.000 [0.000, 0.000] |
+| `restart` | 42 | 0.167 [0.071, 0.286] | 0.167 [0.071, 0.286] | 0.810 [0.690, 0.929] | 0.048 [0.000, 0.119] | 0.000 [0.000, 0.000] |
+| `runbook` | 42 | 0.667 [0.524, 0.810] | 0.476 [0.333, 0.619] | 0.667 [0.524, 0.810] | 0.952 [0.881, 1.000] | 0.000 [0.000, 0.000] |
+| `single_llm` | 42 | 0.833 [0.714, 0.929] | 0.714 [0.571, 0.833] | 0.929 [0.833, 1.000] | 0.976 [0.929, 1.000] | 0.024 [0.000, 0.071] |
+| `najda_v1` | 42 | 0.929 [0.857, 1.000] | 0.738 [0.595, 0.881] | 0.929 [0.857, 1.000] | 1.000 [1.000, 1.000] | 0.000 [0.000, 0.000] |
+| `najda_v2` | 42 | 0.857 [0.738, 0.952] | 0.667 [0.524, 0.810] | 0.857 [0.738, 0.952] | 1.000 [1.000, 1.000] | 0.000 [0.000, 0.000] |
+
+## Calibration of `najda_v2` (dev): top-hypothesis confidence vs outcome_correct
+
+| Confidence bucket | n | outcome_correct | mean confidence |
+|---|---|---|---|
+| 0.5-0.7 | 3 | 1.000 | 0.533 |
+| 0.7-0.9 | 16 | 0.938 | 0.803 |
+| >=0.9 | 23 | 0.783 | 0.922 |
 
 Bench sanity (oracle reads ground truth, must be 1.000): `oracle` dev=1.000
 
