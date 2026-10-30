@@ -1,0 +1,39 @@
+{
+ "version": 1,
+ "max_failures": 2,
+ "playbooks": [
+  {
+   "id": "pb001",
+   "kind": "fix",
+   "label": "schema_change",
+   "key": [
+    "bisect:na",
+    "reply:failed",
+    "tool:create_order:200:keys=id,status,total_sar"
+   ],
+   "bag": [
+    "bisect:na",
+    "reply:failed",
+    "tool:create_order",
+    "tool:create_order:200:keys=id,status,total_sar"
+   ],
+   "steps": [
+    {
+     "field_mappings.order_id": {
+      "$key_for": "order_id",
+      "tool": "create_order"
+     }
+    }
+   ],
+   "created_at": "2026-10-30T19:42:30+0300",
+   "source_incident": "dev-001",
+   "uses": 1,
+   "successes": 1,
+   "failures": 0,
+   "disabled": false,
+   "step_labels": [
+    "schema_change"
+   ]
+  }
+ ]
+}

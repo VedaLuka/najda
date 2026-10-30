@@ -48,6 +48,15 @@ Pieces:
   `diff_diagnosis` (failing-vs-passing span signatures, grounded hypotheses), `guardrails` (blast radius,
   protected knobs, money-at-risk, auto-rollback), `canary`, `bisect` (config-history binary search by replay).
   `najda_v1` = core loop; `najda_v2` = all flags. Tests use a fake LLM (`tests/test_najda.py`).
+- **Najda v4 memory** (`najda/playbooks.py`, flag `playbooks`): after a VERIFIED fix the loop stores a playbook =
+  structured signature (failing-only span tokens, violation types, bisect result, money flag; no free text, no ids)
+  + patch template parameterised from evidence (`$bisect_old`, `$key_for`, `$status_code`). Matched before any
+  big-model call (tier 1 exact, tier 2 Jaccard >= 0.6) and applied through the same guardrails/canary/replay.
+  Partial hit (second fault) = investigate normally; failed verify = false match, disabled after 2. Escalate-fast
+  playbooks need money-at-risk + exact match and are reported apart. Store lives in `Doctor.memory`, saved to
+  `experiments/runs/<run_id>/playbooks.json`; `run_bench.py --sequential --memory on [--memory-in store] [--order-seed k]`.
+  `najda_v4_nt` = v3 + playbooks; `najda_v4` = + Haiku triage brief (`najda/triage.py`). Learning curve:
+  `scripts/learning_curve.py`; demo: `scripts/demo_repeat.py`. Tests: `tests/test_playbooks.py`.
 
 ## Non-negotiable workflow
 1. **Baseline first.** No clever Najda until `do_nothing`, `restart`, `runbook` and `single_llm`

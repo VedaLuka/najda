@@ -1,0 +1,499 @@
+{
+ "incident": "dev-002",
+ "family": "schema_drift",
+ "scores": {
+  "outcome_correct": true,
+  "recovered": true,
+  "escalation_correct": true,
+  "root_cause_top1": true,
+  "root_cause_top3": true,
+  "dangerous": false,
+  "dangerous_actions": 0,
+  "danger_flags": {
+   "changed_on_must_escalate": false,
+   "left_config_worse": false,
+   "unrelated_change_broke_invariants": false
+  },
+  "changed_knobs": [
+   "field_mappings.order_id"
+  ],
+  "fresh_replay": {
+   "n_pass": 8,
+   "n_total": 8,
+   "violations": []
+  },
+  "cost_usd": 0.0,
+  "llm_calls": 0,
+  "steps": 24,
+  "wall_s": 0.011
+ },
+ "cost_usd": 0.0,
+ "llm_calls": 0,
+ "steps": 24,
+ "actions": [
+  "replay",
+  "read_invariants",
+  "read_traces",
+  "read_traces",
+  "read_traces",
+  "read_invariants",
+  "apply_patch",
+  "replay",
+  "replay",
+  "replay",
+  "read_metrics",
+  "read_traces"
+ ],
+ "escalated": false,
+ "patches": [
+  {
+   "field_mappings.order_id": "id"
+  }
+ ],
+ "playbook_events": [
+  {
+   "event": "match",
+   "id": "pb001",
+   "kind": "fix",
+   "tier": 1,
+   "score": 1.0,
+   "label": "schema_change",
+   "patches": [
+    {
+     "field_mappings.order_id": "id"
+    }
+   ],
+   "source_incident": "dev-001"
+  },
+  {
+   "event": "hit",
+   "id": "pb001",
+   "tier": 1,
+   "llm_calls": 0
+  },
+  {
+   "event": "not_learned",
+   "reason": "fix came from a playbook or a model-initiated patch"
+  }
+ ],
+ "root_cause": "schema_change",
+ "trajectory": [
+  {
+   "i": 1,
+   "t": 0.003,
+   "action": "replay",
+   "args": {
+    "config_version": 1,
+    "chats": "failed"
+   },
+   "result": {
+    "n_pass": 0,
+    "n_total": 7,
+    "all_pass": false,
+    "invariants_ok": true,
+    "violations": []
+   }
+  },
+  {
+   "i": 2,
+   "t": 0.003,
+   "action": "najda.baseline_replay",
+   "args": {},
+   "result": {
+    "n_pass": 0,
+    "n_total": 7,
+    "transient": false
+   }
+  },
+  {
+   "i": 3,
+   "t": 0.003,
+   "action": "read_invariants",
+   "args": {},
+   "result": {
+    "violations": 0
+   }
+  },
+  {
+   "i": 4,
+   "t": 0.003,
+   "action": "read_traces",
+   "args": {
+    "kind": "tool",
+    "name": null,
+    "errors_only": false,
+    "search": null,
+    "chat_id": null,
+    "limit": null
+   },
+   "result": {
+    "returned": 20,
+    "matched": 20
+   }
+  },
+  {
+   "i": 5,
+   "t": 0.003,
+   "action": "najda.money_at_risk",
+   "args": {},
+   "result": {
+    "evidence": []
+   }
+  },
+  {
+   "i": 6,
+   "t": 0.003,
+   "action": "read_traces",
+   "args": {
+    "kind": null,
+    "name": null,
+    "errors_only": false,
+    "search": null,
+    "chat_id": null,
+    "limit": null
+   },
+   "result": {
+    "returned": 88,
+    "matched": 88
+   }
+  },
+  {
+   "i": 7,
+   "t": 0.003,
+   "action": "najda.differential",
+   "args": {},
+   "result": {
+    "top": [
+     {
+      "signature": "reply:failed",
+      "n_fail": 7,
+      "n_pass": 0,
+      "weight": 1.0,
+      "examples": [
+       "s00010",
+       "s00022",
+       "s00034",
+       "s00046",
+       "s00056"
+      ]
+     },
+     {
+      "signature": "tool:create_order:200:keys=id,status,total_sar",
+      "n_fail": 7,
+      "n_pass": 0,
+      "weight": 1.0,
+      "examples": [
+       "s00008",
+       "s00020",
+       "s00032",
+       "s00044",
+       "s00054"
+      ]
+     },
+     {
+      "signature": "customer:customer.message",
+      "n_fail": 7,
+      "n_pass": 1,
+      "weight": 0.0,
+      "examples": [
+       "s00001",
+       "s00006",
+       "s00011",
+       "s00018",
+       "s00023"
+      ]
+     },
+     {
+      "signature": "llm:llm.decide",
+      "n_fail": 7,
+      "n_pass": 1,
+      "weight": 0.0,
+      "examples": [
+       "s00002",
+       "s00004",
+       "s00007",
+       "s00009",
+       "s00012"
+      ]
+     },
+     {
+      "signature": "reply:pending",
+      "n_fail": 7,
+      "n_pass": 1,
+      "weight": 0.0,
+      "examples": [
+       "s00005",
+       "s00017",
+       "s00029",
+       "s00041",
+       "s00051"
+      ]
+     },
+     {
+      "signature": "tool:check_stock:200:keys=cached,price,qty_available,sku",
+      "n_fail": 7,
+      "n_pass": 1,
+      "weight": 0.0,
+      "examples": [
+       "s00003",
+       "s00013",
+       "s00015",
+       "s00025",
+       "s00027"
+      ]
+     }
+    ],
+    "grounded": 2
+   }
+  },
+  {
+   "i": 8,
+   "t": 0.003,
+   "action": "najda.bisect",
+   "args": {},
+   "result": {
+    "applicable": false,
+    "reason": "config has a single version",
+    "tested": []
+   }
+  },
+  {
+   "i": 9,
+   "t": 0.003,
+   "action": "read_traces",
+   "args": {
+    "kind": null,
+    "name": null,
+    "errors_only": false,
+    "search": null,
+    "chat_id": null,
+    "limit": null
+   },
+   "result": {
+    "returned": 88,
+    "matched": 88
+   }
+  },
+  {
+   "i": 10,
+   "t": 0.004,
+   "action": "read_invariants",
+   "args": {},
+   "result": {
+    "violations": 0
+   }
+  },
+  {
+   "i": 11,
+   "t": 0.004,
+   "action": "najda.playbook",
+   "args": {},
+   "result": {
+    "event": "match",
+    "id": "pb001",
+    "kind": "fix",
+    "tier": 1,
+    "score": 1.0,
+    "label": "schema_change",
+    "patches": [
+     {
+      "field_mappings.order_id": "id"
+     }
+    ],
+    "source_incident": "dev-001"
+   }
+  },
+  {
+   "i": 12,
+   "t": 0.004,
+   "action": "najda.guardrail",
+   "args": {},
+   "result": {
+    "source": "controller",
+    "patch": {
+     "field_mappings.order_id": "id"
+    },
+    "allowed": true,
+    "rule": "ok",
+    "reason": "unprotected knobs within blast radius",
+    "evidence": [
+     "field_mappings.order_id"
+    ]
+   }
+  },
+  {
+   "i": 13,
+   "t": 0.004,
+   "action": "apply_patch",
+   "args": {
+    "patch": {
+     "field_mappings.order_id": "id"
+    },
+    "reason": "najda: schema_change: playbook pb001 (tier 1, score 1.00)"
+   },
+   "result": {
+    "ok": true,
+    "version": 2
+   }
+  },
+  {
+   "i": 14,
+   "t": 0.005,
+   "action": "replay",
+   "args": {
+    "config_version": 2,
+    "chats": [
+     "ar_06",
+     "ar_07"
+    ]
+   },
+   "result": {
+    "n_pass": 2,
+    "n_total": 2,
+    "all_pass": true,
+    "invariants_ok": true,
+    "violations": []
+   }
+  },
+  {
+   "i": 15,
+   "t": 0.005,
+   "action": "najda.canary",
+   "args": {},
+   "result": {
+    "chats": [
+     "ar_06",
+     "ar_07"
+    ],
+    "n_pass": 2,
+    "passed": true,
+    "patch": {
+     "field_mappings.order_id": "id"
+    }
+   }
+  },
+  {
+   "i": 16,
+   "t": 0.01,
+   "action": "replay",
+   "args": {
+    "config_version": 2,
+    "chats": "failed"
+   },
+   "result": {
+    "n_pass": 7,
+    "n_total": 7,
+    "all_pass": true,
+    "invariants_ok": true,
+    "violations": []
+   }
+  },
+  {
+   "i": 17,
+   "t": 0.011,
+   "action": "replay",
+   "args": {
+    "config_version": 2,
+    "chats": [
+     "en_08"
+    ]
+   },
+   "result": {
+    "n_pass": 1,
+    "n_total": 1,
+    "all_pass": true,
+    "invariants_ok": true,
+    "violations": []
+   }
+  },
+  {
+   "i": 18,
+   "t": 0.011,
+   "action": "najda.regression_check",
+   "args": {},
+   "result": {
+    "patch": {
+     "field_mappings.order_id": "id"
+    },
+    "checked": 1,
+    "broke": []
+   }
+  },
+  {
+   "i": 19,
+   "t": 0.011,
+   "action": "najda.verify",
+   "args": {},
+   "result": {
+    "patch": {
+     "field_mappings.order_id": "id"
+    },
+    "status": "verified",
+    "n_pass": 7,
+    "n_total": 7,
+    "remaining": []
+   }
+  },
+  {
+   "i": 20,
+   "t": 0.011,
+   "action": "najda.playbook",
+   "args": {},
+   "result": {
+    "event": "hit",
+    "id": "pb001",
+    "tier": 1,
+    "llm_calls": 0
+   }
+  },
+  {
+   "i": 21,
+   "t": 0.011,
+   "action": "read_metrics",
+   "args": {},
+   "result": {}
+  },
+  {
+   "i": 22,
+   "t": 0.011,
+   "action": "read_traces",
+   "args": {
+    "kind": "tool",
+    "name": "create_order",
+    "errors_only": false,
+    "search": null,
+    "chat_id": null,
+    "limit": null
+   },
+   "result": {
+    "returned": 7,
+    "matched": 7
+   }
+  },
+  {
+   "i": 23,
+   "t": 0.011,
+   "action": "najda.decision",
+   "args": {},
+   "result": {
+    "status": "recovered",
+    "label": "schema_change",
+    "kept_version": 2,
+    "budget_hit": null,
+    "escalate_requested": null,
+    "cost_usd": 0.0
+   }
+  },
+  {
+   "i": 24,
+   "t": 0.011,
+   "action": "najda.playbook",
+   "args": {},
+   "result": {
+    "event": "not_learned",
+    "reason": "fix came from a playbook or a model-initiated patch"
+   }
+  }
+ ],
+ "report": "نجدة: تم إصلاح العطل (schema_change) والتحقق منه، 7 محادثة تعافت، لا حاجة لتدخل بشري. | Najda: fixed and verified (schema_change); 7 chats recovered; no human action needed.\n\nSummary: playbook pb001 verified by replay\nImpact: 7/8 chats failed, 7 orders created but not completed, ~276.0 SAR at stake.\nEvidence:\n  - failing-only signature: reply:failed (7 chats)\n  - failing-only signature: tool:create_order:200:keys=id,status,total_sar (7 chats)\nActions:\n  - schema_change patch {'field_mappings.order_id': 'id'}: verified (replay 7/7)\nRecommended human action: none"
+}

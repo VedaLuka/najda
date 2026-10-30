@@ -19,12 +19,13 @@ BENCH_VERSION = VERSION_FILE.read_text().strip() if VERSION_FILE.exists() else "
 
 
 def latest_by_doctor(rows: list[dict], split: str) -> dict[str, dict]:
-    """Latest full-split run per doctor on the current bench version (limit runs are probes)."""
+    """Latest full-split run per doctor on the current bench version (limit runs are probes). Memory-on
+    streams are listed apart as `<doctor>+memory` (the latest seed; see experiments/learning_curve/ for all)."""
     out: dict[str, dict] = {}
     for r in rows:
         if (r["split"] == split and not r.get("limit") and r.get("bench", "incidents") == "incidents"
                 and r.get("bench_version", "1.0") == BENCH_VERSION and r.get("replay_brain", "scripted") == "scripted"):
-            out[r["doctor"]] = r
+            out[r["doctor"] + ("+memory" if r.get("memory") == "on" else "")] = r
     return out
 
 

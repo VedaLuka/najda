@@ -1,0 +1,61 @@
+{
+  "doctor": "najda_v4",
+  "runs": {
+    "off": "1030-193628_najda_v4_dev",
+    "on_seed1": "1030-193629_najda_v4_dev",
+    "on_seed2": "1030-193714_najda_v4_dev",
+    "on_seed3": "1030-193733_najda_v4_dev"
+  },
+  "summary": {
+    "off": {
+      "seeds": 1,
+      "n_rows": 42,
+      "accuracy": 0.9762,
+      "accuracy_ci": [
+        0.9286,
+        1
+      ],
+      "cost_per_incident": 0.0253,
+      "cost_ci": [
+        0.022,
+        0.0288
+      ],
+      "total_cost_per_stream": 1.0637,
+      "llm_calls_per_stream": 118.0,
+      "cost_first_half": 0.0222,
+      "cost_second_half": 0.0285,
+      "playbook_hits": 0,
+      "escalate_fast_hits": 0,
+      "partial_hits": 0,
+      "false_matches": 0,
+      "hit_rate": 0.0,
+      "false_match_rate": 0.0,
+      "zero_llm_incidents": 2
+    },
+    "on": {
+      "seeds": 3,
+      "n_rows": 126,
+      "accuracy": 0.9683,
+      "accuracy_ci": [
+        0.9206,
+        1
+      ],
+      "cost_per_incident": 0.0153,
+      "cost_ci": [
+        0.0104,
+        0.0204
+      ],
+      "total_cost_per_stream": 0.6412,
+      "llm_calls_per_stream": 64.0,
+      "cost_first_half": 0.0154,
+      "cost_second_half": 0.0151,
+      "playbook_hits": 57,
+      "escalate_fast_hits": 3,
+      "partial_hits": 9,
+      "false_matches": 0,
+      "hit_rate": 0.452,
+      "false_match_rate": 0.0,
+      "zero_llm_incidents": 63
+    }
+  }
+}

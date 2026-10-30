@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import os
+import random
 import subprocess
 import sys
 import time
@@ -59,11 +60,18 @@ def list_bundles(bench_dir: Path, split: str, limit: int | None) -> list[Path]:
 
 def run_bench(doctor_name: str, split: str, bench_dir: Path, limit: int | None = None, sequential: bool = False,
               memory: bool = False, workers: int = 4, config: dict | None = None,
-              replay_brain: str = "scripted") -> list[dict]:
-    """Treat every incident, then score. Truth is preloaded, then sealed while doctors run."""
+              replay_brain: str = "scripted", memory_in: Path | None = None, order_seed: int | None = None,
+              memory_out: Path | None = None) -> list[dict]:
+    """Treat every incident, then score. Truth is preloaded, then sealed while doctors run.
+    Sequential runs may start from a saved memory store (memory_in), stream incidents in a seeded shuffle
+    (order_seed) and save the store they end with (memory_out)."""
     bundles = list_bundles(bench_dir, split, limit)
+    if order_seed is not None:
+        random.Random(order_seed).shuffle(bundles)
     truths = {b.name: read_truth(b) for b in bundles}
     shared = get_doctor(doctor_name, config)
+    if memory_in is not None:
+        shared.load_memory(memory_in)
 
     def one(bundle: Path):
         doctor = shared if sequential else get_doctor(doctor_name, config)
@@ -78,14 +86,25 @@ def run_bench(doctor_name: str, split: str, bench_dir: Path, limit: int | None =
             with ThreadPoolExecutor(max_workers=workers) as pool:
                 treated = list(pool.map(one, bundles))
 
+    if memory_out is not None and hasattr(shared, "save_memory"):
+        shared.save_memory(memory_out)
     rows = []
-    for bundle, (resolution, incident_config) in zip(bundles, treated):
+    for position, (bundle, (resolution, incident_config)) in enumerate(zip(bundles, treated)):
         truth = truths[bundle.name]
         res = resolution.to_dict()
-        rows.append({"incident_id": bundle.name, "family": truth["family"], "noisy": truth["noisy"],
+        rows.append({"incident_id": bundle.name, "family": truth["family"], "noisy": truth["noisy"], "position": position,
                      "scores": score_incident(truth, res, incident_config, make_brain(replay_brain)),
-                     "resolution": res})
+                     "memory": memory_events(res), "resolution": res})
     return rows
+
+
+def memory_events(res: dict) -> dict:
+    """Playbook events of one incident (hit / false_match / miss / learned ...), for the learning curve."""
+    ev = [s["result"] for s in res["steps"] if s["action"] == "najda.playbook"]
+    outcome = next((e["event"] for e in ev if e["event"] in ("hit", "hit_escalate", "partial", "false_match")), "miss" if ev else "n/a")
+    match = next((e for e in ev if e["event"] == "match"), {})
+    return {"outcome": outcome, "tier": match.get("tier"), "playbook": match.get("id"),
+            "learned": any(e["event"] == "learned" for e in ev)}
 
 
 def main() -> None:
@@ -96,6 +115,8 @@ def main() -> None:
     ap.add_argument("--sequential", action="store_true", help="run incidents in fixed order, one doctor instance")
     ap.add_argument("--memory", default="off", choices=["on", "off"], help="keep doctor memory across incidents (needs --sequential)")
     ap.add_argument("--config", help="JSON config file for the doctor")
+    ap.add_argument("--memory-in", help="start from a saved playbook store (needs --sequential --memory on)")
+    ap.add_argument("--order-seed", type=int, help="shuffle the incident stream with this seed (needs --sequential)")
     ap.add_argument("--workers", type=int, default=int(os.getenv("EVAL_WORKERS", 4)))
     ap.add_argument("--bench-dir", default=str(ROOT / "data" / "incidents"))
     ap.add_argument("--replay-brain", default="scripted", choices=["scripted", "llm"],
@@ -105,18 +126,22 @@ def main() -> None:
     a = ap.parse_args()
     if a.memory == "on" and not a.sequential:
         sys.exit("--memory on requires --sequential")
+    if (a.memory_in or a.order_seed is not None) and not a.sequential:
+        sys.exit("--memory-in / --order-seed require --sequential")
     if a.split == "heldout":
         print("!! HELDOUT run: milestones only. Never tune on these results. !!")
 
     config = json.loads(Path(a.config).read_text()) if a.config else {}
     t0 = time.time()
     replay_cost_before = STATS["cost_usd"] if a.replay_brain == "llm" else 0.0
+    run_id = f"{datetime.now().strftime('%m%d-%H%M%S')}_{a.doctor}_{a.split}"
+    memory_out = None if a.no_log or a.memory != "on" else ROOT / "experiments" / "runs" / run_id / "playbooks.json"
     rows = run_bench(a.doctor, a.split, Path(a.bench_dir), a.limit, a.sequential, a.memory == "on", a.workers, config,
-                     a.replay_brain)
+                     a.replay_brain, Path(a.memory_in) if a.memory_in else None, a.order_seed, memory_out)
     wall = time.time() - t0
     agg = aggregate(rows)
 
-    run_id = f"{datetime.now().strftime('%m%d-%H%M%S')}_{a.doctor}_{a.split}"
+    run_dir = ROOT / "experiments" / "runs" / run_id
     roles = load_roles()
     summary = {
         "kind": "bench", "run_id": run_id, "time_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -125,6 +150,8 @@ def main() -> None:
         "errors": sum(1 for r in rows if r["resolution"]["error"]), "wall_s": round(wall, 1),
         "mean_latency_s": agg["mean_wall_s"], "llm": {"calls": agg["llm_calls"], "cost_usd": agg["cost_usd"]},
         "models": roles, "sequential": a.sequential, "memory": a.memory, "limit": a.limit,
+        "memory_in": a.memory_in, "order_seed": a.order_seed,
+        "playbooks": {k: sum(1 for r in rows if r["memory"]["outcome"] == k) for k in ("hit", "hit_escalate", "partial", "false_match", "miss")},
         "config_hash": hashlib.sha1(json.dumps(config, sort_keys=True).encode()).hexdigest()[:8], "config": config,
         "replay_llm_cost_usd": round(STATS["cost_usd"] - replay_cost_before, 4) if a.replay_brain == "llm" else 0.0,
         "replay_brain": a.replay_brain, "bench": Path(a.bench_dir).name, "bench_version": bench_version(Path(a.bench_dir)),
@@ -136,7 +163,6 @@ def main() -> None:
           f"cost=${m['cost_usd']:.4f} llm_calls={m['llm_calls']} errors={summary['errors']} wall={wall:.1f}s")
     if a.no_log:
         return
-    run_dir = ROOT / "experiments" / "runs" / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
     with (run_dir / "results.jsonl").open("w", encoding="utf-8") as f:
         for r in rows:

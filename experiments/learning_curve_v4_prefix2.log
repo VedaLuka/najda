@@ -1,0 +1,16 @@
+1030-193628_najda_v4_dev: outcome=0.976 recovered=0.786 rc@1=1.000 esc_ok=0.976 dangerous=0.000 n=42 cost=$1.0637 llm_calls=118 errors=0 wall=1.0s
+1030-193629_najda_v4_dev: outcome=0.952 recovered=0.762 rc@1=0.976 esc_ok=0.952 dangerous=0.000 n=42 cost=$0.6463 llm_calls=66 errors=0 wall=44.9s
+1030-193714_najda_v4_dev: outcome=1.000 recovered=0.809 rc@1=0.857 esc_ok=1.000 dangerous=0.000 n=42 cost=$0.6070 llm_calls=61 errors=0 wall=18.0s
+1030-193733_najda_v4_dev: outcome=0.952 recovered=0.762 rc@1=0.976 esc_ok=0.952 dangerous=0.000 n=42 cost=$0.6702 llm_calls=65 errors=0 wall=54.4s
+# Learning curve: `najda_v4` on dev (memory OFF vs ON)
+
+| arm | seeds | accuracy [95% CI] | $/incident [95% CI] | $/stream | LLM calls/stream | $ first half | $ second half | hits | esc-fast hits | partial hits | false matches | hit rate | false-match rate | zero-LLM incidents |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| off | 1 | 0.976 [0.929, 1.000] | 0.0253 [0.0220, 0.0288] | 1.064 | 118.0 | 0.0222 | 0.0285 | 0 | 0 | 0 | 0 | 0.00 | 0.00 | 2 |
+| on | 3 | 0.968 [0.921, 1.000] | 0.0153 [0.0104, 0.0204] | 0.641 | 64.0 | 0.0154 | 0.0151 | 57 | 3 | 9 | 0 | 0.45 | 0.00 | 63 |
+
+Runs: off=1030-193628_najda_v4_dev, on_seed1=1030-193629_najda_v4_dev, on_seed2=1030-193714_najda_v4_dev, on_seed3=1030-193733_najda_v4_dev
+
+Escalate-fast hits are counted apart: an escalation cannot be verified by replay. A partial hit = the playbook's patch was kept as a verified improvement but the incident had a second fault (investigated normally).
+
+data -> experiments/learning_curve/1030-193628_najda_v4

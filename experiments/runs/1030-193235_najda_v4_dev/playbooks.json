@@ -1,0 +1,284 @@
+{
+ "version": 1,
+ "max_failures": 2,
+ "playbooks": [
+  {
+   "id": "pb001",
+   "kind": "fix",
+   "label": "bad_prompt_deploy",
+   "key": [
+    "bisect:culprit",
+    "bisected:prompt_version",
+    "reply:confirmed",
+    "tool:check_stock:200:keys=cached,price,qty_available,sku",
+    "tool:confirm_order:200:keys=order_id,status",
+    "tool:create_order:200:keys=order_id,status,total_sar",
+    "violation:confirmed_has_payment"
+   ],
+   "bag": [
+    "bisect:culprit",
+    "bisected:prompt_version",
+    "reply:confirmed",
+    "tool:check_stock",
+    "tool:check_stock:200:keys=cached,price,qty_available,sku",
+    "tool:confirm_order",
+    "tool:confirm_order:200:keys=order_id,status",
+    "tool:create_order",
+    "tool:create_order:200:keys=order_id,status,total_sar",
+    "violation:confirmed_has_payment"
+   ],
+   "steps": [
+    {
+     "prompt_version": {
+      "$bisect_old": "prompt_version"
+     }
+    }
+   ],
+   "created_at": "2026-10-30T19:32:35+0300",
+   "source_incident": "dev-008",
+   "uses": 3,
+   "successes": 3,
+   "failures": 0,
+   "disabled": false
+  },
+  {
+   "id": "pb002",
+   "kind": "fix",
+   "label": "bad_prompt_deploy",
+   "key": [
+    "bisect:culprit",
+    "bisected:prompt_version",
+    "reply:failed",
+    "tool:?unlisted:400:error",
+    "tool:create_order:200:keys=order_id,status,total_sar"
+   ],
+   "bag": [
+    "bisect:culprit",
+    "bisected:prompt_version",
+    "code:400",
+    "err:unknown or disallowed tool: apply_promo",
+    "reply:failed",
+    "tool:?unlisted",
+    "tool:?unlisted:400:error",
+    "tool:create_order",
+    "tool:create_order:200:keys=order_id,status,total_sar"
+   ],
+   "steps": [
+    {
+     "prompt_version": {
+      "$bisect_old": "prompt_version"
+     }
+    }
+   ],
+   "created_at": "2026-10-30T19:32:35+0300",
+   "source_incident": "dev-019",
+   "uses": 3,
+   "successes": 3,
+   "failures": 0,
+   "disabled": false
+  },
+  {
+   "id": "pb003",
+   "kind": "fix",
+   "label": "schema_change",
+   "key": [
+    "bisect:na",
+    "log:ERROR:check_stock attempt #: # rate limit ex#, retry-after: #",
+    "reply:failed",
+    "tool:check_stock:429:error"
+   ],
+   "bag": [
+    "bisect:na",
+    "code:429",
+    "err:# rate limit ex#, retry-after: #",
+    "log:ERROR:check_stock attempt #: # rate limit ex#, retry-after: #",
+    "reply:failed",
+    "tool:check_stock",
+    "tool:check_stock:200:keys=cached,price,qty_available,sku",
+    "tool:check_stock:429:error"
+   ],
+   "steps": [
+    {
+     "retry.max_retries": 3,
+     "retry.backoff_s": 1.0
+    },
+    {
+     "field_mappings.order_id": "id"
+    }
+   ],
+   "created_at": "2026-10-30T19:32:35+0300",
+   "source_incident": "dev-025",
+   "uses": 6,
+   "successes": 6,
+   "failures": 0,
+   "disabled": false
+  },
+  {
+   "id": "pb004",
+   "kind": "fix",
+   "label": "auth_failure",
+   "key": [
+    "bisect:na",
+    "log:ERROR:create_order attempt #: # token expired",
+    "reply:failed",
+    "tool:create_order:401:error"
+   ],
+   "bag": [
+    "bisect:na",
+    "code:401",
+    "err:# token expired",
+    "log:ERROR:create_order attempt #: # token expired",
+    "log:WARN:secrets-manager: scheduled rotation completed for key 'najda-bot' (slot primary ",
+    "reply:failed",
+    "tool:create_order",
+    "tool:create_order:401:error"
+   ],
+   "steps": [
+    {
+     "auth.key_slot": "backup"
+    }
+   ],
+   "created_at": "2026-10-30T19:32:35+0300",
+   "source_incident": "dev-023",
+   "uses": 5,
+   "successes": 3,
+   "failures": 2,
+   "disabled": true
+  },
+  {
+   "id": "pb005",
+   "kind": "fix",
+   "label": "schema_change",
+   "key": [
+    "bisect:na",
+    "reply:failed",
+    "tool:check_stock:200:keys=cached,price,qty_available,sku",
+    "tool:create_order:200:keys=id,status,total_sar"
+   ],
+   "bag": [
+    "bisect:na",
+    "log:WARN:cache miss for key menu:v# (expected on cold start)",
+    "log:WARN:deprecationwarning: header x-request-id will be removed in #",
+    "log:WARN:gc pause #ms in worker-#",
+    "log:WARN:metrics exporter reconnecting (attempt #)",
+    "log:WARN:scheduler: nightly report job delayed by #s",
+    "reply:failed",
+    "tool:check_stock",
+    "tool:check_stock:200:keys=cached,price,qty_available,sku",
+    "tool:create_order",
+    "tool:create_order:200:keys=id,status,total_sar"
+   ],
+   "steps": [
+    {
+     "field_mappings.order_id": {
+      "$key_for": "order_id",
+      "tool": "create_order"
+     }
+    }
+   ],
+   "created_at": "2026-10-30T19:32:35+0300",
+   "source_incident": "dev-035",
+   "uses": 1,
+   "successes": 1,
+   "failures": 0,
+   "disabled": false
+  },
+  {
+   "id": "pb006",
+   "kind": "escalate",
+   "label": "upstream_outage",
+   "key": [
+    "bisect:na",
+    "log:ERROR:charge attempt #: # payment provider unavailable",
+    "money_at_risk",
+    "reply:failed",
+    "tool:charge:503:error",
+    "tool:create_order:200:keys=order_id,status,total_sar"
+   ],
+   "bag": [
+    "bisect:na",
+    "code:503",
+    "err:# payment provider unavailable",
+    "log:ERROR:charge attempt #: # payment provider unavailable",
+    "money_at_risk",
+    "reply:failed",
+    "tool:charge",
+    "tool:charge:503:error",
+    "tool:create_order",
+    "tool:create_order:200:keys=order_id,status,total_sar"
+   ],
+   "steps": [],
+   "created_at": "2026-10-30T19:32:35+0300",
+   "source_incident": "dev-030",
+   "uses": 1,
+   "successes": 1,
+   "failures": 0,
+   "disabled": false
+  },
+  {
+   "id": "pb007",
+   "kind": "fix",
+   "label": "schema_change",
+   "key": [
+    "bisect:na",
+    "reply:failed",
+    "tool:create_order:200:keys=id,status,total_sar"
+   ],
+   "bag": [
+    "bisect:na",
+    "reply:failed",
+    "tool:create_order",
+    "tool:create_order:200:keys=id,status,total_sar"
+   ],
+   "steps": [
+    {
+     "field_mappings.order_id": {
+      "$key_for": "order_id",
+      "tool": "create_order"
+     }
+    }
+   ],
+   "created_at": "2026-10-30T19:32:35+0300",
+   "source_incident": "dev-001",
+   "uses": 2,
+   "successes": 2,
+   "failures": 0,
+   "disabled": false
+  },
+  {
+   "id": "pb008",
+   "kind": "fix",
+   "label": "auth_failure",
+   "key": [
+    "bisect:na",
+    "log:ERROR:create_order attempt #: # token expired",
+    "reply:failed",
+    "tool:check_stock:200:keys=cached,price,qty_available,sku",
+    "tool:create_order:401:error"
+   ],
+   "bag": [
+    "bisect:na",
+    "code:401",
+    "err:# token expired",
+    "log:ERROR:create_order attempt #: # token expired",
+    "log:WARN:secrets-manager: scheduled rotation completed for key 'najda-bot' (slot primary ",
+    "reply:failed",
+    "tool:check_stock",
+    "tool:check_stock:200:keys=cached,price,qty_available,sku",
+    "tool:create_order",
+    "tool:create_order:401:error"
+   ],
+   "steps": [
+    {
+     "auth.key_slot": "backup"
+    }
+   ],
+   "created_at": "2026-10-30T19:33:01+0300",
+   "source_incident": "dev-024",
+   "uses": 0,
+   "successes": 0,
+   "failures": 0,
+   "disabled": false
+  }
+ ]
+}

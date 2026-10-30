@@ -7,13 +7,15 @@ from __future__ import annotations
 
 import json
 import math
+from pathlib import Path
 from dataclasses import asdict, dataclass, field
 from typing import Any, Callable
 
 from hack.doctors.base import Diagnosis, Doctor, RootCause
 from hack.doctors.environment import Environment
-from hack.doctors.najda import guardrails, prompts
+from hack.doctors.najda import guardrails, prompts, triage
 from hack.doctors.najda.diffdiag import Differential, bisect_config, differential
+from hack.doctors.najda.playbooks import Evidence, PlaybookStore, build_evidence
 from hack.doctors.najda.report import build_report
 from hack.doctors.najda.tools import run_read_tool, tool_names
 from hack.doctors.single_llm import _span_line
@@ -24,6 +26,7 @@ from hack.patient.config import validate_patch
 DEFAULTS: dict[str, Any] = {
     "diff_diagnosis": False, "guardrails": False, "canary": False, "bisect": False,
     "structured_money": False, "replay_digest": False,
+    "playbooks": False, "triage": False, "tier2_threshold": 0.6, "playbook_tiers": 2, "max_playbook_failures": 2,
     "max_rounds": 3, "max_hypotheses": 4, "max_llm_calls": 14, "max_tool_calls_per_round": 10,
     "max_tokens_total": 150_000, "max_cost_usd": 0.40, "max_knobs_per_patch": 3,
     "min_confidence": 0.2, "canary_fraction": 0.25, "effort": "medium", "max_tokens_per_call": 8000,
@@ -42,6 +45,7 @@ class Hypothesis:
     status: str = "proposed"  # proposed | invalid | ungrounded | low_confidence | no_patch | blocked |
     #                           rolled_back | kept_improvement | verified
     note: str = ""
+    source: str = "controller"  # controller | model | playbook
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -79,12 +83,29 @@ class Najda(Doctor):
         self.llm_fn: LLMFn | None = None  # tests inject a scripted fake here
 
     def treat(self, env: Environment) -> Diagnosis:
-        return _Run(env, self.cfg, self.llm_fn).treat()
+        store = self.store() if self.cfg["playbooks"] else None
+        return _Run(env, self.cfg, self.llm_fn, store).treat()
+
+    def store(self) -> PlaybookStore:
+        """Playbook memory lives in Doctor.memory so the runner's --memory on/off controls it."""
+        if "playbooks" not in self.memory:
+            self.memory["playbooks"] = PlaybookStore(max_failures=int(self.cfg["max_playbook_failures"]))
+        return self.memory["playbooks"]
+
+    def load_memory(self, path: Path) -> None:
+        self.memory["playbooks"] = PlaybookStore.load(path)
+
+    def save_memory(self, path: Path) -> None:
+        self.store().save(path)
 
 
 class _Run:
-    def __init__(self, env: Environment, cfg: dict[str, Any], llm_fn: LLMFn | None) -> None:
-        self.env, self.cfg, self.llm_fn = env, cfg, llm_fn
+    def __init__(self, env: Environment, cfg: dict[str, Any], llm_fn: LLMFn | None,
+                 store: PlaybookStore | None = None) -> None:
+        self.env, self.cfg, self.llm_fn, self.store = env, cfg, llm_fn, store
+        self.evidence: Evidence | None = None
+        self.transient = False
+        self.triage: dict[str, Any] | None = None
         self.messages: list[dict[str, Any]] = []
         self.tools = tool_names(bool(cfg["bisect"]))
         self.hypotheses: list[Hypothesis] = []
@@ -127,6 +148,13 @@ class _Run:
         if cfg["bisect"]:
             self.bisect = bisect_config(env)
             env.record("bisect", self.bisect)
+        self.transient = transient
+        if self.store is not None and not transient:
+            done = self.try_playbooks()
+            if done is not None:
+                return done
+        if cfg["triage"] and not transient:
+            self.triage = self.run_triage()
 
         self.messages = [{"role": "user", "content": self.initial_context(baseline, transient)}]
         for rnd in range(int(cfg["max_rounds"])):
@@ -221,7 +249,7 @@ class _Run:
             if r.n_pass == len(r.per_chat) and r.invariants_ok and env.panel.version != self.kept_version:
                 self.kept_version = env.panel.version
                 self.verified = Hypothesis("unknown", 0.5, [], "model-initiated patch verified by replay",
-                                           env.panel.history[-1].patch, "verified")
+                                           env.panel.history[-1].patch, "verified", source="model")
                 self.hypotheses.append(self.verified)
             out = {"n_pass": r.n_pass, "n_total": len(r.per_chat), "invariants_ok": r.invariants_ok,
                    "failing": sorted(c for c, v in r.per_chat.items() if not v["pass"])}
@@ -353,6 +381,84 @@ class _Run:
         h.status, h.note = "rolled_back", why
         self.tried.append({"label": h.label, "patch": h.patch, "outcome": f"rolled back ({why})"})
 
+    # ------------------------------ playbooks ---------------------------------
+    def try_playbooks(self) -> Diagnosis | None:
+        """Before any big-model call: match the incident's structured signature against learned playbooks and
+        push the matched patches through the SAME guardrails, canary, replay and regression check.
+        Returns the final diagnosis when a playbook settled the incident, else None (fall back)."""
+        env, cfg, store = self.env, self.cfg, self.store
+        assert store is not None
+        self.evidence = build_evidence(env, self.bisect, self.money)
+        m = store.match(self.evidence, env.panel.current.to_dict(), float(cfg["tier2_threshold"]), int(cfg["playbook_tiers"]))
+        if m is None:
+            env.record("playbook", {"event": "miss", "key": list(self.evidence.key), "active": len(store.active())})
+            return None
+        pb = m.playbook
+        env.record("playbook", {"event": "match", "id": pb.id, "kind": pb.kind, "tier": m.tier, "score": round(m.score, 3),
+                                "label": pb.label, "patches": m.patches, "source_incident": pb.source_incident})
+        last: Hypothesis | None = None
+        conf = 0.9 if m.tier == 1 else 0.6
+        for i, patch in enumerate(m.patches):
+            last = Hypothesis(pb.label_of(i), conf, [], f"playbook {pb.id} (tier {m.tier}, score {m.score:.2f})", patch,
+                              source="playbook")
+            self.hypotheses.append(last)
+            self.try_fix(last)
+            if last.status != "kept_improvement":
+                break
+        if pb.kind == "escalate":
+            if last is None:  # no containment step: still name the known root cause in the report
+                last = Hypothesis(pb.label, conf, [], f"playbook {pb.id}: known must-escalate signature", {}, "no_patch",
+                                  source="playbook")
+                self.hypotheses.append(last)
+            store.record(pb, True)  # an escalation cannot be verified by replay: counted as a use, reported apart
+            env.record("playbook", {"event": "hit_escalate", "id": pb.id, "tier": m.tier})
+            status = "contained" if self.kept_version != self.base_version else "escalated"
+            return self.finish(status, top=last, note=f"playbook {pb.id}: known must-escalate signature")
+        if self.verified is not None:
+            store.record(pb, True)
+            env.record("playbook", {"event": "hit", "id": pb.id, "tier": m.tier, "llm_calls": self.n_calls})
+            return self.finish("recovered", top=self.verified, note=f"playbook {pb.id} verified by replay")
+        if last is not None and last.status == "kept_improvement":
+            pb.uses += 1  # the known fault was real, the incident has more: neither a success nor a failure
+            env.record("playbook", {"event": "partial", "id": pb.id, "tier": m.tier, "remaining": self.remaining})
+            return None
+        store.record(pb, False)
+        env.record("playbook", {"event": "false_match", "id": pb.id, "tier": m.tier, "disabled": pb.disabled,
+                                "outcome": last.status if last else "no_patch"})
+        return None
+
+    def learn(self, status: str) -> None:
+        """Learn only from this run's own verified outcome. Never from a transient, an unverified patch, a
+        kept-but-partial improvement alone, a model-initiated patch, or a playbook hit (already known)."""
+        store, env = self.store, self.env
+        assert store is not None
+        if self.evidence is None or self.transient:
+            return
+        chain = [h for h in self.hypotheses if h.status in ("kept_improvement", "verified")]
+        if any(h.source != "controller" for h in chain):
+            env.record("playbook", {"event": "not_learned", "reason": "fix came from a playbook or a model-initiated patch"})
+            return
+        if status == "recovered" and self.verified is not None and chain and chain[-1] is self.verified:
+            pb = store.learn("fix", self.verified.label, self.evidence, [h.patch for h in chain], env.incident_id,
+                             [h.label for h in chain])
+        elif status != "recovered" and self.money and not self.budget_hit:
+            pb = store.learn("escalate", self.rank_causes(None)[0].label if self.hypotheses else "unknown",
+                             self.evidence, [h.patch for h in chain], env.incident_id)
+        else:
+            env.record("playbook", {"event": "not_learned", "reason": f"status={status}, nothing verified"})
+            return
+        env.record("playbook", {"event": "learned" if pb else "known", "id": pb.id if pb else None,
+                                "kind": pb.kind if pb else None, "steps": pb.steps if pb else None})
+
+    # ------------------------------ triage ------------------------------------
+    def run_triage(self) -> dict[str, Any]:
+        env = self.env
+        transcripts = "\n".join(
+            f"[{c['chat_id']} -> {c['outcome']}] " + " | ".join(f"{t['role']}: {t['text'][:160]}" for t in c["transcript"])
+            for c in env.read_chats() if c["chat_id"] in self.failed[:3])
+        return triage.run_triage(env, self.diff.digest(12) if self.diff else "n/a", self.money, env.config_history_diff(),
+                                 transcripts, self.trace_digest(int(self.cfg["trace_digest_tokens"]) * 2))
+
     # ------------------------------ finish ------------------------------------
     def finish(self, status: str, top: Hypothesis | None = None, note: str = "") -> Diagnosis:
         env = self.env
@@ -373,6 +479,8 @@ class _Run:
                                 "cost_usd": round(env.llm_usage["cost_usd"], 4)})
         if status != "recovered":
             env.escalate(report)
+        if self.store is not None:
+            self.learn(status)
         return Diagnosis(ranked, report)
 
     def rank_causes(self, top: Hypothesis | None) -> list[RootCause]:
@@ -420,6 +528,13 @@ class _Run:
             + ("\n=> The failure cleared without any change: it looks transient. Label the root cause and propose "
                "hypotheses with EMPTY patches; do not change config that is not broken." if transient else ""),
         ]
+        if self.kept_version != self.base_version:
+            parts.append("## Already applied and KEPT before you (a learned playbook improved but did not fix everything)\n"
+                         + "; ".join(f"{t['patch']}: {t['outcome']}" for t in self.tried)
+                         + f"\nStill failing after it: {', '.join(self.remaining)}. Investigate THOSE chats; there is "
+                         "probably a SECOND, independent problem."
+                         + ("\nFresh evidence from the replay under the kept patch:\n" + "\n".join(self.last_digest)
+                            if self.cfg["replay_digest"] and self.last_digest else ""))
         if self.bisect is not None and self.bisect.get("applicable"):
             parts.append("## Config bisection (deterministic replays against older versions)\n" + self.bisect["verdict"])
         if self.diff is not None:
@@ -427,11 +542,18 @@ class _Run:
                          "passing share; cite the span ids as evidence)\n" + self.diff.digest())
         if self.money:
             parts.append("## Money at risk (payment upstream failing or payments without orders)\n" + "\n".join(self.money[:5]))
-        parts.append("## Chat transcripts\n" + "\n".join(
-            f"[{c['chat_id']} -> {c['outcome']}] " + " | ".join(f"{t['role']}: {t['text']}" for t in c["transcript"])
-            for c in env.read_chats()))
+        digest_chars = int(self.cfg["trace_digest_tokens"]) * 4
+        if self.triage is not None:
+            parts.append(f"## Triage brief (cheap model, advisory; class={self.triage['class']}; "
+                         f"suspect knobs={self.triage['suspect_knobs']})\n{self.triage['brief']}\n"
+                         "(Transcripts omitted: call read_chats if you need them.)")
+            digest_chars //= 2
+        else:
+            parts.append("## Chat transcripts\n" + "\n".join(
+                f"[{c['chat_id']} -> {c['outcome']}] " + " | ".join(f"{t['role']}: {t['text']}" for t in c["transcript"])
+                for c in env.read_chats()))
         parts.append("## Trace digest (span_id first; errors and warnings, then tool calls)\n"
-                     + self.trace_digest(int(self.cfg["trace_digest_tokens"]) * 4))
+                     + self.trace_digest(digest_chars))
         parts.append("Investigate with the tools as needed, then call propose_hypotheses.")
         return "\n\n".join(parts)
 

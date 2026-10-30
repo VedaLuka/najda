@@ -22,3 +22,16 @@ class NajdaV3(Najda):
     """v2 + structured money-at-risk (invariant types + payment ledger; prompt rollback is approval-gated, never
     refused for money) + replay error digest fed into the next investigation round."""
     flags = {**NajdaV2.flags, "structured_money": True, "replay_digest": True}
+
+
+@register("najda_v4_nt")
+class NajdaV4NoTriage(Najda):
+    """v3 + playbooks: structured-signature memory of verified fixes, matched before any big-model call and
+    applied through the same guardrails and verification. No triage (ablation arm)."""
+    flags = {**NajdaV3.flags, "playbooks": True}
+
+
+@register("najda_v4")
+class NajdaV4(Najda):
+    """v4_nt + cheap triage call (small model) that writes the big model's evidence brief."""
+    flags = {**NajdaV4NoTriage.flags, "triage": True}

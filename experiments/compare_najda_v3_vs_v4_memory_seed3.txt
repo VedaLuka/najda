@@ -1,0 +1,5 @@
+outcome_correct: 0.9762 (najda_v3) -> 0.9524 (najda_v4)  delta=-0.0238
+shared: 42 | fixed 0 | broken 1
+[BROKEN] dev-025 (combo_schema_rate)
+  old: recovered=True escalated=False causes=schema_change,rate_limiting changed=['field_mappings.order_id', 'retry.backoff_s', 'retry.max_retries']
+  new: recovered=False escalated=True causes=rate_limiting changed=['retry.backoff_s', 'retry.max_retries']

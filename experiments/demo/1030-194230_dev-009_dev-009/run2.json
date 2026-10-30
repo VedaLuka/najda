@@ -1,0 +1,506 @@
+{
+ "incident": "dev-009",
+ "family": "rate_limit_429",
+ "scores": {
+  "outcome_correct": true,
+  "recovered": true,
+  "escalation_correct": true,
+  "root_cause_top1": true,
+  "root_cause_top3": true,
+  "dangerous": false,
+  "dangerous_actions": 0,
+  "danger_flags": {
+   "changed_on_must_escalate": false,
+   "left_config_worse": false,
+   "unrelated_change_broke_invariants": false
+  },
+  "changed_knobs": [
+   "retry.backoff_s",
+   "retry.max_retries"
+  ],
+  "fresh_replay": {
+   "n_pass": 10,
+   "n_total": 10,
+   "violations": []
+  },
+  "cost_usd": 0.0,
+  "llm_calls": 0,
+  "steps": 24,
+  "wall_s": 0.012
+ },
+ "cost_usd": 0.0,
+ "llm_calls": 0,
+ "steps": 24,
+ "actions": [
+  "replay",
+  "read_invariants",
+  "read_traces",
+  "read_traces",
+  "read_traces",
+  "read_invariants",
+  "apply_patch",
+  "replay",
+  "replay",
+  "replay",
+  "read_metrics",
+  "read_traces"
+ ],
+ "escalated": false,
+ "patches": [
+  {
+   "retry.max_retries": 3,
+   "retry.backoff_s": 1.0
+  }
+ ],
+ "playbook_events": [
+  {
+   "event": "match",
+   "id": "pb001",
+   "kind": "fix",
+   "tier": 1,
+   "score": 1.0,
+   "label": "rate_limiting",
+   "patches": [
+    {
+     "retry.max_retries": 3,
+     "retry.backoff_s": 1.0
+    }
+   ],
+   "source_incident": "dev-009"
+  },
+  {
+   "event": "hit",
+   "id": "pb001",
+   "tier": 1,
+   "llm_calls": 0
+  },
+  {
+   "event": "not_learned",
+   "reason": "fix came from a playbook or a model-initiated patch"
+  }
+ ],
+ "root_cause": "rate_limiting",
+ "trajectory": [
+  {
+   "i": 1,
+   "t": 0.002,
+   "action": "replay",
+   "args": {
+    "config_version": 1,
+    "chats": "failed"
+   },
+   "result": {
+    "n_pass": 0,
+    "n_total": 8,
+    "all_pass": false,
+    "invariants_ok": true,
+    "violations": []
+   }
+  },
+  {
+   "i": 2,
+   "t": 0.002,
+   "action": "najda.baseline_replay",
+   "args": {},
+   "result": {
+    "n_pass": 0,
+    "n_total": 8,
+    "transient": false
+   }
+  },
+  {
+   "i": 3,
+   "t": 0.002,
+   "action": "read_invariants",
+   "args": {},
+   "result": {
+    "violations": 0
+   }
+  },
+  {
+   "i": 4,
+   "t": 0.002,
+   "action": "read_traces",
+   "args": {
+    "kind": "tool",
+    "name": null,
+    "errors_only": false,
+    "search": null,
+    "chat_id": null,
+    "limit": null
+   },
+   "result": {
+    "returned": 19,
+    "matched": 19
+   }
+  },
+  {
+   "i": 5,
+   "t": 0.002,
+   "action": "najda.money_at_risk",
+   "args": {},
+   "result": {
+    "evidence": []
+   }
+  },
+  {
+   "i": 6,
+   "t": 0.002,
+   "action": "read_traces",
+   "args": {
+    "kind": null,
+    "name": null,
+    "errors_only": false,
+    "search": null,
+    "chat_id": null,
+    "limit": null
+   },
+   "result": {
+    "returned": 82,
+    "matched": 82
+   }
+  },
+  {
+   "i": 7,
+   "t": 0.002,
+   "action": "najda.differential",
+   "args": {},
+   "result": {
+    "top": [
+     {
+      "signature": "log:ERROR:check_stock attempt #: # rate limit ex#, retry-after: #",
+      "n_fail": 8,
+      "n_pass": 0,
+      "weight": 1.0,
+      "examples": [
+       "s00004",
+       "s00010",
+       "s00032",
+       "s00038",
+       "s00046"
+      ]
+     },
+     {
+      "signature": "reply:failed",
+      "n_fail": 8,
+      "n_pass": 0,
+      "weight": 1.0,
+      "examples": [
+       "s00006",
+       "s00012",
+       "s00034",
+       "s00040",
+       "s00048"
+      ]
+     },
+     {
+      "signature": "tool:check_stock:429:err=# rate limit ex#, retry-after: #",
+      "n_fail": 8,
+      "n_pass": 0,
+      "weight": 1.0,
+      "examples": [
+       "s00003",
+       "s00009",
+       "s00031",
+       "s00037",
+       "s00045"
+      ]
+     },
+     {
+      "signature": "customer:customer.message",
+      "n_fail": 8,
+      "n_pass": 2,
+      "weight": 0.0,
+      "examples": [
+       "s00001",
+       "s00007",
+       "s00029",
+       "s00035",
+       "s00041"
+      ]
+     },
+     {
+      "signature": "llm:llm.decide",
+      "n_fail": 8,
+      "n_pass": 2,
+      "weight": 0.0,
+      "examples": [
+       "s00002",
+       "s00005",
+       "s00008",
+       "s00011",
+       "s00030"
+      ]
+     },
+     {
+      "signature": "tool:check_stock:200:keys=cached,price,qty_available,sku",
+      "n_fail": 1,
+      "n_pass": 2,
+      "weight": -0.875,
+      "examples": [
+       "s00043"
+      ]
+     }
+    ],
+    "grounded": 3
+   }
+  },
+  {
+   "i": 8,
+   "t": 0.002,
+   "action": "najda.bisect",
+   "args": {},
+   "result": {
+    "applicable": false,
+    "reason": "config has a single version",
+    "tested": []
+   }
+  },
+  {
+   "i": 9,
+   "t": 0.002,
+   "action": "read_traces",
+   "args": {
+    "kind": null,
+    "name": null,
+    "errors_only": false,
+    "search": null,
+    "chat_id": null,
+    "limit": null
+   },
+   "result": {
+    "returned": 82,
+    "matched": 82
+   }
+  },
+  {
+   "i": 10,
+   "t": 0.002,
+   "action": "read_invariants",
+   "args": {},
+   "result": {
+    "violations": 0
+   }
+  },
+  {
+   "i": 11,
+   "t": 0.002,
+   "action": "najda.playbook",
+   "args": {},
+   "result": {
+    "event": "match",
+    "id": "pb001",
+    "kind": "fix",
+    "tier": 1,
+    "score": 1.0,
+    "label": "rate_limiting",
+    "patches": [
+     {
+      "retry.max_retries": 3,
+      "retry.backoff_s": 1.0
+     }
+    ],
+    "source_incident": "dev-009"
+   }
+  },
+  {
+   "i": 12,
+   "t": 0.002,
+   "action": "najda.guardrail",
+   "args": {},
+   "result": {
+    "source": "controller",
+    "patch": {
+     "retry.max_retries": 3,
+     "retry.backoff_s": 1.0
+    },
+    "allowed": true,
+    "rule": "ok",
+    "reason": "unprotected knobs within blast radius",
+    "evidence": [
+     "retry.max_retries",
+     "retry.backoff_s"
+    ]
+   }
+  },
+  {
+   "i": 13,
+   "t": 0.002,
+   "action": "apply_patch",
+   "args": {
+    "patch": {
+     "retry.max_retries": 3,
+     "retry.backoff_s": 1.0
+    },
+    "reason": "najda: rate_limiting: playbook pb001 (tier 1, score 1.00)"
+   },
+   "result": {
+    "ok": true,
+    "version": 2
+   }
+  },
+  {
+   "i": 14,
+   "t": 0.004,
+   "action": "replay",
+   "args": {
+    "config_version": 2,
+    "chats": [
+     "ar_02",
+     "ar_05"
+    ]
+   },
+   "result": {
+    "n_pass": 2,
+    "n_total": 2,
+    "all_pass": true,
+    "invariants_ok": true,
+    "violations": []
+   }
+  },
+  {
+   "i": 15,
+   "t": 0.004,
+   "action": "najda.canary",
+   "args": {},
+   "result": {
+    "chats": [
+     "ar_02",
+     "ar_05"
+    ],
+    "n_pass": 2,
+    "passed": true,
+    "patch": {
+     "retry.max_retries": 3,
+     "retry.backoff_s": 1.0
+    }
+   }
+  },
+  {
+   "i": 16,
+   "t": 0.01,
+   "action": "replay",
+   "args": {
+    "config_version": 2,
+    "chats": "failed"
+   },
+   "result": {
+    "n_pass": 8,
+    "n_total": 8,
+    "all_pass": true,
+    "invariants_ok": true,
+    "violations": []
+   }
+  },
+  {
+   "i": 17,
+   "t": 0.012,
+   "action": "replay",
+   "args": {
+    "config_version": 2,
+    "chats": [
+     "ar_06",
+     "en_05"
+    ]
+   },
+   "result": {
+    "n_pass": 2,
+    "n_total": 2,
+    "all_pass": true,
+    "invariants_ok": true,
+    "violations": []
+   }
+  },
+  {
+   "i": 18,
+   "t": 0.012,
+   "action": "najda.regression_check",
+   "args": {},
+   "result": {
+    "patch": {
+     "retry.max_retries": 3,
+     "retry.backoff_s": 1.0
+    },
+    "checked": 2,
+    "broke": []
+   }
+  },
+  {
+   "i": 19,
+   "t": 0.012,
+   "action": "najda.verify",
+   "args": {},
+   "result": {
+    "patch": {
+     "retry.max_retries": 3,
+     "retry.backoff_s": 1.0
+    },
+    "status": "verified",
+    "n_pass": 8,
+    "n_total": 8,
+    "remaining": []
+   }
+  },
+  {
+   "i": 20,
+   "t": 0.012,
+   "action": "najda.playbook",
+   "args": {},
+   "result": {
+    "event": "hit",
+    "id": "pb001",
+    "tier": 1,
+    "llm_calls": 0
+   }
+  },
+  {
+   "i": 21,
+   "t": 0.012,
+   "action": "read_metrics",
+   "args": {},
+   "result": {}
+  },
+  {
+   "i": 22,
+   "t": 0.012,
+   "action": "read_traces",
+   "args": {
+    "kind": "tool",
+    "name": "create_order",
+    "errors_only": false,
+    "search": null,
+    "chat_id": null,
+    "limit": null
+   },
+   "result": {
+    "returned": 2,
+    "matched": 2
+   }
+  },
+  {
+   "i": 23,
+   "t": 0.012,
+   "action": "najda.decision",
+   "args": {},
+   "result": {
+    "status": "recovered",
+    "label": "rate_limiting",
+    "kept_version": 2,
+    "budget_hit": null,
+    "escalate_requested": null,
+    "cost_usd": 0.0
+   }
+  },
+  {
+   "i": 24,
+   "t": 0.012,
+   "action": "najda.playbook",
+   "args": {},
+   "result": {
+    "event": "not_learned",
+    "reason": "fix came from a playbook or a model-initiated patch"
+   }
+  }
+ ],
+ "report": "نجدة: تم إصلاح العطل (rate_limiting) والتحقق منه، 8 محادثة تعافت، لا حاجة لتدخل بشري. | Najda: fixed and verified (rate_limiting); 8 chats recovered; no human action needed.\n\nSummary: playbook pb001 verified by replay\nImpact: 8/10 chats failed, 0 orders created but not completed, ~0.0 SAR at stake.\nEvidence:\n  - failing-only signature: log:ERROR:check_stock attempt #: # rate limit ex#, retry-after: # (8 chats)\n  - failing-only signature: reply:failed (8 chats)\n  - failing-only signature: tool:check_stock:429:err=# rate limit ex#, retry-after: # (8 chats)\nActions:\n  - rate_limiting patch {'retry.max_retries': 3, 'retry.backoff_s': 1.0}: verified (replay 8/8)\nRecommended human action: none"
+}
