@@ -1,0 +1,34 @@
+{
+  "run_id": "1030-165046_baseline_majority_dev",
+  "time_utc": "2026-10-30T13:50:46+00:00",
+  "system": "baseline_majority",
+  "split": "dev",
+  "perturbation": "none",
+  "n": 14,
+  "primary_metric": "normalized_match",
+  "primary": 0.7143,
+  "metrics": {
+    "exact_match": 0.7143,
+    "normalized_match": 0.7143,
+    "token_f1": 0.7143,
+    "macro_f1": 0.4167
+  },
+  "errors": 0,
+  "wall_s": 0.0,
+  "mean_latency_s": 0.0,
+  "llm": {
+    "calls": 0,
+    "cache_hits": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 0.0
+  },
+  "seed": 42,
+  "config_hash": "bf21a9e8",
+  "config": {},
+  "git": {
+    "commit": null,
+    "dirty": false
+  },
+  "note": "smoke"
+}

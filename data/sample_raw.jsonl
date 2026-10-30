@@ -1,0 +1,60 @@
+{"id": "ex000", "input": "سيء جدا honestly", "expected": "negative"}
+{"id": "ex001", "input": "excellent quality honestly", "expected": "positive"}
+{"id": "ex002", "input": "سيء جدا overall", "expected": "negative"}
+{"id": "ex003", "input": "waste of money !", "expected": "negative"}
+{"id": "ex004", "input": "broke after a day overall", "expected": "negative"}
+{"id": "ex005", "input": "رائع جدا", "expected": "positive"}
+{"id": "ex006", "input": "سيء جدا overall", "expected": "negative"}
+{"id": "ex007", "input": "never again !", "expected": "negative"}
+{"id": "ex008", "input": "terrible support", "expected": "negative"}
+{"id": "ex009", "input": "waste of money honestly", "expected": "negative"}
+{"id": "ex010", "input": "terrible support overall", "expected": "negative"}
+{"id": "ex011", "input": "waste of money !", "expected": "negative"}
+{"id": "ex012", "input": "تجربة سيئة honestly", "expected": "negative"}
+{"id": "ex013", "input": "waste of money", "expected": "negative"}
+{"id": "ex014", "input": "terrible support", "expected": "negative"}
+{"id": "ex015", "input": "سيء جدا honestly", "expected": "negative"}
+{"id": "ex016", "input": "سيء جدا", "expected": "negative"}
+{"id": "ex017", "input": "تجربة سيئة overall", "expected": "negative"}
+{"id": "ex018", "input": "works perfectly overall", "expected": "positive"}
+{"id": "ex019", "input": "سيء جدا", "expected": "negative"}
+{"id": "ex020", "input": "very happy !", "expected": "positive"}
+{"id": "ex021", "input": "رائع جدا !", "expected": "positive"}
+{"id": "ex022", "input": "تجربة سيئة", "expected": "negative"}
+{"id": "ex023", "input": "excellent quality honestly", "expected": "positive"}
+{"id": "ex024", "input": "excellent quality overall", "expected": "positive"}
+{"id": "ex025", "input": "terrible support overall", "expected": "negative"}
+{"id": "ex026", "input": "broke after a day overall", "expected": "negative"}
+{"id": "ex027", "input": "terrible support honestly", "expected": "negative"}
+{"id": "ex028", "input": "very disappointed !", "expected": "negative"}
+{"id": "ex029", "input": "broke after a day !", "expected": "negative"}
+{"id": "ex030", "input": "great service overall", "expected": "positive"}
+{"id": "ex031", "input": "terrible support", "expected": "negative"}
+{"id": "ex032", "input": "سيء جدا !", "expected": "negative"}
+{"id": "ex033", "input": "great service", "expected": "positive"}
+{"id": "ex034", "input": "سيء جدا honestly", "expected": "negative"}
+{"id": "ex035", "input": "very disappointed overall", "expected": "negative"}
+{"id": "ex036", "input": "سيء جدا !", "expected": "negative"}
+{"id": "ex037", "input": "works perfectly honestly", "expected": "positive"}
+{"id": "ex038", "input": "waste of money honestly", "expected": "negative"}
+{"id": "ex039", "input": "never again overall", "expected": "negative"}
+{"id": "ex040", "input": "excellent quality", "expected": "positive"}
+{"id": "ex041", "input": "very disappointed overall", "expected": "negative"}
+{"id": "ex042", "input": "loved it", "expected": "positive"}
+{"id": "ex043", "input": "waste of money", "expected": "negative"}
+{"id": "ex044", "input": "broke after a day overall", "expected": "negative"}
+{"id": "ex045", "input": "excellent quality honestly", "expected": "positive"}
+{"id": "ex046", "input": "great service !", "expected": "positive"}
+{"id": "ex047", "input": "broke after a day", "expected": "negative"}
+{"id": "ex048", "input": "never again", "expected": "negative"}
+{"id": "ex049", "input": "great service !", "expected": "positive"}
+{"id": "ex050", "input": "سيء جدا", "expected": "negative"}
+{"id": "ex051", "input": "terrible support overall", "expected": "negative"}
+{"id": "ex052", "input": "great service", "expected": "positive"}
+{"id": "ex053", "input": "loved it", "expected": "positive"}
+{"id": "ex054", "input": "broke after a day", "expected": "negative"}
+{"id": "ex055", "input": "terrible support honestly", "expected": "negative"}
+{"id": "ex056", "input": "terrible support overall", "expected": "negative"}
+{"id": "ex057", "input": "loved it", "expected": "positive"}
+{"id": "ex058", "input": "waste of money overall", "expected": "negative"}
+{"id": "ex059", "input": "broke after a day", "expected": "negative"}

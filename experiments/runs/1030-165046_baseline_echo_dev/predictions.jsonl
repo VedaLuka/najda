@@ -1,0 +1,14 @@
+{"id": "ex006", "input": "سيء جدا overall", "expected": "negative", "pred": "سيء جدا overall", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex047", "input": "broke after a day", "expected": "negative", "pred": "broke after a day", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex029", "input": "broke after a day !", "expected": "negative", "pred": "broke after a day !", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex013", "input": "waste of money", "expected": "negative", "pred": "waste of money", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex039", "input": "never again overall", "expected": "negative", "pred": "never again overall", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex028", "input": "very disappointed !", "expected": "negative", "pred": "very disappointed !", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex014", "input": "terrible support", "expected": "negative", "pred": "terrible support", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex032", "input": "سيء جدا !", "expected": "negative", "pred": "سيء جدا !", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex050", "input": "سيء جدا", "expected": "negative", "pred": "سيء جدا", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex051", "input": "terrible support overall", "expected": "negative", "pred": "terrible support overall", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex040", "input": "excellent quality", "expected": "positive", "pred": "excellent quality", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex018", "input": "works perfectly overall", "expected": "positive", "pred": "works perfectly overall", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex021", "input": "رائع جدا !", "expected": "positive", "pred": "رائع جدا !", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}
+{"id": "ex037", "input": "works perfectly honestly", "expected": "positive", "pred": "works perfectly honestly", "latency_s": 0.0, "error": null, "scores": {"exact_match": 0.0, "normalized_match": 0.0, "token_f1": 0.0}}

@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.cache/
+# Organisers' data is under NDA: keep it out of git unless the rules say otherwise
+data/*
+!data/.gitkeep
+!data/sample_raw.jsonl
+.DS_Store

@@ -1,0 +1,6 @@
+{
+  "model": null,
+  "temperature": 0.0,
+  "prompt": "Classify the sentiment of the review as exactly one word: positive or negative.\n\nReview: {input}\n\nAnswer:",
+  "data": {"input_field": "input", "expected_field": "expected"}
+}
