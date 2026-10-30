@@ -1,0 +1,90 @@
+{
+  "incident_id": "transfer-019",
+  "split": "transfer",
+  "seed": 5019,
+  "fault_ids": [
+    "combo_rename_prompt"
+  ],
+  "resolved_fault_ids": [
+    "booking_field_rename",
+    "prompt_regression"
+  ],
+  "family": "combo_rename_prompt",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_03",
+    "ar_09",
+    "ar_10",
+    "en_01",
+    "en_03"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "BookingAPI response schema changed: booking_id -> id; bot reads a missing key; prompt v2_quick dropped the charge_deposit step; bookings are confirmed with no deposit",
+    "correct_fix": {
+      "field_mappings.booking_id": "id",
+      "prompt_version": "v1"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_09",
+    "ar_10",
+    "en_01"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_03": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 2
+    },
+    "ar_10": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 2
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 2
+    },
+    "en_03": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 2,
+      "progress": 1
+    }
+  },
+  "patient": "hajz"
+}

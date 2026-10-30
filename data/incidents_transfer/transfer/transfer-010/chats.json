@@ -1,0 +1,162 @@
+[
+  {
+    "chat_id": "ar_02",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "السلام عليكم، ودي احجز لـ 2 يوم 8/1 الساعة 7 مساء"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 8/1 الساعة 19:00 لـ 2 أشخاص. العربون 40 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم أكد"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0010 يوم 8/1 الساعة 19:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_03",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "هلا، ممكن طاولة لـ 6 نفر 22/1 الساعة 9"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف ما فيه طاولات متاحة في هذا الوقت."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير، حجز لـ 5 يوم 16/1 الساعة 9 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 16/1 الساعة 21:00 لـ 5 أشخاص. العربون 100 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "اكيد"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0011 يوم 16/1 الساعة 21:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_06",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى طاولة لـ 2 يوم 5/1 الساعة 7"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 5/1 الساعة 19:00 لـ 2 أشخاص. العربون 40 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا خلاص الغي"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الحجز. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_08",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى احجز لـ 3 يوم 9/1 الساعة 7 مساء"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف ما فيه طاولات متاحة في هذا الوقت."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "عطني حجز لـ 2 يوم 30/1 الساعة 8"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 30/1 الساعة 20:00 لـ 2 أشخاص. العربون 40 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "تمام اكد"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0012 يوم 30/1 الساعة 20:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_01",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Hi, table for 2 on 12/1 at 8pm please"
+      },
+      {
+        "role": "bot",
+        "text": "Available on 12/1 at 20:00 for 2. Deposit 40 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes"
+      },
+      {
+        "role": "bot",
+        "text": "Your booking BK-0013 is confirmed for 12/1 at 20:00. Thank you!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Can I book for 4 people on 20/1 at 7:30"
+      },
+      {
+        "role": "bot",
+        "text": "Available on 20/1 at 19:30 for 4. Deposit 80 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Your booking BK-0014 is confirmed for 20/1 at 19:30. Thank you!"
+      }
+    ]
+  }
+]

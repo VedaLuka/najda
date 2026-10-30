@@ -1,0 +1,46 @@
+[
+  {
+    "chat_id": "ar_12",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي 1 كرك بس"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x شاي كرك. الإجمالي 5 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا ما ابغى"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الطلب. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ممكن 1 kabsa and 2 كرك"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x كبسة دجاج, 2 x شاي كرك. الإجمالي 38 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  }
+]

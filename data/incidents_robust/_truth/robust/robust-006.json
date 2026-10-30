@@ -1,0 +1,102 @@
+{
+  "incident_id": "robust-006",
+  "split": "robust",
+  "seed": 4006,
+  "fault_ids": [
+    "auth_expired_401"
+  ],
+  "resolved_fault_ids": [
+    "auth_expired_401"
+  ],
+  "family": "auth_expired_401",
+  "noisy": false,
+  "chat_ids": [
+    "ar_05",
+    "ar_08",
+    "ar_10",
+    "en_02",
+    "en_06",
+    "mix_01",
+    "mix_02"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "noise_low",
+    "noise": "low"
+  },
+  "ground_truth": {
+    "root_cause": "primary API key revoked by scheduled rotation; bot still uses the primary key slot",
+    "correct_fix": {
+      "auth.key_slot": "backup"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_05",
+    "ar_08",
+    "en_02",
+    "en_06",
+    "mix_01",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 1
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6,
+      "progress": 1
+    },
+    "ar_10": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    }
+  }
+}

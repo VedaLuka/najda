@@ -1,0 +1,46 @@
+[
+  {
+    "chat_id": "ar_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "السلام عليكم، ممكن 1 كبسة دجاج و 2 ماء"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x كبسة دجاج, 2 x ماء. الإجمالي 32 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم أكد"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Can I order 2 kabsa"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 2 x Chicken Kabsa. Total 56 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes please"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  }
+]

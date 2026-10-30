@@ -1,0 +1,156 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج و 1 بيبسي"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج, 1 x بيبسي. الإجمالي 28 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد طلبك رقم ORD-0001. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "اثنين كبسة و ثلاث مويه"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x كبسة دجاج, 3 x ماء. الإجمالي 62 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد طلبك رقم ORD-0002. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "1 kabsa and 2 water please"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 1 x Chicken Kabsa, 2 x Water. Total 32 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Your order ORD-0003 is confirmed. Thank you!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_03",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like 3 falafel and 1 karak"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 3 x Falafel Sandwich, 1 x Karak Tea. Total 23 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "ok"
+      },
+      {
+        "role": "bot",
+        "text": "Your order ORD-0004 is confirmed. Thank you!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_04",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "two meat shawarma with fries"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 2 x Meat Shawarma, 1 x Fries. Total 36 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "sure"
+      },
+      {
+        "role": "bot",
+        "text": "Your order ORD-0005 is confirmed. Thank you!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_08",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "3 fries please"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 3 x Fries. Total 24 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "no, cancel"
+      },
+      {
+        "role": "bot",
+        "text": "No problem, order cancelled. See you soon!"
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_01",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "hey ابغى 2 shawarma dajaj و 1 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج, 1 x بيبسي. الإجمالي 28 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "yes تمام"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد طلبك رقم ORD-0006. شكراً لك!"
+      }
+    ]
+  }
+]

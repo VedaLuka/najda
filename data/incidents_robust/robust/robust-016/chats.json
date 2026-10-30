@@ -1,0 +1,156 @@
+[
+  {
+    "chat_id": "ar_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "السلام عليكم، ممكن 1 كبسة دجاج و 2 ماء"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x كبسة دجاج, 2 x ماء. الإجمالي 32 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم أكد"
+      },
+      {
+        "role": "bot",
+        "text": "نعتذر، ما قدرنا نكمل طلبك الحين. حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير ابغى 1 كبسة"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x كبسة دجاج. الإجمالي 28 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "اكيد"
+      },
+      {
+        "role": "bot",
+        "text": "نعتذر، ما قدرنا نكمل طلبك الحين. حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_11",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "عطني 5 ببسي و 2 بطاطا"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 5 x بيبسي, 2 x بطاطس. الإجمالي 36 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "تمام اكد"
+      },
+      {
+        "role": "bot",
+        "text": "نعتذر، ما قدرنا نكمل طلبك الحين. حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_12",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي 1 كرك بس"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x شاي كرك. الإجمالي 5 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا ما ابغى"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الطلب. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like 3 falafel and 1 karak"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 3 x Falafel Sandwich, 1 x Karak Tea. Total 23 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "ok"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, we couldn't complete your order right now. Please try again later."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_04",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "two meat shawarma with fries"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 2 x Meat Shawarma, 1 x Fries. Total 36 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "sure"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, we couldn't complete your order right now. Please try again later."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Can I order 2 kabsa"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 2 x Chicken Kabsa. Total 56 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes please"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, we couldn't complete your order right now. Please try again later."
+      }
+    ]
+  }
+]

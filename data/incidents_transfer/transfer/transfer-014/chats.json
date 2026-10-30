@@ -1,0 +1,80 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى احجز طاولة لـ 4 أشخاص يوم 15/1 الساعة 8 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نتحقق من التوفر الحين، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "طاولة لـ 8 أشخاص يوم 3/1 الساعة 8"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نتحقق من التوفر الحين، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_04",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like a table for 3 on 7/1 at 9pm"
+      },
+      {
+        "role": "bot",
+        "text": "Available on 7/1 at 21:00 for 3. Deposit 60 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "no, cancel"
+      },
+      {
+        "role": "bot",
+        "text": "No problem, booking cancelled. See you soon!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "table for 5 on 25/1 at 6"
+      },
+      {
+        "role": "bot",
+        "text": "We couldn't check availability right now, please try again later."
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "hey ابغى احجز for 4 يوم 11/1 at 8"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نتحقق من التوفر الحين، حاول بعد شوي."
+      }
+    ]
+  }
+]

@@ -1,0 +1,95 @@
+{
+  "incident_id": "transfer-007",
+  "split": "transfer",
+  "seed": 5007,
+  "fault_ids": [
+    "stale_availability"
+  ],
+  "resolved_fault_ids": [
+    "stale_availability"
+  ],
+  "family": "stale_availability",
+  "noisy": false,
+  "chat_ids": [
+    "ar_04",
+    "ar_08",
+    "ar_10",
+    "en_02",
+    "en_04",
+    "en_05",
+    "mix_01"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "AvailabilityAPI cached reads return a stale snapshot (all slots free); bot does not request fresh reads",
+    "correct_fix": {
+      "availability_fresh_read": true
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_08"
+  ],
+  "chat_verdicts": {
+    "ar_04": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_10": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "en_02": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "en_04": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_05": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "mix_01": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    }
+  },
+  "patient": "hajz"
+}

@@ -1,0 +1,53 @@
+{
+  "incident_id": "robust-019",
+  "split": "robust",
+  "seed": 4019,
+  "fault_ids": [
+    "schema_drift"
+  ],
+  "resolved_fault_ids": [
+    "schema_drift"
+  ],
+  "family": "schema_drift",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "en_06"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "weak",
+    "weak_signal": true
+  },
+  "ground_truth": {
+    "root_cause": "OrderAPI response schema changed: order_id -> id; bot reads a missing key",
+    "correct_fix": {
+      "field_mappings.order_id": "id"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_02",
+    "en_06"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 2
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 2
+    }
+  }
+}

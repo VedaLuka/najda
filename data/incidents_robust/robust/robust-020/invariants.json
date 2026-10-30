@@ -1,0 +1,7 @@
+[
+  {
+    "invariant": "confirmed_has_payment",
+    "chat_id": "en_01",
+    "detail": "ORD-0001 confirmed with no paid payment"
+  }
+]

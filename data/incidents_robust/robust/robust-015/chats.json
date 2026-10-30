@@ -1,0 +1,142 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج و 1 بيبسي"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير ابغى 1 كبسة"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_07",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ودي بـ 2 كرك و 1 فلافل"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_08",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 1 شاورما لحم و 1 بيبسي و 1 بطاطس"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "اثنين كبسة و ثلاث مويه"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_11",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "عطني 5 ببسي و 2 بطاطا"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "1 kabsa and 2 water please"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_04",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "two meat shawarma with fries"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ممكن 1 kabsa and 2 كرك"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  }
+]

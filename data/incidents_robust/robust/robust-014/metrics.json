@@ -1,0 +1,58 @@
+{
+  "chats": 5,
+  "tool_calls": 19,
+  "error_rate": 0.0,
+  "mean_tool_latency_ms": 97.1,
+  "p95_tool_latency_ms": 150.0,
+  "orders_created": 5,
+  "orders_paid": 0,
+  "orders_confirmed": 5,
+  "chats_confirmed": 5,
+  "chats_failed": 0,
+  "mean_turns": 5.8,
+  "loop_chats": 0,
+  "tokens": 0,
+  "warn_logs": 0,
+  "per_chat": {
+    "ar_06": {
+      "outcome": "confirmed",
+      "turns": 5,
+      "tool_calls": 3,
+      "errors": 0,
+      "latency_ms": 305.0,
+      "tokens": 0
+    },
+    "ar_11": {
+      "outcome": "confirmed",
+      "turns": 6,
+      "tool_calls": 4,
+      "errors": 0,
+      "latency_ms": 385.0,
+      "tokens": 0
+    },
+    "en_02": {
+      "outcome": "confirmed",
+      "turns": 6,
+      "tool_calls": 4,
+      "errors": 0,
+      "latency_ms": 385.0,
+      "tokens": 0
+    },
+    "mix_01": {
+      "outcome": "confirmed",
+      "turns": 6,
+      "tool_calls": 4,
+      "errors": 0,
+      "latency_ms": 385.0,
+      "tokens": 0
+    },
+    "mix_02": {
+      "outcome": "confirmed",
+      "turns": 6,
+      "tool_calls": 4,
+      "errors": 0,
+      "latency_ms": 385.0,
+      "tokens": 0
+    }
+  }
+}

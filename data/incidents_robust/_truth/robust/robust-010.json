@@ -1,0 +1,120 @@
+{
+  "incident_id": "robust-010",
+  "split": "robust",
+  "seed": 4010,
+  "fault_ids": [
+    "infinite_loop"
+  ],
+  "resolved_fault_ids": [
+    "infinite_loop"
+  ],
+  "family": "infinite_loop",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_03",
+    "ar_06",
+    "ar_09",
+    "ar_10",
+    "ar_12",
+    "en_03",
+    "en_06",
+    "en_08"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "noise_high",
+    "noise": "high"
+  },
+  "ground_truth": {
+    "root_cause": "OrderAPI never moves orders out of 'queued'; max_turns guard was raised to 60 so the bot loops",
+    "correct_fix": {
+      "max_turns": 10
+    },
+    "should_escalate": true,
+    "expected_outcome": "contain",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_03",
+    "ar_06",
+    "ar_09",
+    "en_03",
+    "en_06"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60,
+      "progress": 3
+    },
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60,
+      "progress": 3
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60,
+      "progress": 3
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60,
+      "progress": 3
+    },
+    "ar_10": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "ar_12": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60,
+      "progress": 3
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 60,
+      "progress": 3
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    }
+  }
+}

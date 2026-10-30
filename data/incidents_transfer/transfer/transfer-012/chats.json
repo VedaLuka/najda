@@ -1,0 +1,140 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى احجز طاولة لـ 4 أشخاص يوم 15/1 الساعة 8 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف ما فيه طاولات متاحة في هذا الوقت."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_03",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "هلا، ممكن طاولة لـ 6 نفر 22/1 الساعة 9"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف ما فيه طاولات متاحة في هذا الوقت."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_04",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي احجز 3 أشخاص يوم 10/1 الساعة 8:30"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 10/1 الساعة 20:30 لـ 3 أشخاص. العربون 60 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "اوكي يلا"
+      },
+      {
+        "role": "bot",
+        "text": "صار خطأ أثناء الحجز، حاول مرة ثانية."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_07",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ودي احجز 4 أشخاص 28/1 الساعة 10 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 28/1 الساعة 22:00 لـ 4 أشخاص. العربون 80 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "ماشي"
+      },
+      {
+        "role": "bot",
+        "text": "صار خطأ أثناء الحجز، حاول مرة ثانية."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "طاولة لـ 8 أشخاص يوم 3/1 الساعة 8"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 3/1 الساعة 20:00 لـ 8 أشخاص. العربون 160 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم"
+      },
+      {
+        "role": "bot",
+        "text": "صار خطأ أثناء الحجز، حاول مرة ثانية."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Hi, table for 2 on 12/1 at 8pm please"
+      },
+      {
+        "role": "bot",
+        "text": "Available on 12/1 at 20:00 for 2. Deposit 40 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes"
+      },
+      {
+        "role": "bot",
+        "text": "Something went wrong while booking, please try again."
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "hey ابغى احجز for 4 يوم 11/1 at 8"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 11/1 الساعة 20:00 لـ 4 أشخاص. العربون 80 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "yes تمام"
+      },
+      {
+        "role": "bot",
+        "text": "صار خطأ أثناء الحجز، حاول مرة ثانية."
+      }
+    ]
+  }
+]

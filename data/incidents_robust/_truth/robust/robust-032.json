@@ -1,0 +1,92 @@
+{
+  "incident_id": "robust-032",
+  "split": "robust",
+  "seed": 4032,
+  "fault_ids": [
+    "prompt_regression"
+  ],
+  "resolved_fault_ids": [
+    "prompt_regression"
+  ],
+  "family": "prompt_regression",
+  "noisy": false,
+  "chat_ids": [
+    "en_01",
+    "en_02",
+    "en_03",
+    "en_04",
+    "en_06",
+    "en_08"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "en",
+    "language": "en"
+  },
+  "ground_truth": {
+    "root_cause": "prompt v2_fast dropped the charge step; orders are confirmed unpaid",
+    "correct_fix": {
+      "prompt_version": "v1"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "en_01",
+    "en_02",
+    "en_03",
+    "en_04",
+    "en_06"
+  ],
+  "chat_verdicts": {
+    "en_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    }
+  }
+}

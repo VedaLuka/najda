@@ -1,0 +1,22 @@
+[
+  {
+    "invariant": "booking_time_matches_request",
+    "chat_id": "ar_02",
+    "detail": "customer asked 2026-01-08 19:00 Riyadh, BK-0011 is at 2026-01-08 22:00 Riyadh"
+  },
+  {
+    "invariant": "booking_time_matches_request",
+    "chat_id": "ar_05",
+    "detail": "customer asked 2026-01-16 21:00 Riyadh, BK-0012 is at 2026-01-17 00:00 Riyadh"
+  },
+  {
+    "invariant": "booking_time_matches_request",
+    "chat_id": "ar_10",
+    "detail": "customer asked 2026-01-30 20:00 Riyadh, BK-0013 is at 2026-01-30 23:00 Riyadh"
+  },
+  {
+    "invariant": "booking_time_matches_request",
+    "chat_id": "en_01",
+    "detail": "customer asked 2026-01-12 20:00 Riyadh, BK-0014 is at 2026-01-12 23:00 Riyadh"
+  }
+]

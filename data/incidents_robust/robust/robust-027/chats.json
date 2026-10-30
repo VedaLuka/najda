@@ -1,0 +1,136 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج و 1 بيبسي"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "السلام عليكم، ممكن 1 كبسة دجاج و 2 ماء"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي 3 فلافل و 1 كرك لو سمحت"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير ابغى 1 كبسة"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_07",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ودي بـ 2 كرك و 1 فلافل"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "اثنين كبسة و ثلاث مويه"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج. الإجمالي 24 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا خلاص الغي"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الطلب. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_11",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "عطني 5 ببسي و 2 بطاطا"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_12",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي 1 كرك بس"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  }
+]

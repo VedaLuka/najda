@@ -1,0 +1,17 @@
+[
+  {
+    "invariant": "confirmed_has_deposit",
+    "chat_id": "ar_04",
+    "detail": "BK-0010 confirmed with no paid deposit"
+  },
+  {
+    "invariant": "confirmed_has_deposit",
+    "chat_id": "en_01",
+    "detail": "BK-0011 confirmed with no paid deposit"
+  },
+  {
+    "invariant": "confirmed_has_deposit",
+    "chat_id": "mix_01",
+    "detail": "BK-0012 confirmed with no paid deposit"
+  }
+]

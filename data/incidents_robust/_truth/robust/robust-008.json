@@ -1,0 +1,102 @@
+{
+  "incident_id": "robust-008",
+  "split": "robust",
+  "seed": 4008,
+  "fault_ids": [
+    "prompt_regression"
+  ],
+  "resolved_fault_ids": [
+    "prompt_regression"
+  ],
+  "family": "prompt_regression",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_09",
+    "en_02",
+    "en_03",
+    "en_04",
+    "en_08",
+    "mix_01"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "noise_high",
+    "noise": "high"
+  },
+  "ground_truth": {
+    "root_cause": "prompt v2_fast dropped the charge step; orders are confirmed unpaid",
+    "correct_fix": {
+      "prompt_version": "v1"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_09",
+    "en_02",
+    "en_03",
+    "en_04",
+    "mix_01"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    }
+  }
+}

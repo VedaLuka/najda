@@ -1,0 +1,111 @@
+{
+  "incident_id": "transfer-004",
+  "split": "transfer",
+  "seed": 5004,
+  "fault_ids": [
+    "date_swap"
+  ],
+  "resolved_fault_ids": [
+    "date_swap"
+  ],
+  "family": "date_swap",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_03",
+    "ar_08",
+    "ar_09",
+    "ar_10",
+    "en_02",
+    "en_03",
+    "en_05"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "customer messages now carry m/d dates; the bot parses d/m",
+    "correct_fix": {
+      "date_format": "mdy"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_03",
+    "ar_08",
+    "ar_09",
+    "ar_10",
+    "en_02",
+    "en_03",
+    "en_05"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 1,
+      "progress": 0
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_10": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 1,
+      "progress": 0
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 1,
+      "progress": 0
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 1,
+      "progress": 0
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 1,
+      "progress": 0
+    }
+  },
+  "patient": "hajz"
+}

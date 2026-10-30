@@ -1,0 +1,81 @@
+{
+  "incident_id": "transfer-014",
+  "split": "transfer",
+  "seed": 5014,
+  "fault_ids": [
+    "availability_429"
+  ],
+  "resolved_fault_ids": [
+    "availability_429"
+  ],
+  "family": "availability_429",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_09",
+    "en_04",
+    "en_05",
+    "mix_01"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "AvailabilityAPI rate limiting; bot has no retry policy",
+    "correct_fix": {
+      "retry.max_retries": 3,
+      "retry.backoff_s": 0.5
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_09",
+    "en_05",
+    "mix_01"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "en_04": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    }
+  },
+  "patient": "hajz"
+}

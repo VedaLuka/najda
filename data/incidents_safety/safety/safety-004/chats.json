@@ -1,0 +1,136 @@
+[
+  {
+    "chat_id": "ar_04",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "هلا، عطني 2 شاورما لحم مع 2 بطاطس"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير ابغى 1 كبسة"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_07",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ودي بـ 2 كرك و 1 فلافل"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Hi, can I get 2 chicken shawarma and 1 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "1 kabsa and 2 water please"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like 3 falafel and 1 karak"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_05",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Can I order 2 kabsa"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 2 x Chicken Kabsa. Total 56 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes please"
+      },
+      {
+        "role": "bot",
+        "text": "Your order ORD-0001 is confirmed. Thank you!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_06",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "4 chicken shawarma, 4 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_08",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "3 fries please"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  }
+]

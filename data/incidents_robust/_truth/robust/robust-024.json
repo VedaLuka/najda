@@ -1,0 +1,53 @@
+{
+  "incident_id": "robust-024",
+  "split": "robust",
+  "seed": 4024,
+  "fault_ids": [
+    "auth_expired_401"
+  ],
+  "resolved_fault_ids": [
+    "auth_expired_401"
+  ],
+  "family": "auth_expired_401",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "en_05"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "weak",
+    "weak_signal": true
+  },
+  "ground_truth": {
+    "root_cause": "primary API key revoked by scheduled rotation; bot still uses the primary key slot",
+    "correct_fix": {
+      "auth.key_slot": "backup"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_02",
+    "en_05"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 1
+    }
+  }
+}

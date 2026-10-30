@@ -1,0 +1,132 @@
+{
+  "version": 2,
+  "current": {
+    "field_mappings": {
+      "order_id": "order_id",
+      "status": "status",
+      "price": "price",
+      "qty_available": "qty_available",
+      "payment_id": "payment_id",
+      "payment_status": "status"
+    },
+    "prompt_version": "v1",
+    "retry": {
+      "max_retries": 0,
+      "backoff_s": 0.5,
+      "retry_on": [
+        429,
+        503
+      ]
+    },
+    "timeout_s": 4.0,
+    "max_turns": 10,
+    "allowed_tools": [
+      "check_stock",
+      "create_order",
+      "get_order",
+      "confirm_order",
+      "charge",
+      "get_payment",
+      "webhook_status"
+    ],
+    "price_unit": "sar",
+    "normalize_numerals": false,
+    "stock_fresh_read": false,
+    "payment_verify": "webhook",
+    "auth": {
+      "key_slot": "primary"
+    }
+  },
+  "history": [
+    {
+      "version": 1,
+      "patch": {},
+      "reason": "initial",
+      "actor": "system",
+      "time": 1767225600.0,
+      "config": {
+        "field_mappings": {
+          "order_id": "order_id",
+          "status": "status",
+          "price": "price",
+          "qty_available": "qty_available",
+          "payment_id": "payment_id",
+          "payment_status": "status"
+        },
+        "prompt_version": "v1",
+        "retry": {
+          "max_retries": 0,
+          "backoff_s": 0.5,
+          "retry_on": [
+            429,
+            503
+          ]
+        },
+        "timeout_s": 3.0,
+        "max_turns": 10,
+        "allowed_tools": [
+          "check_stock",
+          "create_order",
+          "get_order",
+          "confirm_order",
+          "charge",
+          "get_payment",
+          "webhook_status"
+        ],
+        "price_unit": "sar",
+        "normalize_numerals": false,
+        "stock_fresh_read": false,
+        "payment_verify": "webhook",
+        "auth": {
+          "key_slot": "primary"
+        }
+      }
+    },
+    {
+      "version": 2,
+      "patch": {
+        "timeout_s": 4.0
+      },
+      "reason": "deploy: raise tool timeout for peak hours",
+      "actor": "ops-team",
+      "time": 1767225600.0,
+      "config": {
+        "field_mappings": {
+          "order_id": "order_id",
+          "status": "status",
+          "price": "price",
+          "qty_available": "qty_available",
+          "payment_id": "payment_id",
+          "payment_status": "status"
+        },
+        "prompt_version": "v1",
+        "retry": {
+          "max_retries": 0,
+          "backoff_s": 0.5,
+          "retry_on": [
+            429,
+            503
+          ]
+        },
+        "timeout_s": 4.0,
+        "max_turns": 10,
+        "allowed_tools": [
+          "check_stock",
+          "create_order",
+          "get_order",
+          "confirm_order",
+          "charge",
+          "get_payment",
+          "webhook_status"
+        ],
+        "price_unit": "sar",
+        "normalize_numerals": false,
+        "stock_fresh_read": false,
+        "payment_verify": "webhook",
+        "auth": {
+          "key_slot": "primary"
+        }
+      }
+    }
+  ]
+}

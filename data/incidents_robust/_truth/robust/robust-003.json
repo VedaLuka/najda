@@ -1,0 +1,104 @@
+{
+  "incident_id": "robust-003",
+  "split": "robust",
+  "seed": 4003,
+  "fault_ids": [
+    "rate_limit_429"
+  ],
+  "resolved_fault_ids": [
+    "rate_limit_429"
+  ],
+  "family": "rate_limit_429",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_05",
+    "ar_07",
+    "ar_08",
+    "ar_11",
+    "en_03",
+    "en_04"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "noise_low",
+    "noise": "low"
+  },
+  "ground_truth": {
+    "root_cause": "StockAPI rate limiting; bot has no retry policy",
+    "correct_fix": {
+      "retry.max_retries": 3,
+      "retry.backoff_s": 0.5
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_05",
+    "ar_07",
+    "ar_08",
+    "ar_11",
+    "en_03",
+    "en_04"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 3,
+      "progress": 1
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "ar_11": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 3,
+      "progress": 1
+    }
+  }
+}

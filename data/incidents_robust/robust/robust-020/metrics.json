@@ -1,0 +1,34 @@
+{
+  "chats": 2,
+  "tool_calls": 5,
+  "error_rate": 0.0,
+  "mean_tool_latency_ms": 93.0,
+  "p95_tool_latency_ms": 80.0,
+  "orders_created": 1,
+  "orders_paid": 0,
+  "orders_confirmed": 1,
+  "chats_confirmed": 1,
+  "chats_failed": 0,
+  "mean_turns": 4.5,
+  "loop_chats": 0,
+  "tokens": 0,
+  "warn_logs": 0,
+  "per_chat": {
+    "ar_12": {
+      "outcome": "declined",
+      "turns": 3,
+      "tool_calls": 1,
+      "errors": 0,
+      "latency_ms": 80.0,
+      "tokens": 0
+    },
+    "en_01": {
+      "outcome": "confirmed",
+      "turns": 6,
+      "tool_calls": 4,
+      "errors": 0,
+      "latency_ms": 385.0,
+      "tokens": 0
+    }
+  }
+}

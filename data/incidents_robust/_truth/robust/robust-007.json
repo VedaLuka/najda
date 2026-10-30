@@ -1,0 +1,102 @@
+{
+  "incident_id": "robust-007",
+  "split": "robust",
+  "seed": 4007,
+  "fault_ids": [
+    "schema_drift"
+  ],
+  "resolved_fault_ids": [
+    "schema_drift"
+  ],
+  "family": "schema_drift",
+  "noisy": false,
+  "chat_ids": [
+    "ar_03",
+    "ar_05",
+    "ar_06",
+    "ar_07",
+    "ar_10",
+    "ar_11",
+    "en_05"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "noise_high",
+    "noise": "high"
+  },
+  "ground_truth": {
+    "root_cause": "OrderAPI response schema changed: order_id -> id; bot reads a missing key",
+    "correct_fix": {
+      "field_mappings.order_id": "id"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_03",
+    "ar_05",
+    "ar_06",
+    "ar_07",
+    "ar_11",
+    "en_05"
+  ],
+  "chat_verdicts": {
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 2
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 2
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 2
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 2
+    },
+    "ar_10": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "ar_11": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 2
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 2
+    }
+  }
+}

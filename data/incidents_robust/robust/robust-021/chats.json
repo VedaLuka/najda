@@ -1,0 +1,30 @@
+[
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير ابغى 1 كبسة"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Can I order 2 kabsa"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  }
+]

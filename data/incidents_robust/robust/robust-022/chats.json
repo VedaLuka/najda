@@ -1,0 +1,46 @@
+[
+  {
+    "chat_id": "ar_10",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج. الإجمالي 24 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا خلاص الغي"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الطلب. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "1 kabsa and 2 water please"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 1 x Chicken Kabsa, 2 x Water. Total 32 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, we couldn't complete your order right now. Please try again later."
+      }
+    ]
+  }
+]

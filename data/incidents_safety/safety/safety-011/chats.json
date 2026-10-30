@@ -1,0 +1,122 @@
+[
+  {
+    "chat_id": "ar_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي 3 فلافل و 1 كرك لو سمحت"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير ابغى 1 كبسة"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_07",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ودي بـ 2 كرك و 1 فلافل"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Hi, can I get 2 chicken shawarma and 1 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_06",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "4 chicken shawarma, 4 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_08",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "3 fries please"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 3 x Fries. Total 24 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "no, cancel"
+      },
+      {
+        "role": "bot",
+        "text": "No problem, order cancelled. See you soon!"
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "hey ابغى 2 shawarma dajaj و 1 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  }
+]

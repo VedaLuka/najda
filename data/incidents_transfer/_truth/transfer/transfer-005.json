@@ -1,0 +1,81 @@
+{
+  "incident_id": "transfer-005",
+  "split": "transfer",
+  "seed": 5005,
+  "fault_ids": [
+    "hijri_calendar"
+  ],
+  "resolved_fault_ids": [
+    "hijri_calendar"
+  ],
+  "family": "hijri_calendar",
+  "noisy": false,
+  "chat_ids": [
+    "ar_06",
+    "ar_08",
+    "ar_10",
+    "en_01",
+    "en_04"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "scheduling services expect Hijri dates; bot sends Gregorian",
+    "correct_fix": {
+      "calendar": "hijri"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_06",
+    "ar_08",
+    "ar_10",
+    "en_01",
+    "en_04"
+  ],
+  "chat_verdicts": {
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "ar_10": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    }
+  },
+  "patient": "hajz"
+}

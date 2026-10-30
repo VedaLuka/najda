@@ -1,0 +1,156 @@
+[
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير ابغى 1 كبسة"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x كبسة دجاج. الإجمالي 28 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "اكيد"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_08",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 1 شاورما لحم و 1 بيبسي و 1 بطاطس"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x شاورما لحم, 1 x بيبسي, 1 x بطاطس. الإجمالي 26 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج. الإجمالي 24 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا خلاص الغي"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الطلب. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "1 kabsa and 2 water please"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 1 x Chicken Kabsa, 2 x Water. Total 32 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_06",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "4 chicken shawarma, 4 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 4 x Chicken Shawarma, 4 x Pepsi. Total 64 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "hey ابغى 2 shawarma dajaj و 1 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج, 1 x بيبسي. الإجمالي 28 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "yes تمام"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ممكن 1 kabsa and 2 كرك"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x كبسة دجاج, 2 x شاي كرك. الإجمالي 38 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  }
+]

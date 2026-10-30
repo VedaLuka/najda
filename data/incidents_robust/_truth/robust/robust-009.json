@@ -1,0 +1,94 @@
+{
+  "incident_id": "robust-009",
+  "split": "robust",
+  "seed": 4009,
+  "fault_ids": [
+    "rate_limit_429"
+  ],
+  "resolved_fault_ids": [
+    "rate_limit_429"
+  ],
+  "family": "rate_limit_429",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_05",
+    "ar_08",
+    "en_03",
+    "mix_01",
+    "mix_02"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "noise_high",
+    "noise": "high"
+  },
+  "ground_truth": {
+    "root_cause": "StockAPI rate limiting; bot has no retry policy",
+    "correct_fix": {
+      "retry.max_retries": 3,
+      "retry.backoff_s": 0.5
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_05",
+    "ar_08",
+    "en_03",
+    "mix_01",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 3,
+      "progress": 1
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    }
+  }
+}

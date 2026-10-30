@@ -1,0 +1,200 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج و 1 بيبسي"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج, 1 x بيبسي. الإجمالي 28 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "نعتذر، ما قدرنا نكمل طلبك الحين. حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "السلام عليكم، ممكن 1 كبسة دجاج و 2 ماء"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x كبسة دجاج, 2 x ماء. الإجمالي 32 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم أكد"
+      },
+      {
+        "role": "bot",
+        "text": "نعتذر، ما قدرنا نكمل طلبك الحين. حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي 3 فلافل و 1 كرك لو سمحت"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 3 x ساندويتش فلافل, 1 x شاي كرك. الإجمالي 23 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "تمام"
+      },
+      {
+        "role": "bot",
+        "text": "نعتذر، ما قدرنا نكمل طلبك الحين. حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_06",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ممكن 4 شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 4 x شاورما دجاج. الإجمالي 48 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه اكد"
+      },
+      {
+        "role": "bot",
+        "text": "نعتذر، ما قدرنا نكمل طلبك الحين. حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "اثنين كبسة و ثلاث مويه"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x كبسة دجاج, 3 x ماء. الإجمالي 62 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "نعتذر، ما قدرنا نكمل طلبك الحين. حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "1 kabsa and 2 water please"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 1 x Chicken Kabsa, 2 x Water. Total 32 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, we couldn't complete your order right now. Please try again later."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like 3 falafel and 1 karak"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 3 x Falafel Sandwich, 1 x Karak Tea. Total 23 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "ok"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, we couldn't complete your order right now. Please try again later."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_06",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "4 chicken shawarma, 4 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 4 x Chicken Shawarma, 4 x Pepsi. Total 64 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, we couldn't complete your order right now. Please try again later."
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "hey ابغى 2 shawarma dajaj و 1 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج, 1 x بيبسي. الإجمالي 28 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "yes تمام"
+      },
+      {
+        "role": "bot",
+        "text": "نعتذر، ما قدرنا نكمل طلبك الحين. حاول بعد شوي."
+      }
+    ]
+  }
+]

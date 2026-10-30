@@ -1,0 +1,134 @@
+[
+  {
+    "chat_id": "ar_07",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ودي بـ 2 كرك و 1 فلافل"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاي كرك, 1 x ساندويتش فلافل. الإجمالي 16 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "ماشي"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 2 x شاورما دجاج. الإجمالي 24 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا خلاص الغي"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الطلب. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_12",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي 1 كرك بس"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x شاي كرك. الإجمالي 5 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا ما ابغى"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الطلب. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "1 kabsa and 2 water please"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 1 x Chicken Kabsa, 2 x Water. Total 32 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Can I order 2 kabsa"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 2 x Chicken Kabsa. Total 56 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes please"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_06",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "4 chicken shawarma, 4 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 4 x Chicken Shawarma, 4 x Pepsi. Total 64 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Our system is having trouble right now, please try again shortly."
+      }
+    ]
+  }
+]

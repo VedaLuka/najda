@@ -1,0 +1,97 @@
+{
+  "incident_id": "transfer-015",
+  "split": "transfer",
+  "seed": 5015,
+  "fault_ids": [
+    "prompt_regression"
+  ],
+  "resolved_fault_ids": [
+    "prompt_regression"
+  ],
+  "family": "prompt_regression",
+  "noisy": false,
+  "chat_ids": [
+    "ar_03",
+    "ar_04",
+    "ar_08",
+    "en_01",
+    "en_03",
+    "en_04",
+    "mix_01"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "prompt v2_quick dropped the charge_deposit step; bookings are confirmed with no deposit",
+    "correct_fix": {
+      "prompt_version": "v1"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_04",
+    "en_01",
+    "mix_01"
+  ],
+  "chat_verdicts": {
+    "ar_03": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 5,
+      "progress": 3
+    },
+    "ar_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 5,
+      "progress": 3
+    },
+    "en_03": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_04": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 5,
+      "progress": 3
+    }
+  },
+  "patient": "hajz"
+}

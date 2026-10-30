@@ -1,0 +1,52 @@
+{
+  "incident_id": "robust-020",
+  "split": "robust",
+  "seed": 4020,
+  "fault_ids": [
+    "prompt_regression"
+  ],
+  "resolved_fault_ids": [
+    "prompt_regression"
+  ],
+  "family": "prompt_regression",
+  "noisy": false,
+  "chat_ids": [
+    "ar_12",
+    "en_01"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "weak",
+    "weak_signal": true
+  },
+  "ground_truth": {
+    "root_cause": "prompt v2_fast dropped the charge step; orders are confirmed unpaid",
+    "correct_fix": {
+      "prompt_version": "v1"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "en_01"
+  ],
+  "chat_verdicts": {
+    "ar_12": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 3
+    }
+  }
+}

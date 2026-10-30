@@ -1,0 +1,93 @@
+{
+  "incident_id": "transfer-018",
+  "split": "transfer",
+  "seed": 5018,
+  "fault_ids": [
+    "combo_tz_429"
+  ],
+  "resolved_fault_ids": [
+    "tz_offset",
+    "availability_429"
+  ],
+  "family": "combo_tz_429",
+  "noisy": false,
+  "chat_ids": [
+    "ar_03",
+    "ar_05",
+    "ar_06",
+    "ar_10",
+    "en_02",
+    "en_05"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "scheduling services ignore the tz offset and store wall-clock as UTC; bot sends Riyadh local time; AvailabilityAPI rate limiting; bot has no retry policy",
+    "correct_fix": {
+      "timezone": "UTC",
+      "retry.max_retries": 3,
+      "retry.backoff_s": 0.5
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_03",
+    "ar_05",
+    "ar_10",
+    "en_02",
+    "en_05"
+  ],
+  "chat_verdicts": {
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "ar_06": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "ar_10": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 0
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    }
+  },
+  "patient": "hajz"
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "chat_id": "ar_12",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي 1 كرك بس"
+      },
+      {
+        "role": "bot",
+        "text": "طلبك: 1 x شاي كرك. الإجمالي 5 ريال. أأكد الطلب؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا ما ابغى"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الطلب. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_01",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Hi, can I get 2 chicken shawarma and 1 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 2 x Chicken Shawarma, 1 x Pepsi. Total 28 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes"
+      },
+      {
+        "role": "bot",
+        "text": "Your order ORD-0001 is confirmed. Thank you!"
+      }
+    ]
+  }
+]

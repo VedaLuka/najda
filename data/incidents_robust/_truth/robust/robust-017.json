@@ -1,0 +1,130 @@
+{
+  "incident_id": "robust-017",
+  "split": "robust",
+  "seed": 4017,
+  "fault_ids": [
+    "hallucinated_tool"
+  ],
+  "resolved_fault_ids": [
+    "hallucinated_tool"
+  ],
+  "family": "hallucinated_tool",
+  "noisy": false,
+  "chat_ids": [
+    "ar_07",
+    "ar_08",
+    "ar_09",
+    "ar_10",
+    "ar_12",
+    "en_04",
+    "en_06",
+    "en_07",
+    "en_08",
+    "mix_02"
+  ],
+  "modifiers": [],
+  "conditions": {
+    "condition": "drop30",
+    "drop_spans": 0.3
+  },
+  "ground_truth": {
+    "root_cause": "prompt v1_promo references non-existent tool apply_promo",
+    "correct_fix": {
+      "prompt_version": "v1"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_07",
+    "ar_08",
+    "ar_09",
+    "en_04",
+    "en_06",
+    "en_07",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6,
+      "progress": 2
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 2
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6,
+      "progress": 2
+    },
+    "ar_10": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "ar_12": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6,
+      "progress": 2
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6,
+      "progress": 2
+    },
+    "en_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6,
+      "progress": 2
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6,
+      "progress": 2
+    }
+  }
+}

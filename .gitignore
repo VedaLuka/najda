@@ -11,6 +11,10 @@ data/*
 !data/sample_raw.jsonl
 # Synthetic IncidentBench is ours; the smoke copy is throwaway
 !data/incidents/
+# Step 5/6 frozen sets (synthetic, ours): safety + robustness stress sets and the Hajz transfer split
+!data/incidents_safety/
+!data/incidents_robust/
+!data/incidents_transfer/
 .DS_Store
 experiments/chat_traces.jsonl
 experiments/smoke_*.jsonl

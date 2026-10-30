@@ -1,0 +1,89 @@
+{
+  "incident_id": "transfer-013",
+  "split": "transfer",
+  "seed": 5013,
+  "fault_ids": [
+    "booking_field_rename"
+  ],
+  "resolved_fault_ids": [
+    "booking_field_rename"
+  ],
+  "family": "booking_field_rename",
+  "noisy": false,
+  "chat_ids": [
+    "ar_03",
+    "ar_04",
+    "ar_07",
+    "ar_09",
+    "en_03",
+    "en_05"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "BookingAPI response schema changed: booking_id -> id; bot reads a missing key",
+    "correct_fix": {
+      "field_mappings.booking_id": "id"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_04",
+    "ar_07",
+    "ar_09",
+    "en_05"
+  ],
+  "chat_verdicts": {
+    "ar_03": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 2
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 2
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 2
+    },
+    "en_03": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 2
+    }
+  },
+  "patient": "hajz"
+}

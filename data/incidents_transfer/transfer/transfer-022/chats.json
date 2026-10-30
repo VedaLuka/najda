@@ -1,0 +1,178 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى احجز طاولة لـ 4 أشخاص يوم 15/1 الساعة 8 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 15/1 الساعة 20:00 لـ 4 أشخاص. العربون 80 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0010 يوم 15/1 الساعة 20:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_04",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي احجز 3 أشخاص يوم 10/1 الساعة 8:30"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 10/1 الساعة 20:30 لـ 3 أشخاص. العربون 60 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "اوكي يلا"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0011 يوم 10/1 الساعة 20:30. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير، حجز لـ 5 يوم 16/1 الساعة 9 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 16/1 الساعة 21:00 لـ 5 أشخاص. العربون 100 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "اكيد"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0012 يوم 16/1 الساعة 21:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_06",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى طاولة لـ 2 يوم 5/1 الساعة 7"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 5/1 الساعة 19:00 لـ 2 أشخاص. العربون 40 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا خلاص الغي"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الحجز. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_08",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى احجز لـ 3 يوم 9/1 الساعة 7 مساء"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 9/1 الساعة 19:00 لـ 3 أشخاص. العربون 60 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0013 يوم 9/1 الساعة 19:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "طاولة لـ 8 أشخاص يوم 3/1 الساعة 8"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 3/1 الساعة 20:00 لـ 8 أشخاص. العربون 160 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0014 يوم 3/1 الساعة 20:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_04",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like a table for 3 on 7/1 at 9pm"
+      },
+      {
+        "role": "bot",
+        "text": "Available on 7/1 at 21:00 for 3. Deposit 60 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "no, cancel"
+      },
+      {
+        "role": "bot",
+        "text": "No problem, booking cancelled. See you soon!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_05",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "table for 5 on 25/1 at 6"
+      },
+      {
+        "role": "bot",
+        "text": "Available on 25/1 at 18:00 for 5. Deposit 100 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "sure"
+      },
+      {
+        "role": "bot",
+        "text": "Your booking BK-0015 is confirmed for 25/1 at 18:00. Thank you!"
+      }
+    ]
+  }
+]

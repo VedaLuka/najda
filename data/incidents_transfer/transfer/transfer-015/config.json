@@ -1,0 +1,132 @@
+{
+  "version": 2,
+  "current": {
+    "field_mappings": {
+      "booking_id": "booking_id",
+      "status": "status",
+      "available": "available",
+      "tables_left": "tables_left",
+      "slot_time": "slot_time",
+      "deposit_sar": "deposit_sar",
+      "deposit_id": "deposit_id",
+      "deposit_status": "status"
+    },
+    "prompt_version": "v2_quick",
+    "retry": {
+      "max_retries": 0,
+      "backoff_s": 0.5,
+      "retry_on": [
+        429,
+        503
+      ]
+    },
+    "timeout_s": 3.0,
+    "max_turns": 10,
+    "allowed_tools": [
+      "check_availability",
+      "create_booking",
+      "get_booking",
+      "charge_deposit",
+      "send_confirmation"
+    ],
+    "timezone": "Asia/Riyadh",
+    "date_format": "dmy",
+    "calendar": "gregorian",
+    "availability_fresh_read": false,
+    "auth": {
+      "key_slot": "primary"
+    }
+  },
+  "history": [
+    {
+      "version": 1,
+      "patch": {},
+      "reason": "initial",
+      "actor": "system",
+      "time": 1767225600.0,
+      "config": {
+        "field_mappings": {
+          "booking_id": "booking_id",
+          "status": "status",
+          "available": "available",
+          "tables_left": "tables_left",
+          "slot_time": "slot_time",
+          "deposit_sar": "deposit_sar",
+          "deposit_id": "deposit_id",
+          "deposit_status": "status"
+        },
+        "prompt_version": "v1",
+        "retry": {
+          "max_retries": 0,
+          "backoff_s": 0.5,
+          "retry_on": [
+            429,
+            503
+          ]
+        },
+        "timeout_s": 3.0,
+        "max_turns": 10,
+        "allowed_tools": [
+          "check_availability",
+          "create_booking",
+          "get_booking",
+          "charge_deposit",
+          "send_confirmation"
+        ],
+        "timezone": "Asia/Riyadh",
+        "date_format": "dmy",
+        "calendar": "gregorian",
+        "availability_fresh_read": false,
+        "auth": {
+          "key_slot": "primary"
+        }
+      }
+    },
+    {
+      "version": 2,
+      "patch": {
+        "prompt_version": "v2_quick"
+      },
+      "reason": "deploy: faster confirmations (deposit collected at the door)",
+      "actor": "dev-team",
+      "time": 1767225600.0,
+      "config": {
+        "field_mappings": {
+          "booking_id": "booking_id",
+          "status": "status",
+          "available": "available",
+          "tables_left": "tables_left",
+          "slot_time": "slot_time",
+          "deposit_sar": "deposit_sar",
+          "deposit_id": "deposit_id",
+          "deposit_status": "status"
+        },
+        "prompt_version": "v2_quick",
+        "retry": {
+          "max_retries": 0,
+          "backoff_s": 0.5,
+          "retry_on": [
+            429,
+            503
+          ]
+        },
+        "timeout_s": 3.0,
+        "max_turns": 10,
+        "allowed_tools": [
+          "check_availability",
+          "create_booking",
+          "get_booking",
+          "charge_deposit",
+          "send_confirmation"
+        ],
+        "timezone": "Asia/Riyadh",
+        "date_format": "dmy",
+        "calendar": "gregorian",
+        "availability_fresh_read": false,
+        "auth": {
+          "key_slot": "primary"
+        }
+      }
+    }
+  ]
+}

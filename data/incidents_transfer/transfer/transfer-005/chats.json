@@ -1,0 +1,72 @@
+[
+  {
+    "chat_id": "ar_06",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى طاولة لـ 2 يوم 5/1 الساعة 7"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نتحقق من التوفر الحين، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_08",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى احجز لـ 3 يوم 9/1 الساعة 7 مساء"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نتحقق من التوفر الحين، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "عطني حجز لـ 2 يوم 30/1 الساعة 8"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نتحقق من التوفر الحين، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Hi, table for 2 on 12/1 at 8pm please"
+      },
+      {
+        "role": "bot",
+        "text": "We couldn't check availability right now, please try again later."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_04",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like a table for 3 on 7/1 at 9pm"
+      },
+      {
+        "role": "bot",
+        "text": "We couldn't check availability right now, please try again later."
+      }
+    ]
+  }
+]

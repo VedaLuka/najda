@@ -1,0 +1,140 @@
+[
+  {
+    "chat_id": "ar_04",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابي احجز 3 أشخاص يوم 10/1 الساعة 8:30"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 10/1 الساعة 20:30 لـ 3 أشخاص. العربون 60 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "اوكي يلا"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نحصّل العربون، ما تم تأكيد الحجز."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير، حجز لـ 5 يوم 16/1 الساعة 9 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 16/1 الساعة 21:00 لـ 5 أشخاص. العربون 100 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "اكيد"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نحصّل العربون، ما تم تأكيد الحجز."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_08",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى احجز لـ 3 يوم 9/1 الساعة 7 مساء"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف ما فيه طاولات متاحة في هذا الوقت."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "طاولة لـ 8 أشخاص يوم 3/1 الساعة 8"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 3/1 الساعة 20:00 لـ 8 أشخاص. العربون 160 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نحصّل العربون، ما تم تأكيد الحجز."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "عطني حجز لـ 2 يوم 30/1 الساعة 8"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 30/1 الساعة 20:00 لـ 2 أشخاص. العربون 40 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "تمام اكد"
+      },
+      {
+        "role": "bot",
+        "text": "ما قدرنا نحصّل العربون، ما تم تأكيد الحجز."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_03",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Booking for 6 on 15/1 at 8"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, there are no tables available at that time."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "table for 5 on 25/1 at 6"
+      },
+      {
+        "role": "bot",
+        "text": "Available on 25/1 at 18:00 for 5. Deposit 100 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "sure"
+      },
+      {
+        "role": "bot",
+        "text": "The deposit could not be charged, so the booking was not confirmed."
+      }
+    ]
+  }
+]
