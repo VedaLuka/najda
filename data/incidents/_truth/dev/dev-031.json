@@ -24,7 +24,8 @@
     "root_cause": "inventory database corruption (negative quantities); needs a human",
     "correct_fix": null,
     "should_escalate": true,
-    "expected_outcome": "contain"
+    "expected_outcome": "contain",
+    "requires_retry": false
   },
   "failed_chats": [
     "ar_10",

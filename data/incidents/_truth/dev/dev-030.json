@@ -23,7 +23,8 @@
     "root_cause": "payment provider outage; nothing in the bot config can fix it",
     "correct_fix": null,
     "should_escalate": true,
-    "expected_outcome": "contain"
+    "expected_outcome": "contain",
+    "requires_retry": false
   },
   "failed_chats": [
     "ar_03",

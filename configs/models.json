@@ -1,0 +1,6 @@
+{
+  "_note": "One provider + model per role. provider: anthropic | openai (any OpenAI-compatible endpoint; base_url_env/api_key_env name the env vars).",
+  "patient": {"provider": "anthropic", "model": "claude-haiku-5-5"},
+  "triage":  {"provider": "anthropic", "model": "claude-haiku-5-5"},
+  "big":     {"provider": "anthropic", "model": "claude-sonnet-5-5"}
+}

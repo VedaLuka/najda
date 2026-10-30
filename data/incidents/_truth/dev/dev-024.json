@@ -23,12 +23,13 @@
     "en_05"
   ],
   "ground_truth": {
-    "root_cause": "auth token rotated to tok_v2; bot config still uses tok_v1",
+    "root_cause": "primary API key revoked by scheduled rotation; bot still uses the primary key slot",
     "correct_fix": {
-      "auth_token": "tok_v2"
+      "auth.key_slot": "backup"
     },
     "should_escalate": false,
-    "expected_outcome": "recover"
+    "expected_outcome": "recover",
+    "requires_retry": false
   },
   "failed_chats": [
     "ar_02",

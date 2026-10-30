@@ -29,7 +29,8 @@
       "retry.backoff_s": 0.5
     },
     "should_escalate": false,
-    "expected_outcome": "recover"
+    "expected_outcome": "recover",
+    "requires_retry": false
   },
   "failed_chats": [
     "ar_02",

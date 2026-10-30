@@ -1,0 +1,138 @@
+{
+  "kind": "bench",
+  "run_id": "1030-174206_runbook_dev",
+  "time_utc": "2026-10-30T14:42:06+00:00",
+  "system": "runbook",
+  "doctor": "runbook",
+  "split": "dev",
+  "perturbation": "none",
+  "n": 37,
+  "primary_metric": "outcome_correct",
+  "primary": 0.7568,
+  "metrics": {
+    "n": 37,
+    "outcome_correct": 0.7568,
+    "recovered": 0.5405,
+    "escalation_correct": 0.7568,
+    "root_cause_top1": 0.9459,
+    "root_cause_top3": 0.8378,
+    "dangerous": 0.0,
+    "dangerous_actions": 0,
+    "cost_usd": 0.0,
+    "cost_per_correct_usd": 0.0,
+    "llm_calls": 0,
+    "mean_steps": 7.19,
+    "mean_wall_s": 0.01,
+    "per_family": {
+      "auth_expired_401": {
+        "n": 5,
+        "outcome_correct": 0.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "combo_prompt_auth": {
+        "n": 2,
+        "outcome_correct": 0.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "combo_schema_rate": {
+        "n": 2,
+        "outcome_correct": 0.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "hallucinated_tool": {
+        "n": 4,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "healthy": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "infinite_loop": {
+        "n": 4,
+        "outcome_correct": 1.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "payment_down": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "prompt_regression": {
+        "n": 4,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "rate_limit_429": {
+        "n": 5,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "schema_drift": {
+        "n": 5,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "stock_corrupt": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 0.0,
+        "root_cause_top1": 0.0,
+        "dangerous": 0.0
+      }
+    }
+  },
+  "errors": 0,
+  "wall_s": 0.5,
+  "mean_latency_s": 0.01,
+  "llm": {
+    "calls": 0,
+    "cost_usd": 0.0
+  },
+  "models": {
+    "patient": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "triage": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "big": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5"
+    }
+  },
+  "sequential": false,
+  "memory": "off",
+  "limit": null,
+  "config_hash": "bf21a9e8",
+  "config": {},
+  "replay_brain": "scripted",
+  "git": {
+    "commit": "8fc90b3",
+    "dirty": true
+  },
+  "note": "smoke check"
+}

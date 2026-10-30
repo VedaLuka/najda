@@ -12,6 +12,8 @@ from hack.bench.truth import write_truth
 from hack.faults.catalog import COMBOS, apply_faults, merged_truth
 from hack.patient.bot import ChatResult, OrderBot
 from hack.patient.brains import Brain, ScriptedBrain
+from hack.patient.clock import REPLAY_OFFSET_S
+from hack.patient.config import ControlPanel
 from hack.patient.invariants import Violation, check_invariants, order_completed
 from hack.patient.tracing import metrics_from_spans
 from hack.patient.world import World
@@ -62,14 +64,32 @@ def pick_chats(seed: int, n_min: int = 5, n_max: int = 10) -> list[str]:
 
 
 def run_incident(spec: IncidentSpec, brain: Brain | None = None, chat_ids: list[str] | None = None,
-                 extra_patch: dict[str, Any] | None = None) -> IncidentRun:
-    world = World.build(spec.seed, spec.incident_id)
+                 extra_patch: dict[str, Any] | None = None, panel: ControlPanel | None = None,
+                 later: bool = False) -> IncidentRun:
+    """Run an incident. `panel` replaces the post-fault control panel (used to rerun under a doctor's
+    config). `later=True` is a replay: it happens after the incident, so transient faults have cleared."""
+    world = World.build(spec.seed, spec.incident_id, clock_offset_s=REPLAY_OFFSET_S if later else 0.0)
     apply_faults(world, resolve_faults(spec.fault_ids), spec.noisy)
+    if panel is not None:
+        world.panel = ControlPanel.from_snapshot(panel.snapshot())
     if extra_patch:
         world.panel.apply(extra_patch, "candidate fix", "najda", world.clock.now())
     bot = OrderBot(world, brain or ScriptedBrain())
     results = [bot.run_chat(SCRIPTS_BY_ID[c]) for c in (chat_ids or spec.chat_ids)]
     return IncidentRun(spec, world, results, check_invariants(world, results))
+
+
+def spec_from_truth(truth: dict[str, Any]) -> IncidentSpec:
+    return IncidentSpec(truth["incident_id"], truth["split"], truth["seed"], truth["fault_ids"],
+                        truth["noisy"], truth["chat_ids"])
+
+
+def rerun(truth: dict[str, Any], panel: ControlPanel, chats: str = "failed", brain: Brain | None = None) -> IncidentRun:
+    """Rebuild the broken world from an in-memory truth record and rerun chats under `panel`, later in time.
+    chats="failed" reruns the chats that failed in the incident (all chats if none failed)."""
+    chat_ids = truth["failed_chats"] if chats == "failed" else truth["chat_ids"]
+    return run_incident(spec_from_truth(truth), brain=brain, chat_ids=chat_ids or truth["chat_ids"],
+                        panel=panel, later=True)
 
 
 def save_bundle(run: IncidentRun, root: Path) -> Path:
@@ -120,6 +140,9 @@ def _dump(path: Path, data: Any) -> None:
 
 # ------------------------------- the benchmark plan ---------------------------------
 
+BENCH_VERSION = "1.1"  # 1.1: + transient_blip (dev), auth fix via key slot (dev); heldout frozen at 1.0
+BENCH_VERSION_FILE = "BENCH_VERSION"
+
 DEV_FAULTS = ["schema_drift", "prompt_regression", "rate_limit_429", "infinite_loop",
               "hallucinated_tool", "auth_expired_401"]
 HELDOUT_FAULTS = ["price_unit_halalas", "arabic_numerals", "stale_stock", "dropped_payment_webhook",
@@ -136,6 +159,7 @@ def bench_plan(small: bool = False) -> list[IncidentSpec]:
     plan += [("dev", ["payment_down"], False)] * (k or 2) + [("dev", ["stock_corrupt"], False)] * (k or 2)
     plan += [("dev", ["healthy"], False)] * (k or 2)
     plan += [("dev", [f], True) for f in (["schema_drift", "rate_limit_429", "auth_expired_401"][:k] if k else ["schema_drift", "rate_limit_429", "auth_expired_401"])]
+    plan += [("dev", ["transient_blip"], False)] * (k or 5)  # bench v1.1: appended, new ids only
     for fid in HELDOUT_FAULTS:
         plan += [("heldout", [fid], False)] * (k or 3)
     plan += [("heldout", ["combo_price_latency"], False)] * (k or 2) + [("heldout", ["combo_numerals_stale"], False)] * (k or 2)

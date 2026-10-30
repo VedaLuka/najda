@@ -1,0 +1,132 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 2 شاورما دجاج و 1 بيبسي"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "السلام عليكم، ممكن 1 كبسة دجاج و 2 ماء"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_08",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى 1 شاورما لحم و 1 بيبسي و 1 بطاطس"
+      },
+      {
+        "role": "bot",
+        "text": "النظام فيه مشكلة حالياً، حاول بعد شوي."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_01",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Hi, can I get 2 chicken shawarma and 1 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 2 x Chicken Shawarma, 1 x Pepsi. Total 28 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes"
+      },
+      {
+        "role": "bot",
+        "text": "Your order ORD-0001 is confirmed. Thank you!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "1 kabsa and 2 water please"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 1 x Chicken Kabsa, 2 x Water. Total 32 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Your order ORD-0002 is confirmed. Thank you!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_06",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "4 chicken shawarma, 4 pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 4 x Chicken Shawarma, 4 x Pepsi. Total 64 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Your order ORD-0003 is confirmed. Thank you!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_07",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "one karak and one water"
+      },
+      {
+        "role": "bot",
+        "text": "Your order: 1 x Karak Tea, 1 x Water. Total 7 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "okay"
+      },
+      {
+        "role": "bot",
+        "text": "Your order ORD-0004 is confirmed. Thank you!"
+      }
+    ]
+  }
+]

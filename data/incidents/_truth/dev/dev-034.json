@@ -23,7 +23,8 @@
     "root_cause": "no fault",
     "correct_fix": {},
     "should_escalate": false,
-    "expected_outcome": "recover"
+    "expected_outcome": "recover",
+    "requires_retry": false
   },
   "failed_chats": [],
   "chat_verdicts": {

@@ -1,0 +1,26 @@
+outcome_correct: 0.7568 (runbook) -> 0.8108 (single_llm)  delta=+0.0540
+shared: 37 | fixed 5 | broken 3
+[FIXED] dev-021 (auth_expired_401)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=auth_failure,stale_data changed=['auth_token']
+[FIXED] dev-022 (auth_expired_401)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=auth_failure,stale_data changed=['auth_token']
+[FIXED] dev-023 (auth_expired_401)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=auth_failure,unknown changed=['auth_token']
+[FIXED] dev-024 (auth_expired_401)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=auth_failure,stale_data changed=['auth_token']
+[FIXED] dev-037 (auth_expired_401)
+  old: recovered=False escalated=True causes=auth_failure changed=-
+  new: recovered=True escalated=False causes=auth_failure changed=['auth_token']
+[BROKEN] dev-015 (infinite_loop)
+  old: recovered=False escalated=True causes=agent_loop,agent_loop changed=['max_turns']
+  new: recovered=False escalated=False causes=agent_loop,stale_data changed=['max_turns']
+[BROKEN] dev-016 (infinite_loop)
+  old: recovered=False escalated=True causes=agent_loop,agent_loop changed=['max_turns']
+  new: recovered=False escalated=False causes=agent_loop changed=['max_turns']
+[BROKEN] dev-035 (schema_drift)
+  old: recovered=True escalated=False causes=schema_change changed=['field_mappings.order_id']
+  new: recovered=False escalated=False causes=missing_event,unknown changed=['payment_verify']

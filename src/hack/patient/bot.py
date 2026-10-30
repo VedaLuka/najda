@@ -98,11 +98,11 @@ class ToolRouter:
         return {
             "check_stock": lambda sku: call(w.stock_api, "check_stock", sku=sku, fresh=cfg.stock_fresh_read),
             "create_order": lambda items, total_sar: call(w.order_api, "create_order", items=_as_dict(items),
-                                                          total_sar=float(total_sar), token=cfg.auth_token),
+                                                          total_sar=float(total_sar), token=w.api_key),
             "get_order": lambda order_id: call(w.order_api, "get_order", order_id=order_id),
             "confirm_order": lambda order_id: call(w.order_api, "confirm_order", order_id=order_id),
             "charge": lambda order_id, amount_sar: call(w.payment_api, "charge", order_id=order_id,
-                                                        amount_sar=amount_sar, token=cfg.auth_token),
+                                                        amount_sar=amount_sar, token=w.api_key),
             "get_payment": lambda payment_id: call(w.payment_api, "get_payment", payment_id=payment_id),
             "webhook_status": lambda order_id: call(w.payment_api, "webhook_status", order_id=order_id),
         }

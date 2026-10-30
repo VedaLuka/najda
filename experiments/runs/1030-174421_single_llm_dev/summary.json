@@ -1,0 +1,68 @@
+{
+  "kind": "bench",
+  "run_id": "1030-174421_single_llm_dev",
+  "time_utc": "2026-10-30T14:44:21+00:00",
+  "system": "single_llm",
+  "doctor": "single_llm",
+  "split": "dev",
+  "perturbation": "none",
+  "n": 3,
+  "primary_metric": "outcome_correct",
+  "primary": 1.0,
+  "metrics": {
+    "n": 3,
+    "outcome_correct": 1.0,
+    "recovered": 1.0,
+    "escalation_correct": 1.0,
+    "root_cause_top1": 1.0,
+    "root_cause_top3": 1.0,
+    "dangerous": 0.0,
+    "dangerous_actions": 0,
+    "cost_usd": 0.052,
+    "cost_per_correct_usd": 0.0173,
+    "llm_calls": 3,
+    "mean_steps": 8.0,
+    "mean_wall_s": 8.52,
+    "per_family": {
+      "schema_drift": {
+        "n": 3,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      }
+    }
+  },
+  "errors": 0,
+  "wall_s": 9.0,
+  "mean_latency_s": 8.52,
+  "llm": {
+    "calls": 3,
+    "cost_usd": 0.052
+  },
+  "models": {
+    "patient": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "triage": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "big": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5"
+    }
+  },
+  "sequential": false,
+  "memory": "off",
+  "limit": 3,
+  "config_hash": "bf21a9e8",
+  "config": {},
+  "replay_brain": "scripted",
+  "git": {
+    "commit": "8fc90b3",
+    "dirty": true
+  },
+  "note": "B2 cost probe (3 incidents)"
+}

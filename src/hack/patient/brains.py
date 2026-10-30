@@ -223,7 +223,8 @@ TOOL_SCHEMAS = {
 
 
 class LLMBrain:
-    def __init__(self, model: str | None = None) -> None:
+    def __init__(self, role: str = "patient", model: str | None = None) -> None:
+        self.role = role if model is None else None
         self.model = model
         self.config = BotConfig()
         self.messages: list[dict[str, str]] = []
@@ -241,18 +242,16 @@ class LLMBrain:
                 "Only confirm_order when payment status is paid.")
 
     def decide(self, state: ChatState, obs: dict[str, Any]) -> tuple[Action, int]:
-        from hack.llm import STATS, call_llm
+        from hack.llm import call_llm_ex
 
         if "customer" in obs:
             state.lang = "ar" if is_arabic(obs["customer"]) else "en"
             self.messages.append({"role": "user", "content": f"CUSTOMER: {obs['customer']}"})
         else:
             self.messages.append({"role": "user", "content": "TOOL RESULT: " + json.dumps(obs, ensure_ascii=False)})
-        before = STATS["input_tokens"] + STATS["output_tokens"]
-        text = call_llm(self.messages, model=self.model, temperature=0.0, system=self.system_prompt(), max_tokens=300)
-        tokens = STATS["input_tokens"] + STATS["output_tokens"] - before
-        self.messages.append({"role": "assistant", "content": text})
-        return _parse_action(text, state), tokens
+        res = call_llm_ex(self.messages, role=self.role, model=self.model, system=self.system_prompt(), max_tokens=2000)
+        self.messages.append({"role": "assistant", "content": res.text})
+        return _parse_action(res.text, state), res.input_tokens + res.output_tokens
 
 
 def _parse_action(text: str, state: ChatState) -> Action:

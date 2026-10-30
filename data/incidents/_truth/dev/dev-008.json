@@ -24,7 +24,8 @@
       "prompt_version": "v1"
     },
     "should_escalate": false,
-    "expected_outcome": "recover"
+    "expected_outcome": "recover",
+    "requires_retry": false
   },
   "failed_chats": [
     "ar_01",

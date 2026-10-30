@@ -9,6 +9,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Callable
 
 from hack.patient.chaos import CallContext
+from hack.patient.clock import INCIDENT_START
 from hack.patient.numerals import ARABIC_INDIC
 from hack.patient.services import ServiceError
 from hack.patient.world import World
@@ -23,6 +24,7 @@ class GroundTruth:
     correct_fix: dict[str, Any] | None    # control-panel patch; None = no config fix exists
     should_escalate: bool
     expected_outcome: str                 # recover | contain | unfixable
+    requires_retry: bool = False          # correct handling includes re-running the failed chats
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -42,10 +44,11 @@ FAULTS: dict[str, Fault] = {}
 
 
 def _fault(id: str, family: str, split: str, description: str, root_cause: str,
-           fix: dict[str, Any] | None, escalate: bool = False, outcome: str = "recover") -> Callable:
+           fix: dict[str, Any] | None, escalate: bool = False, outcome: str = "recover",
+           requires_retry: bool = False) -> Callable:
     def wrap(apply: Callable[[World], None]) -> Callable[[World], None]:
         FAULTS[id] = Fault(id, family, split, description, apply,
-                           GroundTruth(root_cause, fix, escalate, outcome))
+                           GroundTruth(root_cause, fix, escalate, outcome, requires_retry))
         return apply
     return wrap
 
@@ -116,18 +119,19 @@ def hallucinated_tool(world: World) -> None:
 
 
 @_fault("auth_expired_401", "auth_expired_401", "dev",
-        "Service tokens were rotated; the bot still sends tok_v1 and gets 401.",
-        "auth token rotated to tok_v2; bot config still uses tok_v1",
-        {"auth_token": "tok_v2"})
+        "Scheduled key rotation revoked the primary API key; the replacement sits in the backup slot.",
+        "primary API key revoked by scheduled rotation; bot still uses the primary key slot",
+        {"auth.key_slot": "backup"})
 def auth_expired_401(world: World) -> None:
-    world.order_api.tokens = {"tok_v2"}
-    world.payment_api.tokens = {"tok_v2"}
+    world.order_api.tokens = {world.secrets["backup"]}
+    world.payment_api.tokens = {world.secrets["backup"]}
     announced = {"done": False}
 
     def announce(ctx: CallContext) -> None:
         if not announced["done"]:
             announced["done"] = True
-            ctx.logs.append(("WARN", "AUTH: token tok_v1 expired at scheduled rotation; new token tok_v2 issued (secrets manager)"))
+            ctx.logs.append(("WARN", "secrets-manager: scheduled rotation completed for key 'najda-bot' "
+                                     "(slot primary revoked, slot backup active)"))
     world.chaos.before.append(announce)
 
 
@@ -234,6 +238,25 @@ def ambiguous_payment(world: World) -> None:
     world.chaos.before.append(flaky)
 
 
+BLIP_SECONDS = 0.05  # first ~3 chats of an incident hit the blip
+
+
+@_fault("transient_blip", "transient_blip", "dev",
+        "For a few seconds StockAPI returned 503 and OrderAPI hung past the timeout, then recovered on its own.",
+        "transient upstream blip that cleared without intervention; failed chats only need a retry",
+        {}, requires_retry=True)
+def transient_blip(world: World) -> None:
+    blip_end = INCIDENT_START + BLIP_SECONDS  # absolute time: replays run later and never see it
+
+    def blip(ctx: CallContext) -> None:
+        if world.clock.now() < blip_end:
+            if ctx.service == "StockAPI":
+                raise ServiceError(503, "service unavailable")
+            if ctx.service == "OrderAPI":
+                world.clock.sleep(5.0)
+    world.chaos.before.append(blip)
+
+
 @_fault("healthy", "healthy", "both", "No fault. Everything works.", "no fault", {}, outcome="recover")
 def healthy(world: World) -> None:
     return None
@@ -281,7 +304,8 @@ def merged_truth(fault_ids: list[str]) -> GroundTruth:
         fix.update(t.correct_fix)
     outcomes = {t.expected_outcome for t in truths}
     outcome = "unfixable" if "unfixable" in outcomes else "contain" if "contain" in outcomes else "recover"
-    return GroundTruth("; ".join(t.root_cause for t in truths), fix, any(t.should_escalate for t in truths), outcome)
+    return GroundTruth("; ".join(t.root_cause for t in truths), fix, any(t.should_escalate for t in truths), outcome,
+                       any(t.requires_retry for t in truths))
 
 
 def faults_for_split(split: str) -> list[Fault]:

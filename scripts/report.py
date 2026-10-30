@@ -1,73 +1,97 @@
-"""Turn experiments/log.jsonl into markdown tables for the README and slides.
+"""Turn experiments/log.jsonl bench runs into markdown tables for the README and slides.
 
-Usage:
-  python scripts/report.py                 # print tables
-  python scripts/report.py --write         # also write docs/RESULTS.md
+  python scripts/report.py            # print tables
+  python scripts/report.py --write    # also write docs/RESULTS.md
+The oracle reads ground truth: it appears only as a bench sanity line, never as a system.
 """
 from __future__ import annotations
 
 import argparse
 import json
-from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+SANITY_ONLY = {"oracle"}
+VERSION_FILE = ROOT / "data" / "incidents" / "BENCH_VERSION"
+BENCH_VERSION = VERSION_FILE.read_text().strip() if VERSION_FILE.exists() else "1.0"
+
+
+def latest_by_doctor(rows: list[dict], split: str) -> dict[str, dict]:
+    """Latest full-split run per doctor on the current bench version (limit runs are probes)."""
+    out: dict[str, dict] = {}
+    for r in rows:
+        if (r["split"] == split and not r.get("limit") and r.get("bench", "incidents") == "incidents"
+                and r.get("bench_version", "1.0") == BENCH_VERSION and r.get("replay_brain", "scripted") == "scripted"):
+            out[r["doctor"]] = r
+    return out
+
+
+def pct(x: float | None) -> str:
+    return "-" if x is None else f"{x:.3f}"
+
+
+def progression(latest: dict[str, dict], split: str) -> list[str]:
+    out = [f"## Progression ({split}, IncidentBench v{BENCH_VERSION}, primary = outcome_correct)", "",
+           "| # | Doctor | n | Outcome | Recovered | RC@1 | RC@3 | Esc. correct | Dangerous | Cost $ | $/correct | Steps | LLM calls | Commit | Note |",
+           "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    for k, (name, r) in enumerate(((n, r) for n, r in latest.items() if n not in SANITY_ONLY), 1):
+        m = r["metrics"]
+        cpc = "-" if m["cost_per_correct_usd"] is None else f"{m['cost_per_correct_usd']:.4f}"
+        out.append(f"| {k} | `{name}` | {m['n']} | **{pct(m['outcome_correct'])}** | {pct(m['recovered'])} | "
+                   f"{pct(m['root_cause_top1'])} | {pct(m['root_cause_top3'])} | {pct(m['escalation_correct'])} | "
+                   f"{pct(m['dangerous'])} | {m['cost_usd']:.4f} | {cpc} | {m['mean_steps']} | {m['llm_calls']} | "
+                   f"{r['git']['commit'] or '-'}{'*' if r['git'].get('dirty') else ''} | {r['note']} |")
+    return out
+
+
+def per_family(latest: dict[str, dict], split: str) -> list[str]:
+    doctors = [d for d in latest if d not in SANITY_ONLY]
+    families = sorted({f for d in doctors for f in latest[d]["metrics"]["per_family"]})
+    out = ["", f"## Outcome by fault family ({split})", "",
+           "| Family | n | " + " | ".join(f"`{d}`" for d in doctors) + " |",
+           "|---|---|" + "---|" * len(doctors)]
+    for fam in families:
+        n = next(latest[d]["metrics"]["per_family"][fam]["n"] for d in doctors if fam in latest[d]["metrics"]["per_family"])
+        cells = [pct(latest[d]["metrics"]["per_family"].get(fam, {}).get("outcome_correct")) for d in doctors]
+        out.append(f"| {fam} | {n} | " + " | ".join(cells) + " |")
+    return out
+
+
+def dev_vs_heldout(dev: dict[str, dict], held: dict[str, dict]) -> list[str]:
+    doctors = [d for d in dev if d in held and d not in SANITY_ONLY]
+    if not doctors:
+        return []
+    out = ["", "## Dev vs heldout (outcome_correct) — heldout runs are milestones only", "",
+           "| Doctor | Dev | Heldout | Drop |", "|---|---|---|---|"]
+    for d in doctors:
+        a, b = dev[d]["primary"], held[d]["primary"]
+        out.append(f"| `{d}` | {a:.3f} | {b:.3f} | {b - a:+.3f} |")
+    return out
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
     a = ap.parse_args()
-
     log = ROOT / "experiments" / "log.jsonl"
     rows = [json.loads(line) for line in log.read_text().splitlines() if line.strip()] if log.exists() else []
+    rows = [r for r in rows if r.get("kind") == "bench"]
     if not rows:
-        print("No runs logged yet.")
+        print("No bench runs logged yet.")
         return
-    metric = rows[-1]["primary_metric"]
-    out = []
-
-    # 1. Progression on dev (clean): latest run per system, in order first seen
-    latest: dict[str, dict] = {}
-    for r in rows:
-        if r["split"] == "dev" and r["perturbation"] == "none":
-            latest[r["system"]] = r
-    base = next(iter(latest.values()), None)
-    out += [f"## Progression (dev, {metric})", "",
-            "| # | System | Score | vs first baseline | Errors | Mean latency (s) | LLM calls | Commit | Note |",
-            "|---|---|---|---|---|---|---|---|---|"]
-    for k, r in enumerate(latest.values(), 1):
-        d = (r["primary"] or 0) - (base["primary"] or 0)
-        out.append(f"| {k} | `{r['system']}` | {r['primary']:.4f} | {d:+.4f} | {r['errors']} | "
-                   f"{r['mean_latency_s']} | {r['llm']['calls']} | {r['git']['commit'] or '-'} | {r['note']} |")
-
-    # 2. Robustness matrix: system x perturbation
-    grid: dict[str, dict[str, float]] = defaultdict(dict)
-    perts: list[str] = []
-    for r in rows:
-        if r["split"] == "dev":
-            grid[r["system"]][r["perturbation"]] = r["primary"]
-            if r["perturbation"] not in perts:
-                perts.append(r["perturbation"])
-    if len(perts) > 1:
-        perts = ["none"] + [p for p in perts if p != "none"]
-        out += ["", f"## Robustness (dev, {metric})", "",
-                "| System | " + " | ".join("clean" if p == "none" else p for p in perts) + " | worst drop |",
-                "|---|" + "---|" * (len(perts) + 1)]
-        for s, g in grid.items():
-            if len(g) < 2:
-                continue
-            cells = [f"{g[p]:.3f}" if p in g else "-" for p in perts]
-            clean = g.get("none")
-            drop = min((g[p] - clean for p in g if p != "none"), default=0) if clean is not None else 0
-            out.append(f"| `{s}` | " + " | ".join(cells) + f" | {drop:+.3f} |")
-
-    # 3. Holdout checkpoints
-    hold = [r for r in rows if r["split"] == "holdout" and r["perturbation"] == "none"]
-    if hold:
-        out += ["", f"## Holdout checkpoints ({metric})", "", "| System | Score | Time (UTC) |", "|---|---|---|"]
-        out += [f"| `{r['system']}` | {r['primary']:.4f} | {r['time_utc']} |" for r in hold]
-
+    dev, held = latest_by_doctor(rows, "dev"), latest_by_doctor(rows, "heldout")
+    out: list[str] = []
+    if dev:
+        out += progression(dev, "dev") + per_family(dev, "dev")
+    if held:
+        out += ["", "> !! Heldout results below: milestones only, never tune on them."]
+        out += progression(held, "heldout")
+    out += dev_vs_heldout(dev, held)
+    sanity = [f"`{d}` {s}={r['primary']:.3f}" for s, runs in (("dev", dev), ("heldout", held))
+              for d, r in runs.items() if d in SANITY_ONLY]
+    if sanity:
+        out += ["", "Bench sanity (oracle reads ground truth, must be 1.000): " + ", ".join(sanity)]
+    out += ["", "`*` = run made from a dirty working tree."]
     text = "\n".join(out)
     print(text)
     if a.write:

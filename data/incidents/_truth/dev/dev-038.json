@@ -1,0 +1,85 @@
+{
+  "incident_id": "dev-038",
+  "split": "dev",
+  "seed": 1038,
+  "fault_ids": [
+    "transient_blip"
+  ],
+  "resolved_fault_ids": [
+    "transient_blip"
+  ],
+  "family": "transient_blip",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_03",
+    "ar_05",
+    "ar_08",
+    "en_02",
+    "en_04",
+    "mix_01"
+  ],
+  "ground_truth": {
+    "root_cause": "transient upstream blip that cleared without intervention; failed chats only need a retry",
+    "correct_fix": {},
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": true
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_03",
+    "ar_05"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2
+    },
+    "ar_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 9
+    },
+    "en_02": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "en_04": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 8
+    },
+    "mix_01": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 8
+    }
+  }
+}

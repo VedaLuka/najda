@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from hack.bench.incidents import IncidentSpec, run_incident
+from hack.bench.incidents import run_incident, spec_from_truth
 from hack.bench.truth import read_truth
 
 
@@ -43,10 +43,9 @@ class ReplayResult:
 
 def replay(incident_dir: Path, patch: dict[str, Any] | None = None, chats: str = "failed") -> ReplayResult:
     truth = read_truth(Path(incident_dir))
-    spec = IncidentSpec(truth["incident_id"], truth["split"], truth["seed"], truth["fault_ids"],
-                        truth["noisy"], truth["chat_ids"])
+    spec = spec_from_truth(truth)
     chat_ids = truth["failed_chats"] if chats == "failed" else truth["chat_ids"]
     if not chat_ids:
         chat_ids = truth["chat_ids"]
-    run = run_incident(spec, chat_ids=chat_ids, extra_patch=patch or {})
+    run = run_incident(spec, chat_ids=chat_ids, extra_patch=patch or {}, later=True)
     return ReplayResult(spec.incident_id, run.chat_verdicts(), [v.to_dict() for v in run.violations])

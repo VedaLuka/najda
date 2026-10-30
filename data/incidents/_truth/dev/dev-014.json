@@ -26,7 +26,8 @@
       "max_turns": 10
     },
     "should_escalate": true,
-    "expected_outcome": "contain"
+    "expected_outcome": "contain",
+    "requires_retry": false
   },
   "failed_chats": [
     "ar_05",
