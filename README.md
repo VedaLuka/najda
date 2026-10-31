@@ -22,7 +22,7 @@ HUMAIN hackathon, Challenge 1 (Agentic Recovery). Solo build, 30 to 31 October 2
 
 ![Headline: fresh unseen faults](docs/figures/headline_confirm.png)
 
-Links: repo https://github.com/VedaLuka/najda, live demo console https://vedaluka.github.io/najda/web/, video (placeholder: VIDEO_URL), slides (placeholder: https://github.com/VedaLuka/najda/blob/main/docs/najda-slides.pdf), full tables [docs/RESULTS.md](docs/RESULTS.md), decisions [docs/DECISIONS.md](docs/DECISIONS.md), pre-registration [docs/PREREGISTRATION.md](docs/PREREGISTRATION.md), limitations [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+Links: repo https://github.com/VedaLuka/najda, live demo console https://vedaluka.github.io/najda/web/, video (placeholder: VIDEO_URL), Slides (PDF): https://github.com/VedaLuka/najda/blob/main/docs/najda-slides.pdf, full tables [docs/RESULTS.md](docs/RESULTS.md), decisions [docs/DECISIONS.md](docs/DECISIONS.md), pre-registration [docs/PREREGISTRATION.md](docs/PREREGISTRATION.md), limitations [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 ## 1. The problem: AI agents fail silently
 
