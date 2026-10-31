@@ -1,6 +1,6 @@
 // Screen 3: money at risk. The change freeze, a failing chat, the evidence, and the bilingual incident ticket.
 import { incident, manifest } from './data.js';
-import { narrate, splitReport, human, failingChats } from './timeline.js';
+import { narrate, splitReport, human, failingChats, humanDetail, rule } from './timeline.js';
 import { h, ICON } from './ui.js';
 import { phone } from './phone.js';
 
@@ -27,7 +27,7 @@ export async function render(main, topright, params, nav) {
   screen.append(h('div', { class: 'banner' }, h('div', { class: 'ic', html: ICON.flag }),
     h('div', {}, h('div', { class: 't' }, freeze ? 'CHANGE FREEZE: money at risk, payment upstream failing' : 'CHANGE FREEZE: money at risk'),
       h('div', { class: 's' }, freeze ? 'Every config change is rolled back and nothing new is applied until a human has looked.' : 'Payment and credential knobs are locked while customer money is stranded, even when the model knows the fix.')),
-    h('div', { class: 'ev' }, ...evidence.slice(0, 3).map(e => h('code', {}, e)))));
+    h('div', { class: 'ev' }, ...evidence.slice(0, 3).map(e => h('code', {}, humanDetail(e))))));
 
   const left = h('div', { class: 'phone-wrap' });
   const drawPhone = () => {
@@ -36,7 +36,7 @@ export async function render(main, topright, params, nav) {
     left.replaceChildren(
       h('div', { class: 'chat-tabs' }, ...bad.map(c => h('button', { class: `${c.chat_id === chatId ? 'active' : ''} bad`, onclick: () => { chatId = c.chat_id; drawPhone(); } }, c.chat_id))),
       phone(inc, chat, null, false, viol),
-      viol.length ? h('div', { class: 'chat-note' }, h('b', {}, `Rule broken: ${viol[0].invariant.replace(/_/g, ' ')}. `), viol[0].detail) : h('div', { class: 'chat-note' }, h('b', {}, 'Chat failed. '), 'The customer was told the payment did not go through.'));
+      viol.length ? h('div', { class: 'chat-note' }, h('b', {}, `Rule broken: ${viol[0].invariant.replace(/_/g, ' ')}. `), humanDetail(viol[0].detail)) : h('div', { class: 'chat-note' }, h('b', {}, 'Chat failed. '), 'The customer was told the payment did not go through.'));
   };
   drawPhone();
   screen.append(left);
@@ -44,15 +44,15 @@ export async function render(main, topright, params, nav) {
   const item = (n, t, b, m) => h('div', { class: 'item', style: `animation-delay:${n * 120}ms` }, h('div', { class: 'n' }, String(n).padStart(2, '0')), h('div', {}, h('div', { class: 't' }, t), h('div', { class: 'b' }, b), m ? h('div', { class: 'm' }, m) : null));
   const items = [
     item(1, money ? money.title : 'Money at risk', money ? money.body : '', rep.Impact || ''),
-    hyp ? item(2, hyp.title.replace('Hypothesis: ', 'Diagnosis: '), hyp.body, (hyp.tags || []).join('  ')) : null,
-    blocked ? item(3, 'Guardrail blocked the fix', blocked.body, `rule ${traj.steps.find(s => s.action === 'najda.guardrail').result.rule}`)
+    hyp ? item(2, hyp.title.replace('Hypothesis: ', 'Diagnosis: '), hyp.body, (hyp.tags || []).filter(t => !t.span).map(t => t.text).join('  ')) : null,
+    blocked ? item(3, 'Guardrail blocked the fix', blocked.body, `rule: ${rule(traj.steps.find(s => s.action === 'najda.guardrail').result.rule)}`)
             : item(3, 'No config knob can fix a provider outage', 'Retrying would charge deposits against a provider that is down. Najda refuses to guess and hands over instead.', 'freeze source: incident traces'),
     item(4, decision ? decision.title : 'Escalated', decision ? decision.body : '', `scored: escalation ${scores.escalation_correct ? 'correct' : 'wrong'} · dangerous actions ${scores.dangerous_actions} · config changes kept ${scores.changed_knobs.length}`),
   ];
   screen.append(h('div', { class: 'panel' }, h('div', { class: 'ph' }, h('h2', {}, 'What Najda found'), h('span', { class: 'pill grey' }, `${inc.family} · ${inc.patient}`)), h('div', { class: 'evidence' }, ...items),
     h('div', { class: 'caption', style: 'margin-top:auto;padding-top:14px' }, inc.silent)));
 
-  const fields = [['Summary', rep.Summary], ['Impact', rep.Impact], ['Evidence', evidence.join('\n')], ['Actions', (rep.actions || []).join('\n')], ['Human action', rep['Recommended human action']],
+  const fields = [['Summary', rep.Summary], ['Impact', rep.Impact], ['Evidence', evidence.map(humanDetail).join('\n')], ['Actions', (rep.actions || []).map(humanDetail).join('\n')], ['Human action', rep['Recommended human action']],
     ['Root cause', traj.root_causes.map(r => `${human(r.label)} (${Math.round(r.confidence * 100)}%)`).join(', ')], ['Scored', `escalation ${scores.escalation_correct ? 'correct' : 'wrong'}, ${scores.dangerous_actions} dangerous actions, ${scores.changed_knobs.length} knobs changed${scores.outcome_correct ? '' : ' (counted as a miss: the fixable fault was left for a human)'}`]];
   screen.append(h('div', { class: 'ticket' },
     h('div', { class: 'th' }, h('div', { class: 'id' }, `INC · ${id}`), h('div', { class: 'id' }, `doctor ${doctor}`), h('div', { class: `sev${freeze ? '' : ' amber'}` }, 'ESCALATED TO HUMAN')),

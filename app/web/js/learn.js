@@ -4,7 +4,7 @@ import { narrate, patchText } from './timeline.js';
 import { h, ICON, countUp } from './ui.js';
 import { lines, legend } from './charts.js';
 
-const TEAL = '#19C2A0', SLATE = '#8DA2B5', AMBER = '#FFB020';
+const TEAL = '#19C2A0', SLATE = '#8DA2B5';
 
 function runCard(run, inc, i) {
   const ev = narrate(run.steps, inc);
@@ -31,10 +31,13 @@ export async function render(main, topright) {
   const inc = await incident(r1.incident_id);
   const rows = (await csv('learning_curve_streams.csv')).filter(r => r.doctor === 'najda_v4');
   const curve = (await csv('learning_curve.csv')).filter(r => r.doctor === 'najda_v4');
-  const off = rows.filter(r => r.arm === 'off' && r.seed === '1').map(r => ({ x: +r.position + 1, y: +r.ma5_cost_usd }));
-  const onBy = {};
-  for (const r of rows.filter(r => r.arm === 'on')) (onBy[r.position] = onBy[r.position] || []).push(+r.ma5_cost_usd);
-  const on = Object.keys(onBy).map(p => ({ x: +p + 1, y: onBy[p].reduce((a, b) => a + b, 0) / onBy[p].length })).sort((a, b) => a.x - b.x);
+  // 5-incident moving average with an expanding window at the start (the pack's ma5 column pads with zeros).
+  const MIN = 3;  // the mean starts once three incidents are in the window; a single $0 healthy incident is not a trend
+  const ma = costs => costs.map((_, i) => { const w = costs.slice(Math.max(0, i - 4), i + 1); return w.reduce((a, b) => a + b, 0) / w.length; }).slice(MIN - 1);
+  const stream = (arm, seed) => rows.filter(r => r.arm === arm && r.seed === seed).sort((a, b) => +a.position - +b.position).map(r => +r.cost_usd);
+  const off = ma(stream('off', '1')).map((y, i) => ({ x: i + MIN, y }));
+  const onSeeds = [...new Set(rows.filter(r => r.arm === 'on').map(r => r.seed))].map(seed => ma(stream('on', seed)));
+  const on = onSeeds[0].map((_, i) => ({ x: i + MIN, y: onSeeds.reduce((a, s) => a + s[i], 0) / onSeeds.length }));
   const cOff = curve.find(r => r.memory === 'off'), cOn = curve.find(r => r.memory === 'on');
 
   const screen = h('section', { class: 'screen learn' });
@@ -42,7 +45,7 @@ export async function render(main, topright) {
   screen.append(h('div', { class: 'twin' }, runCard(r1, inc, 0), h('div', { class: 'arrow', html: ICON.arrow }), runCard(r2, inc, 1)));
   const chart = h('div', { class: 'chart' });
   screen.append(h('div', { class: 'panel', style: 'grid-column: 1 / -1; min-height: 0' },
-    h('div', { class: 'ph' }, h('h2', {}, 'Cost per incident along a stream of 42 dev incidents', h('span', { class: 'n' }, '5-incident moving average · najda_v4 · memory ON is the mean of 3 stream orders')),
+    h('div', { class: 'ph' }, h('h2', {}, 'Cost per incident along a stream of 42 dev incidents', h('span', { class: 'n' }, '5-incident moving average from incident 3 · najda_v4 · memory ON is the mean of 3 stream orders')),
       legend([{ name: 'memory OFF', color: SLATE }, { name: 'memory ON', color: TEAL }])),
     h('div', { class: 'stat-row', style: 'margin-bottom:14px' },
       h('div', { class: 'stat' }, h('div', { class: 'v' }, `$${(+cOff.cost_per_incident).toFixed(4)}`), h('div', { class: 'l' }, 'per incident, memory OFF')),

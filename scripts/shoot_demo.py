@@ -16,16 +16,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = [
-    ("live_001_start", "live?inc=heldout_confirm-001&k=0"),
-    ("live_001_hypothesis", "live?inc=heldout_confirm-001&k=9"),
-    ("live_001_fixing", "live?inc=heldout_confirm-001&k=12"),
-    ("live_001_recovered", "live?inc=heldout_confirm-001&k=99"),
-    ("live_004_v5_escalated", "live?inc=heldout_confirm-004&doctor=najda_v5&k=99"),
-    ("live_004_v6_recovered", "live?inc=heldout_confirm-004&doctor=najda_v6&k=99"),
-    ("learn", "learn"),
-    ("stop_hajz", "stop?inc=transfer_confirm-011"),
-    ("stop_webhook", "stop?inc=heldout_confirm-010"),
-    ("results", "results"),
+    ("live_001_01_reads", "live?inc=heldout_confirm-001&k=3&video=1"),
+    ("live_001_02_hypothesis", "live?inc=heldout_confirm-001&k=9&video=1"),
+    ("live_001_03_canary", "live?inc=heldout_confirm-001&k=14&video=1"),
+    ("live_001_04_recovered", "live?inc=heldout_confirm-001&k=99&video=1"),
+    ("live_004_v5_escalated", "live?inc=heldout_confirm-004&doctor=najda_v5&k=99&video=1"),
+    ("live_004_v6_recovered", "live?inc=heldout_confirm-004&doctor=najda_v6&k=99&video=1"),
+    ("learn", "learn?video=1"),
+    ("stop_hajz", "stop?inc=transfer_confirm-011&video=1"),
+    ("stop_webhook", "stop?inc=heldout_confirm-010&video=1"),
+    ("results", "results?video=1"),
 ]
 
 

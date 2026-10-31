@@ -6,6 +6,14 @@ import * as results from './results.js';
 
 const SCREENS = { live, learn, stop, results };
 const stage = document.getElementById('stage'), main = document.getElementById('main'), topright = document.getElementById('topright'), nav = document.getElementById('nav');
+const statusrow = document.getElementById('statusrow'), videoBtn = document.getElementById('videotoggle');
+
+function setVideo(on) {
+  document.body.classList.toggle('video', on);
+  try { localStorage.setItem('najda.video', on ? '1' : '0'); } catch (e) { /* private window */ }
+}
+videoBtn.addEventListener('click', () => setVideo(!document.body.classList.contains('video')));
+try { setVideo(localStorage.getItem('najda.video') === '1'); } catch (e) { /* ignore */ }
 let current = null;
 
 function fit() {
@@ -26,10 +34,12 @@ export function go(params) {
 
 async function route() {
   const params = parse();
+  if (params.video != null) setVideo(params.video === '1');
+  statusrow.replaceChildren();
   for (const b of nav.querySelectorAll('button')) b.classList.toggle('active', b.dataset.screen === params.screen);
   document.body.dataset.screen = params.screen;
   try {
-    current = await SCREENS[params.screen].render(main, topright, params, go);
+    current = await SCREENS[params.screen].render(main, topright, params, go, statusrow);
   } catch (err) {
     console.error(err);
     main.innerHTML = `<section class="screen"><div class="panel"><h2>Could not load the demo pack</h2><pre class="mono">${String(err).replace(/</g, '&lt;')}</pre><p class="caption">Serve the app folder with <code>python -m http.server -d app 8765</code> and open /web/.</p></div></section>`;
@@ -40,6 +50,7 @@ nav.addEventListener('click', e => { const b = e.target.closest('button'); if (b
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' && e.key !== ' ') return;
   if (/^[1-4]$/.test(e.key)) { go({ screen: Object.keys(SCREENS)[+e.key - 1] }); return; }
+  if (e.key === 'v' || e.key === 'V') { setVideo(!document.body.classList.contains('video')); return; }
   if (current && current.keys) current.keys(e);
 });
 route();

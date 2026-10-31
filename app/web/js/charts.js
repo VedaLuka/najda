@@ -52,7 +52,8 @@ export function barsH(container, rows, { domain, fmt = v => v.toFixed(2), labelW
   rows.forEach((r, i) => {
     const y = m.t + rowH * (i + 0.5);
     const g = el('g');
-    g.append(el('text', { x: m.l - 14, y: y + 5, 'text-anchor': 'end', class: 'lab' }, r.label));
+    g.append(el('text', { x: m.l - 14, y: y + (r.sub ? -3 : 5), 'text-anchor': 'end', class: 'lab' }, r.label));
+    if (r.sub) g.append(el('text', { x: m.l - 14, y: y + 14, 'text-anchor': 'end', class: 'ann' }, r.sub));
     const w = Math.max(0, x(r.v) - m.l);
     g.append(el('path', { d: w > 0 ? `M${m.l},${y - bh / 2} H${m.l + w - 4} a4,4 0 0 1 4,4 v${bh - 8} a4,4 0 0 1 -4,4 H${m.l} Z` : `M${m.l},${y - bh / 2} v${bh}`, fill: r.color, stroke: r.color, 'stroke-width': w > 0 ? 0 : 3 }));
     g.append(el('text', { x: m.l + w + 12, y: y + 5, class: 'val' }, fmt(r.v)));

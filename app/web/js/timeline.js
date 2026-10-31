@@ -23,10 +23,37 @@ const LABELS = {
 const MODELS = { 'claude-haiku-5-5': 'Haiku 5.5', 'claude-sonnet-5-5': 'Sonnet 5.5', 'claude-opus-5-5': 'Opus 5.5' };
 const KNOBS = { price_unit: 'price unit', normalize_numerals: 'numeral normalisation', payment_verify: 'payment verification', timeout_s: 'timeout', max_turns: 'turn cap' };
 
+const SKU = { shawarma_chicken: 'chicken shawarma', shawarma_beef: 'beef shawarma', pepsi: 'Pepsi', fries: 'fries', water: 'water', kabsa_chicken: 'chicken kabsa',
+  falafel: 'falafel sandwich', karak: 'karak tea' };
+const RULES = { protected_knob_money_at_risk: 'protected knob while money is at risk', ok: 'allowed', blast_radius: 'outside the blast radius', change_freeze: 'change freeze' };
+const VALUES = { sar: 'SAR', halalas: 'halalas', true: 'on', false: 'off', query: 'query the provider', webhook: 'wait for the webhook' };
 export const human = label => LABELS[label] || (label || '').replace(/_/g, ' ');
-export const knob = k => KNOBS[k] || k;
-const fmtVal = v => typeof v === 'string' ? v : JSON.stringify(v);
-export const patchText = p => Object.entries(p || {}).map(([k, v]) => `${k}: ${fmtVal(v)}`).join(', ') || '(no change)';
+export const knob = k => KNOBS[k] || k.replace(/_/g, ' ');
+export const rule = r => RULES[r] || (r || '').replace(/_/g, ' ');
+const fmtVal = v => (typeof v === 'string' || typeof v === 'boolean') && VALUES[String(v)] ? VALUES[String(v)] : typeof v === 'string' ? v : JSON.stringify(v);
+export const patchText = p => Object.entries(p || {}).map(([k, v]) => `${knob(k)} → ${fmtVal(v)}`).join(', ') || 'no change';
+const num = x => String(+x);
+const skuName = k => SKU[k] || k.replace(/_/g, ' ');
+const dictItems = s => [...s.matchAll(/'([a-z_]+)':\s*(\d+)/g)].map(m => ({ sku: m[1], n: +m[2] }));
+const itemList = xs => xs.map(x => `${x.n} ${skuName(x.sku)}`).join(' + ');
+
+/** Invariant details and evidence strings as a human would say them. Never a dict on screen. */
+export function humanDetail(d) {
+  let m;
+  if ((m = d.match(/^customer asked (\{.*?\}), order has (\{.*?\})$/))) return `Customer asked for ${itemList(dictItems(m[1]))}; the order has ${dictItems(m[2]).map(x => x.n).join(' + ')}`;
+  if ((m = d.match(/^(ORD-\d+) total ([\d.]+) SAR, menu says ([\d.]+)$/))) return `Order ${m[1]} was charged ${num(m[2])} SAR; the menu says ${num(m[3])} SAR`;
+  if ((m = d.match(/^(PAY-\d+) paid ([\d.]+) SAR for (ORD-\d+) which is not confirmed$/))) return `Payment ${m[1]} took ${num(m[2])} SAR for order ${m[3]}, which was never confirmed`;
+  if ((m = d.match(/^invariant (\w+) \((\w+)\)$/))) return `${(INVARIANT_LABELS.order[m[1]] || INVARIANT_LABELS.hajz[m[1]] || m[1].replace(/_/g, ' ')).toLowerCase()} broken in chat ${m[2]}`;
+  if ((m = d.match(/^(s\d+): (\w+) (\d{3})$/))) return `${m[2].replace(/_/g, ' ')} failed with ${m[3]} (span ${m[1]})`;
+  if ((m = d.match(/^(\w+) patch \{'(\w+)': '?([^'}]+)'?\}: (\w+)(?: \((.*)\))?$/))) {
+    const what = `${knob(m[2])} → ${fmtVal(m[3] === 'True' ? true : m[3] === 'False' ? false : m[3])}`;
+    if (m[4] === 'verified') return `${what}: verified by ${(m[5] || '').replace('replay ', 'replay, ')}`;
+    if (m[4] === 'blocked') return `${what}: blocked (${rule(m[5])})`;
+    return `${what}: ${m[4]}`;
+  }
+  return d.replace(/\{[^}]*\}/g, x => itemList(dictItems(x)));
+}
+const firstSentence = t => (t || '').split(/(?<=[.!?])\s/)[0];
 const pct = c => `${Math.round(c * 100)}%`;
 const list = (xs, n = 3) => xs.slice(0, n).join(', ') + (xs.length > n ? ` +${xs.length - n}` : '');
 const json = o => JSON.stringify(o, null, 1).replace(/\n\s*/g, ' ');
@@ -51,6 +78,7 @@ export function narrate(steps, inc) {
     const what = parts.length ? parts.join(', ') : 'the incident bundle';
     r.title = verified ? `Checked ${what} after the fix` : r.again ? `Investigator re-read ${what}` : `Read ${what}`;
     r.body = body.join(' · ');
+    r.caption = verified ? 'Najda re-reads the metrics and traces after the fix.' : r.again ? 'The investigator reads the evidence it asked for.' : 'Najda reads the incident bundle: the chats, the traces, the metrics and the broken rules.';
     r.detail = r.raw.join('\n');
   };
   for (const s of steps) {
@@ -75,75 +103,81 @@ export function narrate(steps, inc) {
     if (a === 'replay' && args.config_version === 1 && args.chats === 'failed') {
       const broken = (r.violations || []).map(v => labels[v] || v);
       Object.assign(ev, { kind: 'baseline', title: `Replayed the ${r.n_total} failed chats on the current config: ${r.n_pass}/${r.n_total} pass`,
-        body: broken.length ? `Business rule broken: ${broken.join(', ')}` : 'No invariant violated', tone: 'bad' });
+        body: broken.length ? `Business rule broken: ${broken.join(', ')}` : 'No invariant violated', tone: 'bad', key: true,
+        caption: `Najda replays the ${r.n_total} failed chats first: ${r.n_pass} of ${r.n_total} pass, so the fault is real and reproducible.` });
     } else if (a === 'replay' || a === 'najda.baseline_replay') { continue;
     } else if (a === 'najda.money_at_risk') {
       const e = r.evidence || [];
       Object.assign(ev, e.length
-        ? { kind: 'money', title: e.some(x => /invariant/.test(x)) ? `Money at risk: ${e.length} payments taken without a confirmed order` : `Money at risk: ${e.length} payment calls failing upstream`, body: list(e), tone: 'warn' }
-        : { kind: 'money', title: 'Checked for money at risk: none', body: 'No payment is stranded, so config knobs are not frozen' });
+        ? { kind: 'money', title: e.some(x => /invariant/.test(x)) ? `Money at risk: ${e.length} payments taken without a confirmed order` : `Money at risk: ${e.length} payment calls failing upstream`, body: list(e.map(humanDetail)), tone: 'warn', key: true,
+            caption: 'Customer money is at risk, so the payment knobs are locked from here on.' }
+        : { kind: 'money', title: 'Checked for money at risk: none', body: 'No payment is stranded, so config knobs are not frozen', caption: 'No customer money is stranded, so config changes are allowed.' });
     } else if (a === 'najda.freeze') {
       Object.assign(ev, { kind: 'freeze', title: 'CHANGE FREEZE: the payment upstream is failing', tone: 'warn',
-        body: `No config change is allowed until a human looks. ${list(r.evidence || [])}` });
+        body: `No config change is allowed until a human looks. ${list((r.evidence || []).map(humanDetail))}`, key: true, caption: 'Change freeze: the payment provider itself is failing, so nothing will be changed.' });
     } else if (a === 'najda.bisect') {
       Object.assign(ev, r.applicable
         ? { kind: 'bisect', title: `Bisected the config history: version ${r.culprit} is the culprit`, body: `tested ${(r.tested || []).length} versions by replay` }
-        : { kind: 'bisect', title: 'Config change history: none', body: `Nothing was deployed before the incident (${r.reason}), so the fault is in the data, not a recent change` });
+        : { kind: 'bisect', title: 'Config change history: none', body: `Nothing was deployed before the incident (${r.reason}), so the fault is in the data, not a recent change`, caption: 'No recent deploy to blame: the config has only one version.' });
     } else if (a === 'najda.differential') {
       const top = r.top || [];
-      Object.assign(ev, { kind: 'differential', title: 'Compared failing chats with passing ones', body: `${top.length} span signatures appear mostly in failing chats`,
+      Object.assign(ev, { kind: 'differential', title: 'Compared failing chats with passing ones', body: `${top.length} span signatures appear mostly in failing chats`, caption: 'v5 compares the spans of failing and passing chats to decide which evidence counts.',
         detail: top.map(x => `${x.signature}  fail ${x.n_fail} / pass ${x.n_pass}  w=${x.weight}`).join('\n') });
     } else if (a === 'najda.playbook') {
       const e = r.event;
-      if (e === 'miss') Object.assign(ev, { kind: 'playbook', title: 'Memory: no playbook matches this signature', body: 'New kind of fault, so Najda investigates from scratch', detail: (r.key || []).join('\n') });
+      if (e === 'miss') Object.assign(ev, { kind: 'playbook', title: 'Memory: no playbook matches this signature', body: 'New kind of fault, so Najda investigates from scratch', detail: (r.key || []).join('\n'), caption: 'Nothing in memory matches this fault, so Najda investigates from scratch.' });
       else if (e === 'match') Object.assign(ev, { kind: 'playbook_hit', title: `Memory: playbook ${r.id} matches (similarity ${(r.score || 1).toFixed(2)})`, tone: 'ok',
-        body: `Learned on ${r.source_incident}; proposes ${patchText(r.patches && r.patches[0])} without calling a model` });
-      else if (e === 'learned') Object.assign(ev, { kind: 'learned', title: `Memory: playbook ${r.id} learned`, tone: 'ok', body: r.kind === 'fix' ? 'Next time this signature appears the fix is applied with no AI call' : 'Next time this signature appears Najda escalates immediately' });
+        body: `Learned on ${r.source_incident}; proposes ${patchText(r.patches && r.patches[0])} without calling a model`, key: true, caption: 'A learned playbook matches: the fix is proposed without calling a model.' });
+      else if (e === 'learned') Object.assign(ev, { kind: 'learned', title: `Memory: playbook ${r.id} learned`, tone: 'ok', key: true, caption: r.kind === 'fix' ? 'Najda remembers this fix: next time the same fault costs zero AI calls.' : 'Najda remembers this signature: next time it escalates immediately.', body: r.kind === 'fix' ? 'Next time this signature appears the fix is applied with no AI call' : 'Next time this signature appears Najda escalates immediately' });
       else if (e === 'hit') Object.assign(ev, { kind: 'playbook_hit', title: 'Memory: playbook verified end to end', tone: 'ok', body: `${r.llm_calls || 0} AI calls` });
       else continue;
     } else if (a === 'llm') {
       const model = MODELS[args.model] || args.model;
       Object.assign(ev, { kind: 'llm', title: `AI call: ${args.purpose || args.role} (${model})`, cost: r.cost_usd || 0,
+        caption: args.role === 'triage' ? `A small model (${model}) checks for a known pattern.` : `The investigator model (${model}) reads the evidence and proposes a cause.`,
         body: `${(r.input_tokens || 0).toLocaleString()} tokens in, ${(r.output_tokens || 0).toLocaleString()} out, $${(r.cost_usd || 0).toFixed(4)}` + (r.tool_calls ? ` · called ${r.tool_calls.join(', ')}` : '') });
     } else if (a === 'najda.triage') {
-      Object.assign(ev, { kind: 'triage', title: `Triage: ${r.class === 'novel' ? 'no known pattern' : r.class}`, body: r.brief || 'The small model has no shortcut, so the investigator takes over' });
+      Object.assign(ev, { kind: 'triage', title: `Triage: ${r.class === 'novel' ? 'no known pattern' : r.class}`, body: r.brief || 'The small model has no shortcut, so the investigator takes over', caption: 'No known pattern, so the big investigator model takes over.' });
     } else if (a === 'najda.turn') {
       if (!r.text) continue;
-      Object.assign(ev, { kind: 'turn', title: "Investigator's note", body: r.text });
+      Object.assign(ev, { kind: 'turn', title: "Investigator's note", body: r.text, caption: firstSentence(r.text) });
     } else if (a === 'najda.hypotheses') {
       const top = (r.ranked || [])[0];
       if (!top) continue;
       const rejected = top.status && top.status !== 'proposed';
-      Object.assign(ev, { kind: 'hypotheses', conf: top.confidence, tone: rejected ? 'bad' : 'warn',
+      Object.assign(ev, { kind: 'hypotheses', conf: top.confidence, tone: rejected ? 'bad' : 'warn', key: true,
         title: rejected ? `Hypothesis rejected as ${top.status}: ${human(top.label)}` : `Hypothesis: ${human(top.label)}, ${pct(top.confidence)}`,
         body: rejected ? `${top.note}. Proposed ${patchText(top.patch)} but the grounding rule discards it` : top.rationale,
-        tags: [...(top.evidence || []).slice(0, 5), ...(Object.keys(top.patch || {}).length ? [`patch ${patchText(top.patch)}`] : [])] });
+        caption: rejected ? `The hypothesis is right (${human(top.label)}, ${pct(top.confidence)}) but v5 rejects it: no cited span is unique to the failing chats.` : `Hypothesis: ${human(top.label)}, ${pct(top.confidence)} confident. ${firstSentence(top.rationale)}`,
+        tags: [...(top.evidence || []).slice(0, 5).map(x => ({ text: x, span: true })), ...(Object.keys(top.patch || {}).length ? [{ text: `proposed fix: ${patchText(top.patch)}` }] : [])] });
     } else if (a === 'najda.guardrail') {
       Object.assign(ev, r.allowed
-        ? { kind: 'guardrail', title: 'Guardrail: patch allowed', body: `${patchText(r.patch)} is an unprotected knob within the blast radius`, tone: 'ok' }
-        : { kind: 'guardrail', title: 'Guardrail: patch BLOCKED', body: `${patchText(r.patch)} touches payments while money is at risk, so Najda escalates instead`, tone: 'bad' });
+        ? { kind: 'guardrail', title: 'Guardrail: patch allowed', body: `${patchText(r.patch)} is an unprotected knob within the blast radius`, tone: 'ok', caption: 'Guardrail check passes: this knob is safe to change.' }
+        : { kind: 'guardrail', title: 'Guardrail: patch BLOCKED', body: `${patchText(r.patch)} touches payments while money is at risk, so Najda escalates instead`, tone: 'bad', key: true, caption: 'Guardrail blocks the fix: it touches payments while customer money is at risk.' });
     } else if (a === 'apply_patch') {
-      Object.assign(ev, { kind: 'patch', title: `Applied the smallest patch, config v${r.version}`, body: patchText(args.patch), patch: args.patch || {}, tone: 'warn' });
+      Object.assign(ev, { kind: 'patch', title: `Applied the smallest patch, config v${r.version}`, body: patchText(args.patch), patch: args.patch || {}, tone: 'warn', key: true, caption: `Najda applies the smallest change: ${patchText(args.patch)}.` });
     } else if (a === 'rollback') {
-      Object.assign(ev, { kind: 'rollback', title: 'Rolled the change back', body: json(r).slice(0, 160), tone: 'warn' });
+      Object.assign(ev, { kind: 'rollback', title: 'Rolled the change back', body: `Config is back on v${r.version != null ? r.version : 1}`, tone: 'warn', key: true, caption: 'The change did not verify, so it is rolled back.' });
     } else if (a === 'najda.canary') {
       const n = (r.chats || []).length;
-      Object.assign(ev, { kind: 'canary', title: `Canary: ${r.n_pass}/${n} pass`, body: `Replayed ${r.chats.join(' and ')} on the new config first`, tone: r.passed ? 'ok' : 'bad' });
+      Object.assign(ev, { kind: 'canary', title: `Canary: ${r.n_pass}/${n} pass`, body: `Replayed ${r.chats.join(' and ')} on the new config first`, tone: r.passed ? 'ok' : 'bad', key: true, caption: `Canary first: ${r.n_pass} of ${n} chats pass on the new config.` });
     } else if (a === 'najda.regression_check') {
       const broke = (r.broke || []).length;
-      Object.assign(ev, { kind: 'regression', title: `Regression replay: ${r.checked - broke}/${r.checked} chats that were passing still pass`, body: broke ? `broke ${r.broke.join(', ')}` : 'Nothing that worked before is broken', tone: broke ? 'bad' : 'ok' });
+      Object.assign(ev, { kind: 'regression', title: `Regression replay: ${r.checked - broke}/${r.checked} chats that were passing still pass`, body: broke ? `broke ${r.broke.join(', ')}` : 'Nothing that worked before is broken', tone: broke ? 'bad' : 'ok', caption: 'Chats that were already working still work.' });
     } else if (a === 'najda.verify') {
       const ok = r.status === 'verified';
       verified = ok;
-      Object.assign(ev, { kind: 'verify', title: `Full replay: ${r.n_pass}/${r.n_total} failed chats now pass`, tone: ok ? 'ok' : 'bad',
+      Object.assign(ev, { kind: 'verify', title: `Full replay: ${r.n_pass}/${r.n_total} failed chats now pass`, tone: ok ? 'ok' : 'bad', key: true,
+        caption: ok ? `Full replay: all ${r.n_total} failed chats now pass every business rule. The fix is verified.` : 'The fix does not hold on every chat.',
         body: ok ? 'Every business rule holds on every replayed chat. Fix verified.' : `Not verified, ${(r.remaining || []).length} chats still fail` });
     } else if (a === 'najda.decision') {
       const rec = r.status === 'recovered';
-      Object.assign(ev, { kind: 'decision', status: r.status, tone: rec ? 'ok' : 'bad',
+      Object.assign(ev, { kind: 'decision', status: r.status, tone: rec ? 'ok' : 'bad', key: true,
+        caption: rec ? 'Recovered: the bot serves customers correctly again, and the config change stays.' : 'Escalated: a human gets a report with the exact evidence and what to do.',
         title: rec ? `Recovered: root cause ${human(r.label)}, config v${r.kept_version} kept` : `Escalated to a human: ${human(r.label)}, config v${r.kept_version} kept`,
         body: rec ? 'The bot is serving customers correctly again' : 'No safe fix from the control panel; the report below says what a human must do' });
     } else if (a === 'escalate') {
-      Object.assign(ev, { kind: 'escalate', title: 'Handed over with a bilingual incident report', tone: 'bad' });
+      Object.assign(ev, { kind: 'escalate', title: 'Handed over with a bilingual incident report', tone: 'bad', key: true, caption: 'Handed over with a bilingual incident report.' });
     } else continue;
     events.push(ev);
   }

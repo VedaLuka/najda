@@ -482,7 +482,7 @@
     },
     {
      "i": 9,
-     "t": 0.009,
+     "t": 0.01,
      "action": "read_invariants",
      "args": {},
      "result": {
@@ -491,7 +491,7 @@
     },
     {
      "i": 10,
-     "t": 0.009,
+     "t": 0.01,
      "action": "najda.playbook",
      "args": {},
      "result": {
@@ -510,7 +510,7 @@
     },
     {
      "i": 11,
-     "t": 0.009,
+     "t": 0.01,
      "action": "read_chats",
      "args": {},
      "result": {
@@ -641,7 +641,7 @@
     },
     {
      "i": 23,
-     "t": 0.012,
+     "t": 0.011,
      "action": "llm",
      "args": {
       "role": "big",
@@ -664,7 +664,7 @@
     },
     {
      "i": 24,
-     "t": 0.012,
+     "t": 0.011,
      "action": "najda.turn",
      "args": {},
      "result": {

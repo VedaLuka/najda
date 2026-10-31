@@ -458,7 +458,7 @@
     },
     {
      "i": 33,
-     "t": 0.015,
+     "t": 0.016,
      "action": "najda.verify",
      "args": {},
      "result": {
@@ -473,14 +473,14 @@
     },
     {
      "i": 34,
-     "t": 0.015,
+     "t": 0.016,
      "action": "read_metrics",
      "args": {},
      "result": {}
     },
     {
      "i": 35,
-     "t": 0.015,
+     "t": 0.016,
      "action": "read_traces",
      "args": {
       "kind": "tool",
@@ -978,7 +978,7 @@
     },
     {
      "i": 11,
-     "t": 0.006,
+     "t": 0.005,
      "action": "najda.guardrail",
      "args": {},
      "result": {
@@ -1405,7 +1405,7 @@
      "price_unit": "halalas"
     }
    ],
-   "created_at": "2026-10-31T03:35:32+0300",
+   "created_at": "2026-10-31T04:38:14+0300",
    "source_incident": "heldout_confirm-001",
    "uses": 1,
    "successes": 1,
