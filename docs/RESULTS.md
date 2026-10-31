@@ -15,23 +15,24 @@
 | 9 | `najda_v4` | 42 | **0.976** | 0.786 | 1.000 | 0.976 | 0.976 | 0.000 | 1.0637 | 0.0259 | 38.05 | 118 | 33e84cf* | step 5 regression guard: v4 rerun after code_rules flag + ablation arms (expect cache hits, identical to 1030-194212) |
 | 10 | `najda_v4_nt+memory` | 42 | **0.952** | 0.762 | 1.000 | 0.952 | 0.952 | 0.000 | 0.9068 | 0.0227 | 29.24 | 51 | 4bda398* | learning curve: memory ON, stream seed 3 |
 | 11 | `najda_v4+memory` | 42 | **0.952** | 0.762 | 1.000 | 0.952 | 0.952 | 0.000 | 0.6702 | 0.0168 | 31.5 | 65 | 4bda398* | learning curve: memory ON, stream seed 3 |
+| 12 | `najda_v5` | 42 | **0.976** | 0.786 | 1.000 | 0.976 | 0.976 | 0.000 | 1.0641 | 0.0260 | 38.88 | 117 | 956fe11* | step 6: v5 = v4 + change freeze on payment-upstream failures (5xx/timeout), re-checked after every replay; diagnosis-only round only when a replay unmasked the failure |
 
 ## Outcome by fault family (dev)
 
-| Family | n | `do_nothing` | `restart` | `runbook` | `single_llm` | `najda_v1` | `najda_v2` | `najda_v3` | `najda_v4_nt` | `najda_v4` | `najda_v4_nt+memory` | `najda_v4+memory` |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| auth_expired_401 | 5 | 0.000 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| combo_prompt_auth | 2 | 0.000 | 0.000 | 0.000 | 0.000 | 0.500 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| combo_schema_rate | 2 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.500 | 0.500 | 0.500 | 0.000 | 0.000 |
-| hallucinated_tool | 4 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| healthy | 2 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| infinite_loop | 4 | 0.000 | 0.000 | 1.000 | 0.750 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| payment_down | 2 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| prompt_regression | 4 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| rate_limit_429 | 5 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| schema_drift | 5 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| stock_corrupt | 2 | 0.000 | 0.000 | 1.000 | 0.500 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| transient_blip | 5 | 0.000 | 1.000 | 0.000 | 0.800 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| Family | n | `do_nothing` | `restart` | `runbook` | `single_llm` | `najda_v1` | `najda_v2` | `najda_v3` | `najda_v4_nt` | `najda_v4` | `najda_v4_nt+memory` | `najda_v4+memory` | `najda_v5` |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| auth_expired_401 | 5 | 0.000 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| combo_prompt_auth | 2 | 0.000 | 0.000 | 0.000 | 0.000 | 0.500 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| combo_schema_rate | 2 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.500 | 0.500 | 0.500 | 0.000 | 0.000 | 0.500 |
+| hallucinated_tool | 4 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| healthy | 2 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| infinite_loop | 4 | 0.000 | 0.000 | 1.000 | 0.750 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| payment_down | 2 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| prompt_regression | 4 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| rate_limit_429 | 5 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| schema_drift | 5 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| stock_corrupt | 2 | 0.000 | 0.000 | 1.000 | 0.500 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| transient_blip | 5 | 0.000 | 1.000 | 0.000 | 0.800 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 
 ## 95% bootstrap confidence intervals (dev, 2000 resamples over incidents)
 
@@ -48,6 +49,7 @@
 | `najda_v4` | 42 | 0.976 [0.929, 1.000] | 0.786 [0.667, 0.905] | 0.976 [0.929, 1.000] | 1.000 [1.000, 1.000] | 0.000 [0.000, 0.000] |
 | `najda_v4_nt+memory` | 42 | 0.952 [0.881, 1.000] | 0.762 [0.619, 0.881] | 0.952 [0.881, 1.000] | 1.000 [1.000, 1.000] | 0.000 [0.000, 0.000] |
 | `najda_v4+memory` | 42 | 0.952 [0.881, 1.000] | 0.762 [0.619, 0.881] | 0.952 [0.881, 1.000] | 1.000 [1.000, 1.000] | 0.000 [0.000, 0.000] |
+| `najda_v5` | 42 | 0.976 [0.929, 1.000] | 0.786 [0.667, 0.905] | 0.976 [0.929, 1.000] | 1.000 [1.000, 1.000] | 0.000 [0.000, 0.000] |
 
 ## Calibration of `najda_v2` (dev): top-hypothesis confidence vs outcome_correct
 
@@ -56,6 +58,31 @@
 | 0.5-0.7 | 3 | 1.000 | 0.533 |
 | 0.7-0.9 | 16 | 0.938 | 0.803 |
 | >=0.9 | 23 | 0.783 | 0.922 |
+
+> !! Heldout results below: milestones only, never tune on them.
+## Progression (heldout, IncidentBench v1.1, primary = outcome_correct)
+
+| # | Doctor | n | Outcome | Recovered | RC@1 | RC@3 | Esc. correct | Dangerous | Cost $ | $/correct | Steps | LLM calls | Commit | Note |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | `do_nothing` | 25 | **0.040** | 0.040 | 0.040 | 0.040 | 0.920 | 0.000 | 0.0000 | 0.0000 | 0.0 | 0 | 2ff75ff* | pre-registered final run (docs/PREREGISTRATION.md, tag prereg-final): H1 do_nothing |
+| 2 | `restart` | 25 | **0.040** | 0.040 | 0.040 | 0.040 | 0.920 | 0.000 | 0.0000 | 0.0000 | 1.0 | 0 | 2ff75ff* | pre-registered final run (docs/PREREGISTRATION.md, tag prereg-final): H2 restart |
+| 3 | `runbook` | 25 | **0.120** | 0.040 | 0.040 | 0.040 | 0.120 | 0.000 | 0.0000 | 0.0000 | 4.96 | 0 | 2ff75ff* | pre-registered final run (docs/PREREGISTRATION.md, tag prereg-final): H3 runbook |
+| 4 | `single_llm` | 25 | **0.640** | 0.840 | 1.000 | 1.000 | 0.720 | 0.000 | 0.4567 | 0.0285 | 8.12 | 25 | 2ff75ff* | pre-registered final run (docs/PREREGISTRATION.md, tag prereg-final): H4 single_llm |
+| 5 | `najda_v5` | 25 | **0.720** | 0.640 | 1.000 | 1.000 | 0.720 | 0.000 | 0.7441 | 0.0413 | 41.88 | 91 | 2ff75ff* | pre-registered final run (docs/PREREGISTRATION.md, tag prereg-final): H5 najda_v5 COLD |
+| 6 | `najda_v5+memory` | 25 | **0.680** | 0.600 | 1.000 | 0.960 | 0.680 | 0.000 | 0.4110 | 0.0242 | 33.16 | 49 | 2ff75ff* | pre-registered final run (docs/PREREGISTRATION.md, tag prereg-final): H6 najda_v5 ONLINE |
+| 7 | `najda_v5_no_diffdiag` | 25 | **0.840** | 0.760 | 1.000 | 1.000 | 0.840 | 0.000 | 0.6354 | 0.0303 | 38.88 | 76 | 2ff75ff* | pre-registered final run (docs/PREREGISTRATION.md, tag prereg-final): H7 v5 no_diffdiag |
+| 8 | `najda_v5_no_bisect` | 25 | **0.720** | 0.640 | 1.000 | 1.000 | 0.720 | 0.000 | 0.7169 | 0.0398 | 40.08 | 85 | 2ff75ff* | pre-registered final run (docs/PREREGISTRATION.md, tag prereg-final): H8 v5 no_bisect |
+| 9 | `najda_v6` | 25 | **0.840** | 0.760 | 1.000 | 1.000 | 0.840 | 0.000 | 0.6354 | 0.0303 | 38.88 | 76 | 65b7ec4* | step 7: najda_v6 = pre-registered arm 'v5 minus diff_diagnosis'; cache reproduction of 1030-213735 (expect identical per-incident, zero new spend) |
+
+## Dev vs heldout (outcome_correct) — heldout runs are milestones only
+
+| Doctor | Dev | Heldout | Drop |
+|---|---|---|---|
+| `do_nothing` | 0.048 | 0.040 | -0.008 |
+| `restart` | 0.167 | 0.040 | -0.127 |
+| `runbook` | 0.667 | 0.120 | -0.547 |
+| `single_llm` | 0.833 | 0.640 | -0.193 |
+| `najda_v5` | 0.976 | 0.720 | -0.256 |
 
 ## Ablations (dev, memory OFF unless stated): what each component buys
 
@@ -116,6 +143,71 @@ Covers Sonnet 5.5 vs Haiku 5.5 only. Other providers need tool-use support in th
 |---|---|---|---|---|---|---|---|---|---|
 | `claude-sonnet-5-5` | 42 | **0.976 [0.929, 1.000]** | 1.000 | 0.976 | 0 | 1.0637 | 0.0253 | 118 | 1030-202319_najda_v4_dev |
 | `claude-haiku-5-5` | 42 | **0.929 [0.857, 1.000]** | 1.000 | 0.929 | 0 | 0.1162 | 0.0028 | 171 | 1030-203751_najda_v4_dev |
+
+# Step 7: confirmation run (pre-registered, sets frozen before any doctor ran; docs/PREREGISTRATION.md)
+
+New seeds, same family composition as held-out (order bot) and transfer (Hajz). `najda_v6` = v5 minus the diff_diagnosis grounding rule, picked AFTER seeing its held-out ablation score (0.84 vs 0.72), so these are its first clean numbers. COLD = memory off. All CIs are 95% bootstrap over incidents; at n = 25 and 15 every gap is a point estimate and the heldout-confirm CIs overlap.
+
+## heldout-confirm (order bot, 25 incidents, held-out families, new seeds)
+
+| Arm | n | Outcome [95% CI] | Recovered | RC@1 | Esc. correct | Dangerous | Cost $ | $/incident | LLM calls | Run |
+|---|---|---|---|---|---|---|---|---|---|---|
+| single_llm | 25 | **0.760 [0.600, 0.920]** | 0.840 | 1.000 | 0.840 | 0 | 0.4819 | 0.0193 | 25 | 1031-030410_single_llm_heldout_confirm |
+| najda_v5 COLD | 25 | **0.720 [0.520, 0.880]** | 0.640 | 0.920 | 0.720 | 0 | 0.7859 | 0.0314 | 95 | 1031-030553_najda_v5_heldout_confirm |
+| najda_v6 COLD | 25 | **0.840 [0.680, 0.960]** | 0.760 | 1.000 | 0.840 | 0 | 0.6334 | 0.0253 | 75 | 1031-030851_najda_v6_heldout_confirm |
+| najda_v6 COLD, Haiku big | 25 | **0.760 [0.600, 0.920]** | 0.680 | 0.960 | 0.760 | 0 | 0.0659 | 0.0026 | 96 | 1031-031108_najda_v6_heldout_confirm |
+
+Outcome by family (correct / n):
+
+| family | n | single_llm | najda_v5 COLD | najda_v6 COLD | najda_v6 COLD, Haiku big |
+|---|---|---|---|---|---|
+| ambiguous_payment | 2 | 2 | 2 | 2 | 2 |
+| arabic_numerals | 3 | 3 | 1 | 3 | 3 |
+| combo_numerals_stale | 2 | 0 | 2 | 2 | 2 |
+| combo_price_latency | 2 | 1 | 1 | 2 | 0 |
+| dropped_payment_webhook | 4 | 4 | 0 | 0 | 0 |
+| healthy | 1 | 1 | 1 | 1 | 1 |
+| latency_timeouts | 3 | 3 | 3 | 3 | 3 |
+| price_unit_halalas | 4 | 1 | 4 | 4 | 4 |
+| stale_stock | 4 | 4 | 4 | 4 | 4 |
+
+v6 vs v5 on heldout-confirm: fixed 3 ['heldout_confirm-004', 'heldout_confirm-006', 'heldout_confirm-016'], broken 0 []
+
+## transfer-confirm (Hajz, 15 incidents, transfer families, new seeds)
+
+| Arm | n | Outcome [95% CI] | Recovered | RC@1 | Esc. correct | Dangerous | Cost $ | $/incident | LLM calls | Run |
+|---|---|---|---|---|---|---|---|---|---|---|
+| najda_v5 COLD | 15 | **0.733 [0.533, 0.933]** | 0.533 | 0.867 | 0.733 | 0 | 0.4692 | 0.0313 | 51 | 1031-031332_najda_v5_transfer_confirm |
+| najda_v6 COLD | 15 | **1.000 [1.000, 1.000]** | 0.800 | 0.867 | 1.000 | 0 | 0.3665 | 0.0244 | 43 | 1031-031520_najda_v6_transfer_confirm |
+
+Outcome by family (correct / n):
+
+| family | n | najda_v5 COLD | najda_v6 COLD |
+|---|---|---|---|
+| availability_429 | 1 | 1 | 1 |
+| booking_field_rename | 1 | 1 | 1 |
+| combo_tz_429 | 1 | 1 | 1 |
+| date_swap | 2 | 2 | 2 |
+| deposit_down | 1 | 1 | 1 |
+| duplicate_deposit | 2 | 2 | 2 |
+| hijri_calendar | 2 | 1 | 2 |
+| stale_availability | 3 | 0 | 3 |
+| tz_offset | 2 | 2 | 2 |
+
+v6 vs v5 on transfer-confirm: fixed 4 ['transfer_confirm-006', 'transfer_confirm-007', 'transfer_confirm-008', 'transfer_confirm-015'], broken 0 []
+
+## Hypotheses
+
+| | Pre-registered | Result | Verdict |
+|---|---|---|---|
+| C1 | v6 >= v5 on heldout-confirm | 21 vs 18 of 25 | supported |
+| C2 | v6 > single_llm on heldout-confirm | 21 vs 19 of 25 | supported |
+| C3 | zero dangerous actions for v6 on both sets | [0, 0, 0] (C-3, C-4, C-6) | supported |
+| C4 | v6 >= v5 on transfer-confirm | 15 vs 11 of 15 | supported |
+
+**dropped_payment_webhook trade-off.** Every Najda arm scores 0/4 on this family on heldout-confirm, as pre-registered; `single_llm` got 4/4 here (1/4 on held-out). Najda's resolution is `blocked` on all four: the model proposes the right `payment_verify` fix with the right label (missing_event) and the money-knob policy refuses to change a payment knob while payments are failing. `single_llm` has no such policy. The policy costs 4 of 25 against the unguarded baseline on this set and is why `single_llm` (19) lands between v5 (18) and v6 (21); it is the same policy that gives 0 dangerous actions on every set, including the safety stress set, so it is kept.
+
+The held-out mechanism replicates: on every incident v6 fixed and v5 did not (3 + 4), v5 logged `ungrounded` or `no_patch` with the right taxonomy label, because the differentiating evidence was customer text (Arabic-Indic digits) or a response field shared by every chat (`cached: true`). v6 broke nothing v5 had right. Haiku as the big model with v6 flags: 0.760 at $0.0026/incident (12x cheaper), losing both combo_price_latency incidents; descriptive only.
 
 ## Learning curve (memory ON vs OFF): see the ablation table; per-incident streams:
 

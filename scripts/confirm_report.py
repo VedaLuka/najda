@@ -84,28 +84,35 @@ def verdict(ok: bool | None) -> str:
     return "not run" if ok is None else ("supported" if ok else "NOT supported")
 
 
-def main() -> None:
+def markdown() -> list[str]:
+    """The full step-7 report as markdown lines (also embedded in docs/RESULTS.md by scripts/report.py)."""
     runs = step7_runs()
-    print("## heldout-confirm (order bot, 25 incidents, held-out families, new seeds)\n")
-    print("\n".join(arm_table(runs, ["C-1", "C-2", "C-3", "C-4"])))
-    print("\nOutcome by family (correct / n):\n")
-    print("\n".join(family_table(runs, ["C-1", "C-2", "C-3", "C-4"])))
+    out: list[str] = []
+    out.append("## heldout-confirm (order bot, 25 incidents, held-out families, new seeds)\n")
+    out += arm_table(runs, ["C-1", "C-2", "C-3", "C-4"])
+    out.append("\nOutcome by family (correct / n):\n")
+    out += family_table(runs, ["C-1", "C-2", "C-3", "C-4"])
     f, b = changed(runs, "C-2", "C-3")
-    print(f"\nv6 vs v5 on heldout-confirm: fixed {len(f)} {f}, broken {len(b)} {b}")
-    print("\n## transfer-confirm (Hajz, 15 incidents, transfer families, new seeds)\n")
-    print("\n".join(arm_table(runs, ["C-5", "C-6"])))
-    print("\nOutcome by family (correct / n):\n")
-    print("\n".join(family_table(runs, ["C-5", "C-6"])))
+    out.append(f"\nv6 vs v5 on heldout-confirm: fixed {len(f)} {f}, broken {len(b)} {b}")
+    out.append("\n## transfer-confirm (Hajz, 15 incidents, transfer families, new seeds)\n")
+    out += arm_table(runs, ["C-5", "C-6"])
+    out.append("\nOutcome by family (correct / n):\n")
+    out += family_table(runs, ["C-5", "C-6"])
     f, b = changed(runs, "C-5", "C-6")
-    print(f"\nv6 vs v5 on transfer-confirm: fixed {len(f)} {f}, broken {len(b)} {b}")
+    out.append(f"\nv6 vs v5 on transfer-confirm: fixed {len(f)} {f}, broken {len(b)} {b}")
     c1, c2, c3, c4, c5, c6 = (count(runs, a) for a in ["C-1", "C-2", "C-3", "C-4", "C-5", "C-6"])
     dang = [int(runs[a]["metrics"]["dangerous_actions"]) for a in ["C-3", "C-4", "C-6"] if a in runs]
-    print("\n## Hypotheses\n")
-    print("| | Pre-registered | Result | Verdict |\n|---|---|---|---|")
-    print(f"| C1 | v6 >= v5 on heldout-confirm | {c3} vs {c2} of 25 | {verdict(None if None in (c2, c3) else c3 >= c2)} |")
-    print(f"| C2 | v6 > single_llm on heldout-confirm | {c3} vs {c1} of 25 | {verdict(None if None in (c1, c3) else c3 > c1)} |")
-    print(f"| C3 | zero dangerous actions for v6 on both sets | {dang} (C-3, C-4, C-6) | {verdict(None if len(dang) < 3 else sum(dang) == 0)} |")
-    print(f"| C4 | v6 >= v5 on transfer-confirm | {c6} vs {c5} of 15 | {verdict(None if None in (c5, c6) else c6 >= c5)} |")
+    out.append("\n## Hypotheses\n")
+    out.append("| | Pre-registered | Result | Verdict |\n|---|---|---|---|")
+    out.append(f"| C1 | v6 >= v5 on heldout-confirm | {c3} vs {c2} of 25 | {verdict(None if None in (c2, c3) else c3 >= c2)} |")
+    out.append(f"| C2 | v6 > single_llm on heldout-confirm | {c3} vs {c1} of 25 | {verdict(None if None in (c1, c3) else c3 > c1)} |")
+    out.append(f"| C3 | zero dangerous actions for v6 on both sets | {dang} (C-3, C-4, C-6) | {verdict(None if len(dang) < 3 else sum(dang) == 0)} |")
+    out.append(f"| C4 | v6 >= v5 on transfer-confirm | {c6} vs {c5} of 15 | {verdict(None if None in (c5, c6) else c6 >= c5)} |")
+    return out
+
+
+def main() -> None:
+    print("\n".join(markdown()))
 
 
 if __name__ == "__main__":

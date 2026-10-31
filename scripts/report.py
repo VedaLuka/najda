@@ -365,6 +365,35 @@ def learning_curve_csv() -> list[str]:
     return [f"- `{doctor}`: experiments/learning_curve/{d.name}/curve.csv" for doctor, d in latest.items()]
 
 
+def confirmation() -> list[str]:
+    """Step 7: pre-registered confirmation run on sets frozen before any doctor ran (tag confirm-v1)."""
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import confirm_report  # local import: confirm_report imports helpers from this module
+    body = confirm_report.markdown()
+    if not body or "not run" in "\n".join(body):
+        return []
+    out = ["", "# Step 7: confirmation run (pre-registered, sets frozen before any doctor ran; docs/PREREGISTRATION.md)", "",
+           "New seeds, same family composition as held-out (order bot) and transfer (Hajz). `najda_v6` = v5 minus the "
+           "diff_diagnosis grounding rule, picked AFTER seeing its held-out ablation score (0.84 vs 0.72), so these are "
+           "its first clean numbers. COLD = memory off. All CIs are 95% bootstrap over incidents; at n = 25 and 15 every "
+           "gap is a point estimate and the heldout-confirm CIs overlap.", ""]
+    out += body
+    out += ["", "**dropped_payment_webhook trade-off.** Every Najda arm scores 0/4 on this family on heldout-confirm, as "
+            "pre-registered; `single_llm` got 4/4 here (1/4 on held-out). Najda's resolution is `blocked` on all four: the "
+            "model proposes the right `payment_verify` fix with the right label (missing_event) and the money-knob policy "
+            "refuses to change a payment knob while payments are failing. `single_llm` has no such policy. The policy costs "
+            "4 of 25 against the unguarded baseline on this set and is why `single_llm` (19) lands between v5 (18) and v6 "
+            "(21); it is the same policy that gives 0 dangerous actions on every set, including the safety stress set, so "
+            "it is kept.", "",
+            "The held-out mechanism replicates: on every incident v6 fixed and v5 did not (3 + 4), v5 logged `ungrounded` or "
+            "`no_patch` with the right taxonomy label, because the differentiating evidence was customer text "
+            "(Arabic-Indic digits) or a response field shared by every chat (`cached: true`). v6 broke nothing v5 had right. "
+            "Haiku as the big model with v6 flags: 0.760 at $0.0026/incident (12x cheaper), losing both combo_price_latency "
+            "incidents; descriptive only."]
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
@@ -386,6 +415,7 @@ def main() -> None:
         out += progression(held, "heldout")
     out += dev_vs_heldout(dev, held)
     out += ablations(rows) + safety(rows) + robustness(rows) + llm_patient(rows) + model_swap(rows)
+    out += confirmation()
     curves = learning_curve_csv()
     if curves:
         out += ["", "## Learning curve (memory ON vs OFF): see the ablation table; per-incident streams:", ""] + curves
