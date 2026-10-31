@@ -4,5 +4,6 @@ python-dotenv>=1.0
 pytest>=8.0
 streamlit==1.66.1   # older demo dashboard only (app/Home.py); pandas + altair come with it
 playwright==1.64.1  # dev only: screenshots of the static console (scripts/shoot_demo.py); then `playwright install chromium`
+matplotlib==3.11.2  # charts for the README (scripts/make_figures.py), reads recorded runs only
 # add task-specific packages below, with versions pinned, as soon as you use them
 # numpy, pandas, scikit-learn, sentence-transformers, rank-bm25, faiss-cpu, ...
