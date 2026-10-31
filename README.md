@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/brand/najda-banner.png" width="640" alt="Najda نجدة"></p>
+
 # Najda (نجدة): an AI agent that fixes other AI agents
 
 > Najda investigates a broken AI agent from its traces, proposes the smallest config fix, proves it by replay, and gets cheaper every time it learns a fix. If money is at risk it changes nothing and pages a human.
@@ -20,11 +22,13 @@ HUMAIN hackathon, Challenge 1 (Agentic Recovery). Solo build, 30 to 31 October 2
 
 ![Headline: fresh unseen faults](docs/figures/headline_confirm.png)
 
-Links: repo https://github.com/VedaLuka/najda, live demo console https://vedaluka.github.io/najda/web/, video (placeholder: VIDEO_URL), slides (placeholder: SLIDES_URL), full tables [docs/RESULTS.md](docs/RESULTS.md), decisions [docs/DECISIONS.md](docs/DECISIONS.md), pre-registration [docs/PREREGISTRATION.md](docs/PREREGISTRATION.md), limitations [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+Links: repo https://github.com/VedaLuka/najda, live demo console https://vedaluka.github.io/najda/web/, video (placeholder: VIDEO_URL), slides (placeholder: https://github.com/VedaLuka/najda/blob/main/docs/najda-slides.pdf), full tables [docs/RESULTS.md](docs/RESULTS.md), decisions [docs/DECISIONS.md](docs/DECISIONS.md), pre-registration [docs/PREREGISTRATION.md](docs/PREREGISTRATION.md), limitations [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 ## 1. The problem: AI agents fail silently
 
 A production agent is a prompt, a tool loop and a config, talking to services that drift. When a field gets renamed, a price unit changes from riyals to halalas, a token expires, or a cache goes stale, the agent does not crash. It confirms orders with the wrong total, charges customers for orders that were never created, or loops until a turn cap. Nobody is paged, because nothing threw.
+
+<p align="center"><img src="docs/images/problem.png" width="720" alt="Every check is green. The customer was charged 100x."></p>
 
 An on-call engineer finds this by reading traces, forming a hypothesis, changing one knob, and checking whether the failed conversations now pass. Najda does that job, with the same evidence and the same discipline.
 
