@@ -4,7 +4,7 @@ CFG ?=
 NOTE ?=
 CFG_ARG = $(if $(CFG),--config $(CFG),)
 
-.PHONY: setup smoke incidents bench baselines eval holdout compare report test demo demo-pack
+.PHONY: setup smoke incidents bench baselines eval holdout compare report test demo demo-pack demo-streamlit demo-shots
 
 setup:            ## create venv and install deps
 	$(PY) -m venv .venv && .venv/bin/pip install -q -r requirements.txt
@@ -45,5 +45,13 @@ test:
 demo-pack:        ## rebuild app/data/ from recorded runs + the LLM cache (no key, $0)
 	$(PY) scripts/export_demo_pack.py
 
-demo:             ## the replay-only dashboard for the video (no API key needed)
+demo:             ## the static mission-control console for the video (no API key, no build, works offline)
+	@echo "open http://localhost:8765/web/  (keys: space play, arrows step, 1-4 screens)"
+	@(sleep 1; open http://localhost:8765/web/ 2>/dev/null || true) &
+	cd app && $(PY) -m http.server 8765
+
+demo-streamlit:   ## the older Streamlit dashboard, same app/data/ pack
 	$(PY) -m streamlit run app/Home.py
+
+demo-shots:       ## screenshot every console screen at 1920x1080 into docs/screenshots/ (needs playwright + chromium)
+	$(PY) scripts/shoot_demo.py

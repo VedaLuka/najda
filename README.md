@@ -55,12 +55,14 @@ LLM responses are cached in `.cache/llm`, so re-runs are deterministic and free.
 
 ### Demo dashboard (replay-only, no API key)
 ```bash
-make demo        # streamlit run app/Home.py; reads only app/data/
+make demo        # static console at http://localhost:8765/web/ (app/web/, no build, no network); reads only app/data/
+make demo-streamlit  # the older Streamlit dashboard on the same pack
+make demo-shots  # 1920x1080 screenshots of every screen into docs/screenshots/ (Playwright, dev only)
 make demo-pack   # rebuild app/data/ from recorded runs + the LLM cache ($0; refuses to run if a call would be live)
 ```
 Pages: Live incident (halalas and Arabic-numerals faults, stepped or autoplay, v5 vs v6 toggle), Learns and gets cheaper
 (playbook repeat + learning curve), Knows when to stop (deposit provider down; the webhook trade-off), Results.
-Deployable on Streamlit Community Cloud from the public repo: `app/Home.py`, no secrets.
+Deployable as-is to GitHub Pages (publish the `app/` folder; the console lives at `app/web/` and reads `../data/` with relative paths). The Streamlit page still runs on Community Cloud from `app/Home.py`. Screenshots: `docs/screenshots/`.
 
 ## Repo map
 ```

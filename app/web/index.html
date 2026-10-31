@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Najda console</title>
+<meta name="data-root" content="../data">
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="viewport">
+  <div id="stage" class="stage">
+    <header class="topbar">
+      <div class="brand">
+        <div class="wordmark"><span class="ar">نجدة</span><span class="en">Najda</span></div>
+        <div class="tagline">agentic recovery console</div>
+      </div>
+      <nav class="screens" id="nav">
+        <button data-screen="live"><span class="k">1</span>Live incident</button>
+        <button data-screen="learn"><span class="k">2</span>Learns &amp; gets cheaper</button>
+        <button data-screen="stop"><span class="k">3</span>Knows when to stop</button>
+        <button data-screen="results"><span class="k">4</span>Results</button>
+      </nav>
+      <div class="topright" id="topright"></div>
+    </header>
+    <main id="main"></main>
+    <div class="tooltip" id="tooltip" hidden></div>
+  </div>
+</div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
