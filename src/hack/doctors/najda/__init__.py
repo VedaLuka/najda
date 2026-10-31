@@ -45,6 +45,14 @@ class NajdaV5(Najda):
     flags = {**NajdaV4.flags, "money_freeze": True}
 
 
+@register("najda_v6")
+class NajdaV6(Najda):
+    """Step 7: v5 with differential diagnosis OFF. Byte-for-byte the flags of the pre-registered ablation arm
+    `najda_v5_no_diffdiag`, promoted to a version because that arm beat v5 on held-out (0.84 vs 0.72). The held-out
+    number that picked it is not a clean score; `najda_v6` is scored on the fresh confirmation sets (confirm-v1)."""
+    flags = {**NajdaV5.flags, "diff_diagnosis": False}
+
+
 # ------------------------- step 6 pre-registered ablation arms: najda_v5 minus ONE component ----------
 
 @register("najda_v5_no_diffdiag")

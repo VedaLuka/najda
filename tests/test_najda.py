@@ -274,3 +274,12 @@ def test_v5_equals_v4_without_payment_failures():
         res, initial, truth = run(name, SCHEMA, llm)
         assert not res.escalated and score_incident(truth, res.to_dict(), initial)["outcome_correct"], name
         assert not [s for s in res.steps if s["action"] == "najda.freeze"]
+
+
+def test_v6_is_exactly_the_preregistered_no_diffdiag_arm():
+    """Step 7: najda_v6 must carry byte-identical flags to `najda_v5_no_diffdiag`, so its cached held-out run reproduces."""
+    from hack.doctors.najda import NajdaV5, NajdaV5NoDiffDiag, NajdaV6
+
+    assert NajdaV6.flags == NajdaV5NoDiffDiag.flags
+    assert NajdaV6.flags == {**NajdaV5.flags, "diff_diagnosis": False}
+    assert get_doctor("najda_v6").flags == NajdaV6.flags
