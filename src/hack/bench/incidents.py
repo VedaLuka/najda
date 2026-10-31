@@ -210,6 +210,28 @@ def bench_plan(small: bool = False) -> list[IncidentSpec]:
     return specs
 
 
+# ------------------------------- step 7 confirmation set ---------------------------------
+# Same families and composition as the frozen held-out split, NEW seeds (6001..), generated once and frozen
+# (SHA-256 manifest, tag confirm-v1) before any doctor runs. A replication set, not a test on new families.
+CONFIRM_SEED_BASE = 6000
+
+
+def heldout_confirm_plan() -> list[IncidentSpec]:
+    """25 incidents: 5 held-out families x3, two combos x2, ambiguous_payment x2, healthy x1, 3 noisy."""
+    plan: list[tuple[list[str], bool]] = []
+    for fid in HELDOUT_FAULTS:
+        plan += [([fid], False)] * 3
+    plan += [(["combo_price_latency"], False)] * 2 + [(["combo_numerals_stale"], False)] * 2
+    plan += [(["ambiguous_payment"], False)] * 2
+    plan += [(["healthy"], False)]
+    plan += [([f], True) for f in ("price_unit_halalas", "stale_stock", "dropped_payment_webhook")]
+    specs = []
+    for k, (faults, noisy) in enumerate(plan, 1):
+        seed = CONFIRM_SEED_BASE + k
+        specs.append(IncidentSpec(f"heldout_confirm-{k:03d}", "heldout_confirm", seed, faults, noisy, pick_chats(seed)))
+    return specs
+
+
 # ------------------------------- step 5 stress sets ---------------------------------
 # DEV families only, new seeds, generated once and frozen (SHA-256 manifest) before any doctor runs.
 

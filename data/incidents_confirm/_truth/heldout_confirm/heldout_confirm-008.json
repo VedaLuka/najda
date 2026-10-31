@@ -1,0 +1,80 @@
+{
+  "incident_id": "heldout_confirm-008",
+  "split": "heldout_confirm",
+  "seed": 6008,
+  "fault_ids": [
+    "stale_stock"
+  ],
+  "resolved_fault_ids": [
+    "stale_stock"
+  ],
+  "family": "stale_stock",
+  "noisy": false,
+  "chat_ids": [
+    "ar_03",
+    "ar_06",
+    "ar_10",
+    "en_02",
+    "mix_01"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "StockAPI cached reads return a stale snapshot (qty 0); bot does not request fresh reads",
+    "correct_fix": {
+      "stock_fresh_read": true
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_03",
+    "ar_06",
+    "ar_10",
+    "en_02",
+    "mix_01"
+  ],
+  "chat_verdicts": {
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_10": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    }
+  }
+}

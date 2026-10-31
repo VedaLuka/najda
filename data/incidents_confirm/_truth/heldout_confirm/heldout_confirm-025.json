@@ -1,0 +1,100 @@
+{
+  "incident_id": "heldout_confirm-025",
+  "split": "heldout_confirm",
+  "seed": 6025,
+  "fault_ids": [
+    "dropped_payment_webhook"
+  ],
+  "resolved_fault_ids": [
+    "dropped_payment_webhook"
+  ],
+  "family": "dropped_payment_webhook",
+  "noisy": true,
+  "chat_ids": [
+    "ar_01",
+    "ar_11",
+    "en_01",
+    "en_02",
+    "en_03",
+    "en_06",
+    "mix_02"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "payment webhook delivery is dropped; bot verifies via webhook instead of querying the payment",
+    "correct_fix": {
+      "payment_verify": "query"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_11",
+    "en_01",
+    "en_02",
+    "en_03",
+    "en_06",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    },
+    "ar_11": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    }
+  }
+}

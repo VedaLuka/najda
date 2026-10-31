@@ -1,0 +1,134 @@
+[
+  {
+    "chat_id": "ar_05",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير، حجز لـ 5 يوم 16/1 الساعة 9 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 16/1 الساعة 21:00 لـ 5 أشخاص. العربون 100 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "اكيد"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0010 يوم 16/1 الساعة 21:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_07",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ودي احجز 4 أشخاص 28/1 الساعة 10 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 28/1 الساعة 22:00 لـ 4 أشخاص. العربون 80 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "ماشي"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0011 يوم 28/1 الساعة 22:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_08",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى احجز لـ 3 يوم 9/1 الساعة 7 مساء"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 9/1 الساعة 19:00 لـ 3 أشخاص. العربون 60 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "ايوه"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0012 يوم 9/1 الساعة 19:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "عطني حجز لـ 2 يوم 30/1 الساعة 8"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 30/1 الساعة 20:00 لـ 2 أشخاص. العربون 40 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "تمام اكد"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0013 يوم 30/1 الساعة 20:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Can I book for 4 people on 20/1 at 7:30"
+      },
+      {
+        "role": "bot",
+        "text": "Available on 20/1 at 19:30 for 4. Deposit 80 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Your booking BK-0014 is confirmed for 20/1 at 19:30. Thank you!"
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_01",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "hey ابغى احجز for 4 يوم 11/1 at 8"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 11/1 الساعة 20:00 لـ 4 أشخاص. العربون 80 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "yes تمام"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0015 يوم 11/1 الساعة 20:00. شكراً لك!"
+      }
+    ]
+  }
+]

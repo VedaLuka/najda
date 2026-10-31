@@ -15,6 +15,9 @@ data/*
 !data/incidents_safety/
 !data/incidents_robust/
 !data/incidents_transfer/
+# Step 7 confirmation sets (replication, new seeds, tag confirm-v1)
+!data/incidents_confirm/
+!data/incidents_transfer_confirm/
 .DS_Store
 experiments/chat_traces.jsonl
 experiments/smoke_*.jsonl

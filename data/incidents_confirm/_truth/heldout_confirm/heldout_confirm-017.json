@@ -1,0 +1,120 @@
+{
+  "incident_id": "heldout_confirm-017",
+  "split": "heldout_confirm",
+  "seed": 6017,
+  "fault_ids": [
+    "combo_price_latency"
+  ],
+  "resolved_fault_ids": [
+    "price_unit_halalas",
+    "latency_timeouts"
+  ],
+  "family": "combo_price_latency",
+  "noisy": false,
+  "chat_ids": [
+    "ar_04",
+    "ar_05",
+    "ar_06",
+    "ar_11",
+    "ar_12",
+    "en_05",
+    "en_06",
+    "en_08",
+    "mix_01"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "StockAPI price field switched from SAR to halalas; bot treats it as SAR; OrderAPI latency rose above the bot timeout_s",
+    "correct_fix": {
+      "price_unit": "halalas",
+      "timeout_s": 8.0
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_04",
+    "ar_05",
+    "ar_06",
+    "ar_11",
+    "en_05",
+    "en_06",
+    "mix_01"
+  ],
+  "chat_verdicts": {
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    },
+    "ar_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 1
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 1
+    },
+    "ar_11": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    },
+    "ar_12": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 1
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    },
+    "en_08": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    }
+  }
+}

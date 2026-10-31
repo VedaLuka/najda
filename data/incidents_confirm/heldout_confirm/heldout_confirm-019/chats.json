@@ -1,0 +1,114 @@
+[
+  {
+    "chat_id": "ar_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "السلام عليكم، ممكن ١ كبسة دجاج و ٢ ماء"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف كبسة دجاج غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_04",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "هلا، عطني ٢ شاورما لحم مع ٢ بطاطس"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف شاورما لحم غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_06",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ممكن ٤ شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف شاورما دجاج غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_08",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى ١ شاورما لحم و ١ بيبسي و ١ بطاطس"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف شاورما لحم غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "اثنين كبسة و ثلاث مويه"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف كبسة دجاج غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like ٣ falafel and ١ karak"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف ساندويتش فلافل غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_04",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "two meat shawarma with fries"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, Meat Shawarma is out of stock right now."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_06",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "٤ chicken shawarma, ٤ pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف شاورما دجاج غير متوفر حالياً."
+      }
+    ]
+  }
+]

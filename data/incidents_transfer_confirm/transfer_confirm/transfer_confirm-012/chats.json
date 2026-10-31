@@ -1,0 +1,118 @@
+[
+  {
+    "chat_id": "ar_03",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "هلا، ممكن طاولة لـ 6 نفر 22/1 الساعة 9"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف ما فيه طاولات متاحة في هذا الوقت."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير، حجز لـ 5 يوم 16/1 الساعة 9 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 16/1 الساعة 21:00 لـ 5 أشخاص. العربون 100 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "اكيد"
+      },
+      {
+        "role": "bot",
+        "text": "صار خطأ أثناء الحجز، حاول مرة ثانية."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_06",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى طاولة لـ 2 يوم 5/1 الساعة 7"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 5/1 الساعة 19:00 لـ 2 أشخاص. العربون 40 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "لا خلاص الغي"
+      },
+      {
+        "role": "bot",
+        "text": "تمام، ألغينا الحجز. نشوفك على خير!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "طاولة لـ 8 أشخاص يوم 3/1 الساعة 8"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 3/1 الساعة 20:00 لـ 8 أشخاص. العربون 160 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم"
+      },
+      {
+        "role": "bot",
+        "text": "صار خطأ أثناء الحجز، حاول مرة ثانية."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Can I book for 4 people on 20/1 at 7:30"
+      },
+      {
+        "role": "bot",
+        "text": "Available on 20/1 at 19:30 for 4. Deposit 80 SAR. Shall I confirm?"
+      },
+      {
+        "role": "customer",
+        "text": "yes confirm"
+      },
+      {
+        "role": "bot",
+        "text": "Something went wrong while booking, please try again."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_03",
+    "outcome": "declined",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Booking for 6 on 15/1 at 8"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, there are no tables available at that time."
+      }
+    ]
+  }
+]

@@ -1,0 +1,107 @@
+{
+  "incident_id": "heldout_confirm-004",
+  "split": "heldout_confirm",
+  "seed": 6004,
+  "fault_ids": [
+    "arabic_numerals"
+  ],
+  "resolved_fault_ids": [
+    "arabic_numerals"
+  ],
+  "family": "arabic_numerals",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_06",
+    "ar_10",
+    "ar_11",
+    "ar_12",
+    "en_04",
+    "en_06",
+    "mix_01"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "customer messages contain Arabic-Indic digits; numeral normalisation is off",
+    "correct_fix": {
+      "normalize_numerals": true
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_06",
+    "ar_11",
+    "en_06",
+    "mix_01"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8,
+      "progress": 5
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 7,
+      "progress": 5
+    },
+    "ar_10": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "ar_11": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8,
+      "progress": 5
+    },
+    "ar_12": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_04": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 8,
+      "progress": 5
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8,
+      "progress": 5
+    },
+    "mix_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 8,
+      "progress": 5
+    }
+  }
+}

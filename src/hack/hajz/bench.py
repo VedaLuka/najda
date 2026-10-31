@@ -7,6 +7,7 @@ from hack.bench.incidents import IncidentSpec
 from hack.hajz.chats import BOOKABLE_CHATS, CHAT_SCRIPTS, FULL_SLOT_CHATS
 
 TRANSFER_SEED_BASE = 5000
+TRANSFER_CONFIRM_SEED_BASE = 7000  # step 7 replication set, new seeds, frozen as confirm-v1
 
 
 def pick_chats(seed: int, n_min: int = 5, n_max: int = 8) -> list[str]:
@@ -34,4 +35,22 @@ def transfer_plan() -> list[IncidentSpec]:
     for k, (faults, noisy) in enumerate(plan, 1):
         seed = TRANSFER_SEED_BASE + k
         specs.append(IncidentSpec(f"transfer-{k:03d}", "transfer", seed, faults, noisy, pick_chats(seed), patient="hajz"))
+    return specs
+
+
+def transfer_confirm_plan() -> list[IncidentSpec]:
+    """15 fresh Hajz incidents, same families as the frozen transfer split: the five Hajz-only kinds x2,
+    deposit_down, field rename, 429, one combo, one noisy stale_availability."""
+    plan: list[tuple[list[str], bool]] = (
+        [(["tz_offset"], False)] * 2 + [(["date_swap"], False)] * 2 + [(["hijri_calendar"], False)] * 2
+        + [(["stale_availability"], False)] * 2 + [(["duplicate_deposit"], False)] * 2 + [(["deposit_down"], False)]
+        + [(["booking_field_rename"], False)] + [(["availability_429"], False)]
+        + [(["combo_tz_429"], False)]
+        + [(["stale_availability"], True)]
+    )
+    specs = []
+    for k, (faults, noisy) in enumerate(plan, 1):
+        seed = TRANSFER_CONFIRM_SEED_BASE + k
+        specs.append(IncidentSpec(f"transfer_confirm-{k:03d}", "transfer_confirm", seed, faults, noisy,
+                                  pick_chats(seed), patient="hajz"))
     return specs

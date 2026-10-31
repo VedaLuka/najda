@@ -1,0 +1,114 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى ٢ شاورما دجاج و ١ بيبسي"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف شاورما دجاج غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير ابغى ١ كبسة"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف كبسة دجاج غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_07",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ودي بـ ٢ كرك و ١ فلافل"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف شاي كرك غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_10",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى ٢ شاورما دجاج"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف شاورما دجاج غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "Hi, can I get ٢ chicken shawarma and ١ pepsi"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف شاورما دجاج غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_03",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "I'd like ٣ falafel and ١ karak"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف ساندويتش فلافل غير متوفر حالياً."
+      }
+    ]
+  },
+  {
+    "chat_id": "en_07",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "one karak and one water"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, Karak Tea is out of stock right now."
+      }
+    ]
+  },
+  {
+    "chat_id": "mix_02",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ممكن ١ kabsa and ٢ كرك"
+      },
+      {
+        "role": "bot",
+        "text": "للأسف كبسة دجاج غير متوفر حالياً."
+      }
+    ]
+  }
+]

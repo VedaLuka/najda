@@ -1,0 +1,130 @@
+{
+  "incident_id": "heldout_confirm-024",
+  "split": "heldout_confirm",
+  "seed": 6024,
+  "fault_ids": [
+    "stale_stock"
+  ],
+  "resolved_fault_ids": [
+    "stale_stock"
+  ],
+  "family": "stale_stock",
+  "noisy": true,
+  "chat_ids": [
+    "ar_02",
+    "ar_06",
+    "ar_07",
+    "ar_08",
+    "ar_10",
+    "en_01",
+    "en_02",
+    "en_04",
+    "en_07",
+    "en_08"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "StockAPI cached reads return a stale snapshot (qty 0); bot does not request fresh reads",
+    "correct_fix": {
+      "stock_fresh_read": true
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_06",
+    "ar_07",
+    "ar_08",
+    "ar_10",
+    "en_01",
+    "en_02",
+    "en_04",
+    "en_07",
+    "en_08"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_10": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_07": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    }
+  }
+}

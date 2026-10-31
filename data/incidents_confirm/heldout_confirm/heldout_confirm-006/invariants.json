@@ -1,0 +1,27 @@
+[
+  {
+    "invariant": "qty_matches_request",
+    "chat_id": "ar_02",
+    "detail": "customer asked {'kabsa': 1, 'water': 2}, order has {'kabsa': 1, 'water': 1}"
+  },
+  {
+    "invariant": "qty_matches_request",
+    "chat_id": "en_02",
+    "detail": "customer asked {'kabsa': 1, 'water': 2}, order has {'kabsa': 1, 'water': 1}"
+  },
+  {
+    "invariant": "qty_matches_request",
+    "chat_id": "en_03",
+    "detail": "customer asked {'falafel': 3, 'karak': 1}, order has {'falafel': 1, 'karak': 1}"
+  },
+  {
+    "invariant": "qty_matches_request",
+    "chat_id": "en_06",
+    "detail": "customer asked {'shawarma_chicken': 4, 'pepsi': 4}, order has {'shawarma_chicken': 1, 'pepsi': 1}"
+  },
+  {
+    "invariant": "qty_matches_request",
+    "chat_id": "mix_01",
+    "detail": "customer asked {'shawarma_chicken': 2, 'pepsi': 1}, order has {'shawarma_chicken': 1, 'pepsi': 1}"
+  }
+]

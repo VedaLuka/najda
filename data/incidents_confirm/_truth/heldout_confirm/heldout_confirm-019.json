@@ -1,0 +1,112 @@
+{
+  "incident_id": "heldout_confirm-019",
+  "split": "heldout_confirm",
+  "seed": 6019,
+  "fault_ids": [
+    "combo_numerals_stale"
+  ],
+  "resolved_fault_ids": [
+    "arabic_numerals",
+    "stale_stock"
+  ],
+  "family": "combo_numerals_stale",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_04",
+    "ar_06",
+    "ar_08",
+    "ar_09",
+    "en_03",
+    "en_04",
+    "en_06"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "customer messages contain Arabic-Indic digits; numeral normalisation is off; StockAPI cached reads return a stale snapshot (qty 0); bot does not request fresh reads",
+    "correct_fix": {
+      "normalize_numerals": true,
+      "stock_fresh_read": true
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_04",
+    "ar_06",
+    "ar_08",
+    "ar_09",
+    "en_03",
+    "en_04",
+    "en_06"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_04": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 2,
+      "progress": 1
+    }
+  }
+}

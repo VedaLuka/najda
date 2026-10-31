@@ -1,0 +1,88 @@
+[
+  {
+    "chat_id": "ar_01",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "ابغى احجز طاولة لـ 4 أشخاص يوم 1/15 الساعة 8 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "ما فهمت التاريخ أو الوقت أو عدد الأشخاص، ممكن تعيدها؟"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_02",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "السلام عليكم، ودي احجز لـ 2 يوم 1/8 الساعة 7 مساء"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 1/8 الساعة 19:00 لـ 2 أشخاص. العربون 40 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم أكد"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0010 يوم 1/8 الساعة 19:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "مساء الخير، حجز لـ 5 يوم 1/16 الساعة 9 بالليل"
+      },
+      {
+        "role": "bot",
+        "text": "ما فهمت التاريخ أو الوقت أو عدد الأشخاص، ممكن تعيدها؟"
+      }
+    ]
+  },
+  {
+    "chat_id": "ar_09",
+    "outcome": "confirmed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "طاولة لـ 8 أشخاص يوم 1/3 الساعة 8"
+      },
+      {
+        "role": "bot",
+        "text": "متاح يوم 1/3 الساعة 20:00 لـ 8 أشخاص. العربون 160 ريال. أأكد الحجز؟"
+      },
+      {
+        "role": "customer",
+        "text": "نعم"
+      },
+      {
+        "role": "bot",
+        "text": "تم تأكيد حجزك رقم BK-0011 يوم 1/3 الساعة 20:00. شكراً لك!"
+      }
+    ]
+  },
+  {
+    "chat_id": "en_05",
+    "outcome": "failed",
+    "transcript": [
+      {
+        "role": "customer",
+        "text": "table for 5 on 1/25 at 6"
+      },
+      {
+        "role": "bot",
+        "text": "Sorry, I couldn't read the date, time or party size. Could you repeat them?"
+      }
+    ]
+  }
+]

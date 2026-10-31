@@ -1,0 +1,12 @@
+[
+  {
+    "invariant": "no_double_booking",
+    "chat_id": "ar_01",
+    "detail": "BK-0010 is booking 4 of 3 tables at 2026-01-15 20:00 Riyadh"
+  },
+  {
+    "invariant": "no_double_booking",
+    "chat_id": "ar_03",
+    "detail": "BK-0012 is booking 4 of 3 tables at 2026-01-22 21:00 Riyadh"
+  }
+]

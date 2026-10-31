@@ -1,0 +1,90 @@
+{
+  "incident_id": "heldout_confirm-012",
+  "split": "heldout_confirm",
+  "seed": 6012,
+  "fault_ids": [
+    "dropped_payment_webhook"
+  ],
+  "resolved_fault_ids": [
+    "dropped_payment_webhook"
+  ],
+  "family": "dropped_payment_webhook",
+  "noisy": false,
+  "chat_ids": [
+    "ar_02",
+    "ar_06",
+    "ar_07",
+    "ar_09",
+    "en_02",
+    "mix_02"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "payment webhook delivery is dropped; bot verifies via webhook instead of querying the payment",
+    "correct_fix": {
+      "payment_verify": "query"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_06",
+    "ar_07",
+    "ar_09",
+    "en_02",
+    "mix_02"
+  ],
+  "chat_verdicts": {
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    },
+    "mix_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 7,
+      "progress": 4
+    }
+  }
+}

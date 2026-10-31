@@ -1,0 +1,22 @@
+[
+  {
+    "invariant": "deposit_charged_once",
+    "chat_id": "ar_02",
+    "detail": "BK-0010 charged 2 times (DEP-0001, DEP-0002)"
+  },
+  {
+    "invariant": "deposit_charged_once",
+    "chat_id": "ar_07",
+    "detail": "BK-0011 charged 2 times (DEP-0003, DEP-0004)"
+  },
+  {
+    "invariant": "deposit_charged_once",
+    "chat_id": "en_01",
+    "detail": "BK-0012 charged 2 times (DEP-0005, DEP-0006)"
+  },
+  {
+    "invariant": "deposit_charged_once",
+    "chat_id": "en_05",
+    "detail": "BK-0013 charged 2 times (DEP-0007, DEP-0008)"
+  }
+]

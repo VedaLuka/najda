@@ -1,0 +1,80 @@
+{
+  "incident_id": "transfer_confirm-001",
+  "split": "transfer_confirm",
+  "seed": 7001,
+  "fault_ids": [
+    "tz_offset"
+  ],
+  "resolved_fault_ids": [
+    "tz_offset"
+  ],
+  "family": "tz_offset",
+  "noisy": false,
+  "chat_ids": [
+    "ar_04",
+    "ar_06",
+    "ar_08",
+    "en_01",
+    "en_05"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "scheduling services ignore the tz offset and store wall-clock as UTC; bot sends Riyadh local time",
+    "correct_fix": {
+      "timezone": "UTC"
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_04",
+    "ar_08",
+    "en_01",
+    "en_05"
+  ],
+  "chat_verdicts": {
+    "ar_04": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_06": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "ar_08": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    }
+  },
+  "patient": "hajz"
+}

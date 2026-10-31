@@ -1,0 +1,66 @@
+{
+  "chats": 6,
+  "tool_calls": 12,
+  "error_rate": 0.0,
+  "mean_tool_latency_ms": 123.3,
+  "p95_tool_latency_ms": 300.0,
+  "bookings_created": 2,
+  "deposits_paid": 2,
+  "confirmations_sent": 2,
+  "chats_confirmed": 2,
+  "chats_failed": 0,
+  "mean_turns": 3.5,
+  "loop_chats": 0,
+  "tokens": 0,
+  "warn_logs": 0,
+  "per_chat": {
+    "ar_01": {
+      "outcome": "declined",
+      "turns": 2,
+      "tool_calls": 1,
+      "errors": 0,
+      "latency_ms": 80.0,
+      "tokens": 0
+    },
+    "ar_03": {
+      "outcome": "declined",
+      "turns": 2,
+      "tool_calls": 1,
+      "errors": 0,
+      "latency_ms": 80.0,
+      "tokens": 0
+    },
+    "ar_05": {
+      "outcome": "confirmed",
+      "turns": 6,
+      "tool_calls": 4,
+      "errors": 0,
+      "latency_ms": 580.0,
+      "tokens": 0
+    },
+    "ar_06": {
+      "outcome": "declined",
+      "turns": 3,
+      "tool_calls": 1,
+      "errors": 0,
+      "latency_ms": 80.0,
+      "tokens": 0
+    },
+    "en_02": {
+      "outcome": "confirmed",
+      "turns": 6,
+      "tool_calls": 4,
+      "errors": 0,
+      "latency_ms": 580.0,
+      "tokens": 0
+    },
+    "en_03": {
+      "outcome": "declined",
+      "turns": 2,
+      "tool_calls": 1,
+      "errors": 0,
+      "latency_ms": 80.0,
+      "tokens": 0
+    }
+  }
+}

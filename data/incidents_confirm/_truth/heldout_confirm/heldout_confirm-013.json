@@ -1,0 +1,90 @@
+{
+  "incident_id": "heldout_confirm-013",
+  "split": "heldout_confirm",
+  "seed": 6013,
+  "fault_ids": [
+    "latency_timeouts"
+  ],
+  "resolved_fault_ids": [
+    "latency_timeouts"
+  ],
+  "family": "latency_timeouts",
+  "noisy": false,
+  "chat_ids": [
+    "ar_03",
+    "ar_06",
+    "ar_09",
+    "en_02",
+    "en_05",
+    "en_06"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "OrderAPI latency rose above the bot timeout_s",
+    "correct_fix": {
+      "timeout_s": 8.0
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_03",
+    "ar_06",
+    "ar_09",
+    "en_02",
+    "en_05",
+    "en_06"
+  ],
+  "chat_verdicts": {
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    },
+    "ar_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 1
+    },
+    "ar_09": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    },
+    "en_02": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 4,
+      "progress": 1
+    },
+    "en_06": {
+      "pass": false,
+      "invariants_ok": true,
+      "order_completed": false,
+      "outcome": "failed",
+      "turns": 5,
+      "progress": 1
+    }
+  }
+}

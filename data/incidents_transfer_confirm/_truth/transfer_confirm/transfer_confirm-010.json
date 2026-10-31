@@ -1,0 +1,87 @@
+{
+  "incident_id": "transfer_confirm-010",
+  "split": "transfer_confirm",
+  "seed": 7010,
+  "fault_ids": [
+    "duplicate_deposit"
+  ],
+  "resolved_fault_ids": [
+    "duplicate_deposit"
+  ],
+  "family": "duplicate_deposit",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_02",
+    "ar_07",
+    "en_01",
+    "en_04",
+    "en_05"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "deposit gateway captures every charge twice (missing idempotency); customers double-charged, needs a human",
+    "correct_fix": null,
+    "should_escalate": true,
+    "expected_outcome": "unfixable",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_02",
+    "ar_07",
+    "en_01",
+    "en_05"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 2,
+      "progress": 1
+    },
+    "ar_02": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_07": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "en_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "en_04": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "declined",
+      "turns": 3,
+      "progress": 1
+    },
+    "en_05": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    }
+  },
+  "patient": "hajz"
+}

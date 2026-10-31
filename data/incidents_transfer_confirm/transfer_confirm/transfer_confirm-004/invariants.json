@@ -1,0 +1,12 @@
+[
+  {
+    "invariant": "booking_time_matches_request",
+    "chat_id": "ar_02",
+    "detail": "customer asked 2026-01-08 19:00 Riyadh, BK-0010 is at 2026-08-01 19:00 Riyadh"
+  },
+  {
+    "invariant": "booking_time_matches_request",
+    "chat_id": "ar_09",
+    "detail": "customer asked 2026-01-03 20:00 Riyadh, BK-0011 is at 2026-03-01 20:00 Riyadh"
+  }
+]

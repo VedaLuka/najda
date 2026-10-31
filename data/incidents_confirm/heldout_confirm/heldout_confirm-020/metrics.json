@@ -1,0 +1,74 @@
+{
+  "chats": 7,
+  "tool_calls": 33,
+  "error_rate": 0.121,
+  "mean_tool_latency_ms": 862.0,
+  "p95_tool_latency_ms": 6300.0,
+  "orders_created": 7,
+  "orders_paid": 3,
+  "orders_confirmed": 3,
+  "chats_confirmed": 3,
+  "chats_failed": 4,
+  "mean_turns": 6.71,
+  "loop_chats": 0,
+  "tokens": 0,
+  "warn_logs": 0,
+  "per_chat": {
+    "ar_02": {
+      "outcome": "failed",
+      "turns": 6,
+      "tool_calls": 4,
+      "errors": 1,
+      "latency_ms": 6610.0,
+      "tokens": 0
+    },
+    "ar_03": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    },
+    "ar_04": {
+      "outcome": "failed",
+      "turns": 6,
+      "tool_calls": 4,
+      "errors": 1,
+      "latency_ms": 6610.0,
+      "tokens": 0
+    },
+    "ar_11": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    },
+    "en_01": {
+      "outcome": "failed",
+      "turns": 6,
+      "tool_calls": 4,
+      "errors": 1,
+      "latency_ms": 6610.0,
+      "tokens": 0
+    },
+    "en_02": {
+      "outcome": "confirmed",
+      "turns": 8,
+      "tool_calls": 6,
+      "errors": 0,
+      "latency_ms": 695.0,
+      "tokens": 0
+    },
+    "en_05": {
+      "outcome": "failed",
+      "turns": 5,
+      "tool_calls": 3,
+      "errors": 1,
+      "latency_ms": 6530.0,
+      "tokens": 0
+    }
+  }
+}

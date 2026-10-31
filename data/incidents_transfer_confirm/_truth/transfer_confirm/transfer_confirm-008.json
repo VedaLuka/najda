@@ -1,0 +1,78 @@
+{
+  "incident_id": "transfer_confirm-008",
+  "split": "transfer_confirm",
+  "seed": 7008,
+  "fault_ids": [
+    "stale_availability"
+  ],
+  "resolved_fault_ids": [
+    "stale_availability"
+  ],
+  "family": "stale_availability",
+  "noisy": false,
+  "chat_ids": [
+    "ar_01",
+    "ar_02",
+    "ar_03",
+    "ar_09",
+    "mix_01"
+  ],
+  "modifiers": [],
+  "conditions": {},
+  "ground_truth": {
+    "root_cause": "AvailabilityAPI cached reads return a stale snapshot (all slots free); bot does not request fresh reads",
+    "correct_fix": {
+      "availability_fresh_read": true
+    },
+    "should_escalate": false,
+    "expected_outcome": "recover",
+    "requires_retry": false
+  },
+  "failed_chats": [
+    "ar_01",
+    "ar_03"
+  ],
+  "chat_verdicts": {
+    "ar_01": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_02": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_03": {
+      "pass": false,
+      "invariants_ok": false,
+      "order_completed": false,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "ar_09": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    },
+    "mix_01": {
+      "pass": true,
+      "invariants_ok": true,
+      "order_completed": true,
+      "outcome": "confirmed",
+      "turns": 6,
+      "progress": 4
+    }
+  },
+  "patient": "hajz"
+}
