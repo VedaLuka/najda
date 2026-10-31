@@ -1,0 +1,32 @@
+spent since 2026-10-31 02:50: $0.000 over 0 API calls 
+projected (spent + planned $2.74): $2.74 of budget $3.00
+=== C-1 single_llm heldout-confirm  (03:04:10 KSA)
+1031-030410_single_llm_heldout_confirm: outcome=0.760 recovered=0.840 rc@1=1.000 esc_ok=0.840 dangerous=0.000 n=25 cost=$0.4819 llm_calls=25 errors=0 wall=102.6s
+details -> experiments/runs/1031-030410_single_llm_heldout_confirm
+spent since 2026-10-31 02:50: $0.482 over 25 API calls claude-sonnet-5-5=$0.482
+projected (spent + planned $2.28): $2.76 of budget $3.00
+=== C-2 najda_v5 heldout-confirm  (03:05:53 KSA)
+1031-030553_najda_v5_heldout_confirm: outcome=0.720 recovered=0.640 rc@1=0.920 esc_ok=0.720 dangerous=0.000 n=25 cost=$0.7859 llm_calls=95 errors=0 wall=176.9s
+details -> experiments/runs/1031-030553_najda_v5_heldout_confirm
+spent since 2026-10-31 02:50: $1.268 over 120 API calls claude-haiku-5-5=$0.014 claude-sonnet-5-5=$1.254
+projected (spent + planned $1.54): $2.81 of budget $3.00
+=== C-3 najda_v6 heldout-confirm  (03:08:51 KSA)
+1031-030851_najda_v6_heldout_confirm: outcome=0.840 recovered=0.760 rc@1=1.000 esc_ok=0.840 dangerous=0.000 n=25 cost=$0.6334 llm_calls=75 errors=0 wall=136.4s
+details -> experiments/runs/1031-030851_najda_v6_heldout_confirm
+spent since 2026-10-31 02:50: $1.901 over 195 API calls claude-haiku-5-5=$0.027 claude-sonnet-5-5=$1.874
+projected (spent + planned $0.90): $2.80 of budget $3.00
+=== C-4 najda_v6 haiku heldout-confirm  (03:11:08 KSA)
+1031-031108_najda_v6_heldout_confirm: outcome=0.760 recovered=0.680 rc@1=0.960 esc_ok=0.760 dangerous=0.000 n=25 cost=$0.0659 llm_calls=96 errors=0 wall=144.2s
+details -> experiments/runs/1031-031108_najda_v6_heldout_confirm
+spent since 2026-10-31 02:50: $1.954 over 267 API calls claude-haiku-5-5=$0.080 claude-sonnet-5-5=$1.874
+projected (spent + planned $0.82): $2.77 of budget $3.00
+=== C-5 najda_v5 transfer-confirm  (03:13:32 KSA)
+1031-031332_najda_v5_transfer_confirm: outcome=0.733 recovered=0.533 rc@1=0.867 esc_ok=0.733 dangerous=0.000 n=15 cost=$0.4692 llm_calls=51 errors=0 wall=107.0s
+details -> experiments/runs/1031-031332_najda_v5_transfer_confirm
+spent since 2026-10-31 02:50: $2.423 over 318 API calls claude-haiku-5-5=$0.088 claude-sonnet-5-5=$2.335
+projected (spent + planned $0.41): $2.83 of budget $3.00
+=== C-6 najda_v6 transfer-confirm  (03:15:20 KSA)
+1031-031520_najda_v6_transfer_confirm: outcome=1.000 recovered=0.800 rc@1=0.867 esc_ok=1.000 dangerous=0.000 n=15 cost=$0.3665 llm_calls=43 errors=0 wall=85.8s
+details -> experiments/runs/1031-031520_najda_v6_transfer_confirm
+spent since 2026-10-31 02:50: $2.790 over 361 API calls claude-haiku-5-5=$0.096 claude-sonnet-5-5=$2.694
+projected (spent + planned $0.00): $2.79 of budget $3.00

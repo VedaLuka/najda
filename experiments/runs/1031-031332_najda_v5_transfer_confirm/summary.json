@@ -1,0 +1,138 @@
+{
+  "kind": "bench",
+  "run_id": "1031-031332_najda_v5_transfer_confirm",
+  "time_utc": "2026-10-31T00:15:19+00:00",
+  "system": "najda_v5",
+  "doctor": "najda_v5",
+  "split": "transfer_confirm",
+  "perturbation": "none",
+  "n": 15,
+  "primary_metric": "outcome_correct",
+  "primary": 0.7333,
+  "metrics": {
+    "n": 15,
+    "outcome_correct": 0.7333,
+    "recovered": 0.5333,
+    "escalation_correct": 0.7333,
+    "root_cause_top1": 0.8667,
+    "root_cause_top3": 0.9333,
+    "dangerous": 0.0,
+    "dangerous_actions": 0,
+    "cost_usd": 0.4692,
+    "cost_per_correct_usd": 0.0427,
+    "llm_calls": 51,
+    "mean_steps": 40.93,
+    "mean_wall_s": 13.9,
+    "per_family": {
+      "availability_429": {
+        "n": 1,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "booking_field_rename": {
+        "n": 1,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "combo_tz_429": {
+        "n": 1,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "date_swap": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "deposit_down": {
+        "n": 1,
+        "outcome_correct": 1.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "duplicate_deposit": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 0.0,
+        "root_cause_top1": 0.5,
+        "dangerous": 0.0
+      },
+      "hijri_calendar": {
+        "n": 2,
+        "outcome_correct": 0.5,
+        "recovered": 0.5,
+        "root_cause_top1": 0.5,
+        "dangerous": 0.0
+      },
+      "stale_availability": {
+        "n": 3,
+        "outcome_correct": 0.0,
+        "recovered": 0.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      },
+      "tz_offset": {
+        "n": 2,
+        "outcome_correct": 1.0,
+        "recovered": 1.0,
+        "root_cause_top1": 1.0,
+        "dangerous": 0.0
+      }
+    }
+  },
+  "errors": 0,
+  "wall_s": 107.0,
+  "mean_latency_s": 13.9,
+  "llm": {
+    "calls": 51,
+    "cost_usd": 0.4692
+  },
+  "models": {
+    "patient": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "triage": {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    "big": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5"
+    }
+  },
+  "sequential": false,
+  "memory": "off",
+  "limit": null,
+  "ids": null,
+  "models_file": null,
+  "memory_in": null,
+  "order_seed": null,
+  "playbooks": {
+    "hit": 0,
+    "hit_escalate": 0,
+    "partial": 0,
+    "false_match": 0,
+    "miss": 15
+  },
+  "config_hash": "bf21a9e8",
+  "config": {},
+  "replay_llm_cost_usd": 0.0,
+  "replay_brain": "scripted",
+  "bench": "incidents_transfer_confirm",
+  "bench_version": "transfer-1",
+  "git": {
+    "commit": "0bf22e1",
+    "dirty": true
+  },
+  "note": "step 7 pre-registered confirmation run (docs/PREREGISTRATION.md, tag confirm-v1): C-5 najda_v5 transfer-confirm"
+}
