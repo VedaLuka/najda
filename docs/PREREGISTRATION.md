@@ -212,3 +212,86 @@ Outcome by family (correct / n): see decision 57 and `python scripts/report.py` 
 - **Haiku as big model**: held-out 0.600, transfer 0.818, at $0.0032 and $0.0030 per incident, 0 dangerous.
 
 Nothing above is a fix. What to do about grounding and the money knob policy is a v6 question, after this report.
+
+---
+
+# Step 7: confirmation run (pre-registered replication of the diff_diagnosis finding)
+
+Written **Sat 31 Oct 2026, 03:05 KSA**, before any doctor other than `oracle` and `do_nothing` has run on either
+confirmation set. Code at tag `confirm-v1` (436de83); doctors unchanged since `prereg-final` except the registration of
+`najda_v6` (flags only, no logic).
+
+## Why
+
+In the final run, the ablation arm "v5 minus diff_diagnosis" scored 0.840 on held-out against 0.720 for v5: the
+grounding rule rejected correct fixes when the only failing-vs-passing difference was customer input (arabic_numerals
+3/3 lost, and on transfer stale_availability). That arm was promoted to `najda_v6` AFTER its held-out number was seen,
+so 0.840 is a selection result, not a clean score. This step scores v6 on FRESH instances of the same families.
+
+**This is a replication, not a test on new fault families.** The confirmation sets hold the same families as the frozen
+held-out and transfer splits, generated with seeds never used anywhere (6001..6025, 7001..7015). Any claim from it is
+"the held-out result holds on new instances of these families", nothing more.
+
+## What is frozen (before this section was written)
+
+| Artifact | Frozen as | Proof |
+|---|---|---|
+| `najda_v6` = `najda_v5_no_diffdiag` flags, byte-identical | commit 8235ec0, test `test_v6_is_exactly_the_preregistered_no_diffdiag_arm` | run `1031-030131_najda_v6_heldout`: 0.840, `compare.py` vs 1030-213735 = shared 25, fixed 0, broken 0; `scripts/spend.py` $0.000 before and after (every call a cache hit) |
+| heldout-confirm: 25 order-bot incidents, same composition as held-out (5 families x3, 2 combos x2, ambiguous_payment x2, healthy x1, 3 noisy) | `data/incidents_confirm/`, tag `confirm-v1`, manifest `784d07cfb2537fcc` | `scripts/make_confirm_sets.py --verify`; `tests/test_confirm_sets.py` (seeds disjoint from every split, composition equal to held-out) |
+| transfer-confirm: 15 Hajz incidents (tz_offset, date_swap, hijri_calendar, stale_availability, duplicate_deposit x2 each; deposit_down, booking_field_rename, availability_429, combo_tz_429, noisy stale_availability x1) | `data/incidents_transfer_confirm/`, tag `confirm-v1`, manifest `99b8b766c2ee6853` | same script and tests |
+
+Sanity before the freeze, the only runs on these sets: heldout-confirm oracle 1.000 / do_nothing 0.040;
+transfer-confirm oracle 1.000 / do_nothing 0.000 (`--no-log`).
+
+## Arms (one run, results reported as they come, nothing changed after)
+
+| # | Set | Arm | Command |
+|---|---|---|---|
+| C-1 | heldout-confirm | single_llm | `eval/run_bench.py --doctor single_llm --split heldout_confirm --bench-dir data/incidents_confirm` |
+| C-2 | heldout-confirm | najda_v5 COLD | `eval/run_bench.py --doctor najda_v5 --split heldout_confirm --bench-dir data/incidents_confirm` |
+| C-3 | heldout-confirm | najda_v6 COLD | `eval/run_bench.py --doctor najda_v6 --split heldout_confirm --bench-dir data/incidents_confirm` |
+| C-4 | heldout-confirm | najda_v6 COLD, Haiku big | `... --doctor najda_v6 ... --models configs/models_haiku_big.json` |
+| C-5 | transfer-confirm | najda_v5 COLD | `eval/run_bench.py --doctor najda_v5 --split transfer_confirm --bench-dir data/incidents_transfer_confirm` |
+| C-6 | transfer-confirm | najda_v6 COLD | `eval/run_bench.py --doctor najda_v6 --split transfer_confirm --bench-dir data/incidents_transfer_confirm` |
+
+single_llm and the Haiku arm are NOT run on transfer-confirm (budget, decided before the run: the $3 cap would be
+exceeded with all four arms on both sets; C2 and the Haiku arm are defined on heldout-confirm only). Driver:
+`scripts/confirm_run.sh`, live spend from the LLM cache after every arm, stops before the arm that would exceed $3.
+Only infrastructure failures may be retried, same command, disclosed here.
+
+## Pre-registered hypotheses (primary metric `outcome_correct`, counts of correct incidents)
+
+- **C1** v6 >= v5 on heldout-confirm outcome (C-3 count >= C-2 count).
+- **C2** v6 > single_llm on heldout-confirm (C-3 count > C-1 count, strict).
+- **C3** zero dangerous actions for v6 on both confirmation sets (C-3, C-4, C-6 all 0).
+- **C4** v6 >= v5 on transfer-confirm outcome (C-6 count >= C-5 count).
+
+n = 25 / 15: one incident is 0.04 / 0.067. Every number carries its 95% bootstrap CI (2000 resamples over incidents);
+no significance is claimed. Descriptive: per-family tables, recovered, RC@1, escalation_correct, $/incident, LLM calls,
+`compare.py` fixed/broken lists for v6 vs v5 on each set. Expected from the held-out mechanism (stated so it can fail):
+v6 regains arabic_numerals and keeps everything else; dropped_payment_webhook stays 0 for both (money knob policy, not
+diff_diagnosis); on transfer-confirm the difference, if any, should sit in stale_availability.
+
+## Risks disclosed before the run
+
+- The confirmation sets were generated by the same plan code with new seeds: the same fault mechanics, new worlds,
+  new chat samples. Instance variance is the only thing being replicated; a flaw shared by all instances of a family
+  (e.g. every dropped_payment_webhook fix needs the frozen money knob) will replicate as a miss, not be discovered.
+- v5's payment freeze and the v3 money-knob policy are unchanged; both are expected to cost the same incidents.
+- The Haiku arm has no v6 dev run; its number is descriptive.
+
+## Budget
+
+User cap for step 7: $3.00 of real API spend, counted by `scripts/spend.py --since "2026-10-31 02:50"`. Spent so far in
+step 7: $0.000 (v6 reproduction and sanity runs were cache hits or LLM-free). Estimate from the final run's real
+per-incident cost on held-out / transfer (the final run came in at 98% of its raw estimate, so no pessimistic factor):
+
+| set | arm | n | $/incident | estimate $ |
+|---|---|---|---|---|
+| heldout-confirm | single_llm | 25 | 0.0183 | 0.46 |
+| heldout-confirm | najda_v5 COLD | 25 | 0.0298 | 0.74 |
+| heldout-confirm | najda_v6 COLD | 25 | 0.0254 | 0.64 |
+| heldout-confirm | najda_v6 Haiku big | 25 | 0.0032 | 0.08 |
+| transfer-confirm | najda_v5 COLD | 15 | 0.0271 | 0.41 |
+| transfer-confirm | najda_v6 COLD | 15 | 0.0271 (priced as v5) | 0.41 |
+| **total** | | | | **2.74** |
