@@ -53,6 +53,15 @@ python -m pytest -q
 ```
 LLM responses are cached in `.cache/llm`, so re-runs are deterministic and free.
 
+### Demo dashboard (replay-only, no API key)
+```bash
+make demo        # streamlit run app/Home.py; reads only app/data/
+make demo-pack   # rebuild app/data/ from recorded runs + the LLM cache ($0; refuses to run if a call would be live)
+```
+Pages: Live incident (halalas and Arabic-numerals faults, stepped or autoplay, v5 vs v6 toggle), Learns and gets cheaper
+(playbook repeat + learning curve), Knows when to stop (deposit provider down; the webhook trade-off), Results.
+Deployable on Streamlit Community Cloud from the public repo: `app/Home.py`, no secrets.
+
 ## Repo map
 ```
 src/hack/systems.py   every version of the solution (registry)

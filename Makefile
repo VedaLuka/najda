@@ -4,7 +4,7 @@ CFG ?=
 NOTE ?=
 CFG_ARG = $(if $(CFG),--config $(CFG),)
 
-.PHONY: setup smoke incidents bench baselines eval holdout compare report test
+.PHONY: setup smoke incidents bench baselines eval holdout compare report test demo demo-pack
 
 setup:            ## create venv and install deps
 	$(PY) -m venv .venv && .venv/bin/pip install -q -r requirements.txt
@@ -41,3 +41,9 @@ report:
 
 test:
 	$(PY) -m pytest -q
+
+demo-pack:        ## rebuild app/data/ from recorded runs + the LLM cache (no key, $0)
+	$(PY) scripts/export_demo_pack.py
+
+demo:             ## the replay-only dashboard for the video (no API key needed)
+	$(PY) -m streamlit run app/Home.py

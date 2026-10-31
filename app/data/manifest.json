@@ -1,0 +1,58 @@
+{
+ "generated": "2026-10-31T03:35:31+03:00",
+ "commit": "77ed199",
+ "incidents": [
+  {
+   "id": "heldout_confirm-001",
+   "role": "live",
+   "family": "price_unit_halalas",
+   "patient": "order",
+   "headline": "Prices arrive in halalas, the bot charges riyals",
+   "headline_ar": "الأسعار بالهللات والبوت يحاسب بالريال",
+   "doctors": [
+    "najda_v6"
+   ]
+  },
+  {
+   "id": "heldout_confirm-004",
+   "role": "live",
+   "family": "arabic_numerals",
+   "patient": "order",
+   "headline": "Customers type ٤, the bot orders 1",
+   "headline_ar": "العميل يكتب ٤ والبوت يطلب ١",
+   "doctors": [
+    "najda_v6",
+    "najda_v5"
+   ]
+  },
+  {
+   "id": "transfer_confirm-011",
+   "role": "escalate",
+   "family": "deposit_down",
+   "patient": "hajz",
+   "headline": "Deposit provider down (Hajz booking bot)",
+   "headline_ar": "مزوّد العربون متوقف (بوت حجز)",
+   "doctors": [
+    "najda_v6"
+   ]
+  },
+  {
+   "id": "heldout_confirm-010",
+   "role": "escalate",
+   "family": "dropped_payment_webhook",
+   "patient": "order",
+   "headline": "Payment webhook never arrives (the price of the policy)",
+   "headline_ar": "إشعار الدفع لا يصل (ثمن سياسة الأمان)",
+   "doctors": [
+    "najda_v6"
+   ]
+  }
+ ],
+ "repeat": {
+  "doctor": "najda_v6",
+  "incidents": [
+   "heldout_confirm-001",
+   "heldout_confirm-002"
+  ]
+ }
+}

@@ -2,5 +2,6 @@ openai>=1.40
 anthropic>=0.40
 python-dotenv>=1.0
 pytest>=8.0
+streamlit==1.66.1   # demo dashboard only (app/); pandas + altair come with it
 # add task-specific packages below, with versions pinned, as soon as you use them
 # numpy, pandas, scikit-learn, sentence-transformers, rank-bm25, faiss-cpu, ...
