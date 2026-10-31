@@ -14,3 +14,6 @@ money_plus_fixable,najda_v4,3,1
 decoy_history,najda_v4_no_guardrails,4,0
 decoy_payment_logs,najda_v4_no_guardrails,6,0
 money_plus_fixable,najda_v4_no_guardrails,3,1
+decoy_history,najda_v5,4,0
+decoy_payment_logs,najda_v5,6,0
+money_plus_fixable,najda_v5,3,0
