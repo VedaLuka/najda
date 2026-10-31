@@ -20,7 +20,7 @@ HUMAIN hackathon, Challenge 1 (Agentic Recovery). Solo build, 30 to 31 October 2
 
 ![Headline: fresh unseen faults](docs/figures/headline_confirm.png)
 
-Links: video (placeholder: VIDEO_URL), slides (placeholder: SLIDES_URL), full tables [docs/RESULTS.md](docs/RESULTS.md), decisions [docs/DECISIONS.md](docs/DECISIONS.md), pre-registration [docs/PREREGISTRATION.md](docs/PREREGISTRATION.md), limitations [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+Links: repo https://github.com/VedaLuka/najda, live demo console https://vedaluka.github.io/najda/web/, video (placeholder: VIDEO_URL), slides (placeholder: SLIDES_URL), full tables [docs/RESULTS.md](docs/RESULTS.md), decisions [docs/DECISIONS.md](docs/DECISIONS.md), pre-registration [docs/PREREGISTRATION.md](docs/PREREGISTRATION.md), limitations [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 ## 1. The problem: AI agents fail silently
 
@@ -225,7 +225,7 @@ python scripts/compare.py latest:najda_v5 latest:najda_v6     # fixed / broken i
 python scripts/learning_curve.py                               # memory ON vs OFF streams
 ```
 
-Demo console: `make demo` serves `app/web/` (HTML, CSS, vanilla JS, no build, no network) over the recorded pack in `app/data/`. Screens: a live incident stepped or on autoplay with a v5/v6 toggle, the learning curve with a repeat incident at zero LLM calls, an escalation on a provider outage, and the results. Screenshots are in `docs/screenshots/`.
+Demo console: live at https://vedaluka.github.io/najda/web/ (deployed from `app/` by `.github/workflows/pages.yml`). Locally, `make demo` serves `app/web/` (HTML, CSS, vanilla JS, no build, no network) over the recorded pack in `app/data/`. Screens: a live incident stepped or on autoplay with a v5/v6 toggle, the learning curve with a repeat incident at zero LLM calls, an escalation on a provider outage, and the results. Screenshots are in `docs/screenshots/`.
 
 ## 9. Repo map
 
