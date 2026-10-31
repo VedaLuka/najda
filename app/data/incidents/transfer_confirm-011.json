@@ -605,7 +605,7 @@
     },
     {
      "i": 31,
-     "t": 0.004,
+     "t": 0.003,
      "action": "najda.playbook",
      "args": {},
      "result": {
@@ -665,7 +665,7 @@
    },
    "cost_usd": 0.020571,
    "llm_calls": 2,
-   "wall_s": 0.004,
+   "wall_s": 0.003,
    "recorded": {
     "run_id": "1031-031520_najda_v6_transfer_confirm",
     "scores": {

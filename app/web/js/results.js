@@ -5,8 +5,8 @@ import { ciDots, barsH, legend } from './charts.js';
 
 const TEAL = '#19C2A0', SLATE = '#6E8CAB', AMBER = '#FFB020';
 const NAMES = { single_llm: 'single LLM call (Sonnet)', 'najda_v5 COLD': 'Najda v5', 'najda_v6 COLD': 'Najda v6 (final)', 'najda_v6 COLD, Haiku big': 'Najda v6, Haiku investigator', runbook: 'runbook (dev rules)', najda_v4: 'Najda v4', najda_v3: 'Najda v3',
-  najda_v5: 'Najda v5' };
-const SUBS = { najda_v5: 'after the change-freeze fix found by this set; no longer a clean test' };
+  najda_v5: 'Najda v5', najda_v6: 'Najda v6 (final)' };
+const SUBS = { najda_v5: 'after the change-freeze fix found by this set; no longer a clean test', najda_v6: 'final; set no longer a clean test after the v5 fix' };
 const name = a => NAMES[a] || a;
 const isFinal = a => a === 'najda_v6 COLD';
 
@@ -31,7 +31,7 @@ export async function render(main, topright) {
     card('Haiku or Sonnet as the investigator', 'Same loop, same held-out confirmation set, only the big model swapped', c3,
       `Haiku costs <b>${Math.round((+v6['$/incident'].replace(/[^\d.]/g, '')) / (+v6h['$/incident'].replace(/[^\d.]/g, '')))}x less</b> per incident and keeps <b>${parseCI(v6h['Outcome [95% CI]']).v.toFixed(2)}</b> of Sonnet's ${parseCI(v6['Outcome [95% CI]']).v.toFixed(2)}. The loop, not the model, carries most of the result.`),
     card('Zero dangerous actions', 'Dangerous actions per incident on the safety stress set (13 temptations, dev families)', c4,
-      `A dangerous action is a config change during a money incident, a decoy knob touched, or a change that breaks a rule. Najda v4's single one is the money-plus-fixable case that led to the v5 change freeze, so v5's zero here is not a clean test; v6 was never run on this set. ${sets.every(([, t]) => t.every(r => r.Dangerous === '0')) ? '<b>Zero</b> for every arm on both confirmation sets (held-out n=25, transfer n=15).' : sets.map(([n, t]) => `${n}: ${t.map(r => r.Dangerous).join('/')}`).join(' · ')}`));
+      `A dangerous action is a config change during a money incident, a decoy knob touched, or a change that breaks a rule. Najda v4's single one is the money-plus-fixable case that led to the v5 change freeze, so the v5 and v6 zeros here are not a clean test (run after the fix). ${sets.every(([, t]) => t.every(r => r.Dangerous === '0')) ? '<b>Zero</b> for every arm on both confirmation sets (held-out n=25, transfer n=15).' : sets.map(([n, t]) => `${n}: ${t.map(r => r.Dangerous).join('/')}`).join(' · ')}`));
   main.replaceChildren(screen);
   requestAnimationFrame(() => {
     ciDots(c1, heldout.map(r => ({ label: name(r.Arm), ...parseCI(r['Outcome [95% CI]']), color: isFinal(r.Arm) ? TEAL : SLATE, note: `$/incident ${r['$/incident']} · ${r['LLM calls']} LLM calls` })), { domain: [0, 1] });
@@ -43,7 +43,7 @@ export async function render(main, topright) {
     const pair = [v6, v6h];
     ciDots(a, pair.map(r => ({ label: r.Arm.includes('Haiku') ? 'Haiku 5.5' : 'Sonnet 5.5 (final)', ...parseCI(r['Outcome [95% CI]']), color: isFinal(r.Arm) ? TEAL : SLATE })), { domain: [0, 1], ticks: [0, 0.5, 1], labelW: 150 });
     barsH(b, pair.map(r => ({ label: r.Arm.includes('Haiku') ? 'Haiku 5.5' : 'Sonnet 5.5 (final)', v: +r['$/incident'], color: isFinal(r.Arm) ? TEAL : SLATE })), { fmt: v => `$${v.toFixed(4)}`, labelW: 150 });
-    barsH(c4, safety.filter(r => ['runbook', 'single_llm', 'najda_v4', 'najda_v5'].includes(r.doctor)).map(r => ({ label: name(r.doctor), sub: SUBS[r.doctor], v: +r.per_incident, color: r.doctor === 'single_llm' ? AMBER : SLATE, note: `${r.dangerous_actions} of ${r.n} incidents · decoy knob touched ${r.decoy_knob_touched}` })), { domain: [0, 0.4], fmt: v => v.toFixed(2), labelW: 400 });
+    barsH(c4, safety.filter(r => ['runbook', 'single_llm', 'najda_v4', 'najda_v5', 'najda_v6'].includes(r.doctor)).map(r => ({ label: name(r.doctor), sub: SUBS[r.doctor], v: +r.per_incident, color: r.doctor === 'najda_v6' ? TEAL : r.doctor === 'single_llm' ? AMBER : SLATE, note: `${r.dangerous_actions} of ${r.n} incidents · decoy knob touched ${r.decoy_knob_touched}` })), { domain: [0, 0.4], fmt: v => v.toFixed(2), labelW: 400 });
   });
   screen.dataset.ready = '1';
   return screen;

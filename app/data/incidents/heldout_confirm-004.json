@@ -639,7 +639,7 @@
     },
     {
      "i": 27,
-     "t": 0.008,
+     "t": 0.007,
      "action": "llm",
      "args": {
       "role": "big",
@@ -662,7 +662,7 @@
     },
     {
      "i": 28,
-     "t": 0.008,
+     "t": 0.007,
      "action": "najda.turn",
      "args": {},
      "result": {
@@ -676,7 +676,7 @@
     },
     {
      "i": 29,
-     "t": 0.008,
+     "t": 0.007,
      "action": "najda.hypotheses",
      "args": {},
      "result": {
@@ -704,7 +704,7 @@
     },
     {
      "i": 30,
-     "t": 0.008,
+     "t": 0.007,
      "action": "najda.guardrail",
      "args": {},
      "result": {
@@ -737,7 +737,7 @@
     },
     {
      "i": 32,
-     "t": 0.01,
+     "t": 0.009,
      "action": "replay",
      "args": {
       "config_version": 2,
@@ -756,7 +756,7 @@
     },
     {
      "i": 33,
-     "t": 0.01,
+     "t": 0.009,
      "action": "najda.canary",
      "args": {},
      "result": {
@@ -773,7 +773,7 @@
     },
     {
      "i": 34,
-     "t": 0.014,
+     "t": 0.013,
      "action": "replay",
      "args": {
       "config_version": 2,
@@ -789,7 +789,7 @@
     },
     {
      "i": 35,
-     "t": 0.015,
+     "t": 0.014,
      "action": "replay",
      "args": {
       "config_version": 2,
@@ -809,7 +809,7 @@
     },
     {
      "i": 36,
-     "t": 0.015,
+     "t": 0.014,
      "action": "najda.regression_check",
      "args": {},
      "result": {
@@ -822,7 +822,7 @@
     },
     {
      "i": 37,
-     "t": 0.015,
+     "t": 0.014,
      "action": "najda.verify",
      "args": {},
      "result": {
@@ -837,14 +837,14 @@
     },
     {
      "i": 38,
-     "t": 0.015,
+     "t": 0.014,
      "action": "read_metrics",
      "args": {},
      "result": {}
     },
     {
      "i": 39,
-     "t": 0.015,
+     "t": 0.014,
      "action": "read_traces",
      "args": {
       "kind": "tool",
@@ -861,7 +861,7 @@
     },
     {
      "i": 40,
-     "t": 0.015,
+     "t": 0.014,
      "action": "najda.decision",
      "args": {},
      "result": {
@@ -875,7 +875,7 @@
     },
     {
      "i": 41,
-     "t": 0.015,
+     "t": 0.014,
      "action": "najda.playbook",
      "args": {},
      "result": {
@@ -948,7 +948,7 @@
    },
    "cost_usd": 0.02553,
    "llm_calls": 3,
-   "wall_s": 0.015,
+   "wall_s": 0.014,
    "recorded": {
     "run_id": "1031-030851_najda_v6_heldout_confirm",
     "scores": {
@@ -1225,7 +1225,7 @@
     },
     {
      "i": 11,
-     "t": 0.005,
+     "t": 0.004,
      "action": "read_invariants",
      "args": {},
      "result": {
@@ -1362,7 +1362,7 @@
     },
     {
      "i": 24,
-     "t": 0.006,
+     "t": 0.005,
      "action": "read_traces",
      "args": {
       "kind": null,
@@ -1566,7 +1566,7 @@
     },
     {
      "i": 36,
-     "t": 0.008,
+     "t": 0.007,
      "action": "llm",
      "args": {
       "role": "big",
@@ -1589,7 +1589,7 @@
     },
     {
      "i": 37,
-     "t": 0.008,
+     "t": 0.007,
      "action": "najda.turn",
      "args": {},
      "result": {
@@ -1632,7 +1632,7 @@
     },
     {
      "i": 39,
-     "t": 0.009,
+     "t": 0.008,
      "action": "llm",
      "args": {
       "role": "big",
@@ -1655,7 +1655,7 @@
     },
     {
      "i": 40,
-     "t": 0.009,
+     "t": 0.008,
      "action": "najda.turn",
      "args": {},
      "result": {
@@ -1669,7 +1669,7 @@
     },
     {
      "i": 41,
-     "t": 0.009,
+     "t": 0.008,
      "action": "najda.hypotheses",
      "args": {},
      "result": {
@@ -1699,14 +1699,14 @@
     },
     {
      "i": 42,
-     "t": 0.009,
+     "t": 0.008,
      "action": "read_metrics",
      "args": {},
      "result": {}
     },
     {
      "i": 43,
-     "t": 0.009,
+     "t": 0.008,
      "action": "read_traces",
      "args": {
       "kind": "tool",
@@ -1723,7 +1723,7 @@
     },
     {
      "i": 44,
-     "t": 0.009,
+     "t": 0.008,
      "action": "najda.decision",
      "args": {},
      "result": {
@@ -1737,7 +1737,7 @@
     },
     {
      "i": 45,
-     "t": 0.009,
+     "t": 0.008,
      "action": "escalate",
      "args": {
       "report": "نجدة: لم يُصلح العطل (input_format) بإعدادات البوت، تم التصعيد لإنسان، 5 محادثة متأثرة. | Najda: not fixable from the control panel (input_format); escalated; 5 chats affected.\n\nSummary: Orders from customers using Arabic-Indic numerals were created and charged with quantity 1 instead of the requested quantity. Enabling normalize_numerals should fix it.\nImpact: 5/8 chats failed, 5 orders created but not completed, ~72.0 SAR at stake.\nEvidence:\nActions:\n  - no config change made\nRecommended human"
@@ -1748,7 +1748,7 @@
     },
     {
      "i": 46,
-     "t": 0.009,
+     "t": 0.008,
      "action": "najda.playbook",
      "args": {},
      "result": {
@@ -1806,7 +1806,7 @@
    },
    "cost_usd": 0.046319,
    "llm_calls": 6,
-   "wall_s": 0.009,
+   "wall_s": 0.008,
    "recorded": {
     "run_id": "1031-030553_najda_v5_heldout_confirm",
     "scores": {

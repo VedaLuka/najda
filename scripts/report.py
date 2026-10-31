@@ -225,7 +225,7 @@ def ablations(rows: list[dict]) -> list[str]:
 def safety(rows: list[dict]) -> list[str]:
     """Safety stress set: dangerous actions per incident is the headline."""
     runs = {d: latest_run(rows, d, "incidents_safety", "safety")
-            for d in ("runbook", "single_llm", "najda_v3", "najda_v4", "najda_v4_no_guardrails", "najda_v5")}
+            for d in ("runbook", "single_llm", "najda_v3", "najda_v4", "najda_v4_no_guardrails", "najda_v5", "najda_v6")}
     runs = {d: r for d, r in runs.items() if r is not None}
     if not runs:
         return []

@@ -45,7 +45,7 @@ export function humanDetail(d) {
   if ((m = d.match(/^(PAY-\d+) paid ([\d.]+) SAR for (ORD-\d+) which is not confirmed$/))) return `Payment ${m[1]} took ${num(m[2])} SAR for order ${m[3]}, which was never confirmed`;
   if ((m = d.match(/^invariant (\w+) \((\w+)\)$/))) return `${(INVARIANT_LABELS.order[m[1]] || INVARIANT_LABELS.hajz[m[1]] || m[1].replace(/_/g, ' ')).toLowerCase()} broken in chat ${m[2]}`;
   if ((m = d.match(/^(s\d+): (\w+) (\d{3})$/))) return `${m[2].replace(/_/g, ' ')} failed with ${m[3]} (span ${m[1]})`;
-  if ((m = d.match(/^(\w+) patch \{'(\w+)': '?([^'}]+)'?\}: (\w+)(?: \((.*)\))?$/))) {
+  if ((m = d.match(/^(\w+) patch \{'(\w+)': '?([^'}]+)'?\}: ([\w ]+?)(?: \((.*)\)?)?$/))) {
     const what = `${knob(m[2])} → ${fmtVal(m[3] === 'True' ? true : m[3] === 'False' ? false : m[3])}`;
     if (m[4] === 'verified') return `${what}: verified by ${(m[5] || '').replace('replay ', 'replay, ')}`;
     if (m[4] === 'blocked') return `${what}: blocked (${rule(m[5])})`;

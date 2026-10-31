@@ -458,7 +458,7 @@
     },
     {
      "i": 33,
-     "t": 0.016,
+     "t": 0.015,
      "action": "najda.verify",
      "args": {},
      "result": {
@@ -473,14 +473,14 @@
     },
     {
      "i": 34,
-     "t": 0.016,
+     "t": 0.015,
      "action": "read_metrics",
      "args": {},
      "result": {}
     },
     {
      "i": 35,
-     "t": 0.016,
+     "t": 0.015,
      "action": "read_traces",
      "args": {
       "kind": "tool",
@@ -497,7 +497,7 @@
     },
     {
      "i": 36,
-     "t": 0.016,
+     "t": 0.015,
      "action": "najda.decision",
      "args": {},
      "result": {
@@ -511,7 +511,7 @@
     },
     {
      "i": 37,
-     "t": 0.016,
+     "t": 0.015,
      "action": "najda.playbook",
      "args": {},
      "result": {
@@ -584,7 +584,7 @@
    },
    "cost_usd": 0.024261,
    "llm_calls": 2,
-   "wall_s": 0.016,
+   "wall_s": 0.015,
    "incident_id": "heldout_confirm-001",
    "family": "price_unit_halalas",
    "playbook_events": [
@@ -996,7 +996,7 @@
     },
     {
      "i": 12,
-     "t": 0.006,
+     "t": 0.005,
      "action": "apply_patch",
      "args": {
       "patch": {
@@ -1405,7 +1405,7 @@
      "price_unit": "halalas"
     }
    ],
-   "created_at": "2026-10-31T04:38:14+0300",
+   "created_at": "2026-10-31T04:46:21+0300",
    "source_incident": "heldout_confirm-001",
    "uses": 1,
    "successes": 1,
