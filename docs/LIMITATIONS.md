@@ -26,3 +26,6 @@ Documented, not tuned for. Each one names the evidence run.
    work). No OpenAI key was present in `.env` either, so no OpenAI run was attempted.
 7. **LLM-patient validation is a 10-incident subset** (`--replay-brain llm`, Haiku patient), not the full dev
    split: the LLM patient is nondeterministic and costs money per replay.
+8. **Home-folder path in the frozen held-out index.** `data/incidents/heldout/index.jsonl` stores absolute bundle
+   paths from the machine the bench was built on (they include the author home folder). The file is part of the
+   frozen held-out manifest, so it is published as is; nothing reads those paths (the bench resolves bundles by id).
